@@ -419,48 +419,56 @@
   <!-- Tab 2: 五步工作法 -->
   <div class="flow-pane" id="flow-sixstep">
     <div class="flowchart-container">
-      <svg viewBox="0 0 750 400" class="flowchart-svg" xmlns="http://www.w3.org/2000/svg">
-        <line x1="160" y1="100" x2="160" y2="140" stroke="#5C1220" stroke-width="2"/>
+      <svg viewBox="0 0 750 420" class="flowchart-svg" xmlns="http://www.w3.org/2000/svg">
+        <!-- 连接线: Step1 → Step2 -->
+        <line x1="160" y1="100" x2="160" y2="140" stroke="#5C1220" stroke-width="2" fill="none"/>
         <polygon points="156,133 164,133 160,140" fill="#5C1220"/>
-        <line x1="160" y1="200" x2="160" y2="240" stroke="#5C1220" stroke-width="2"/>
-        <polygon points="156,233 164,233 160,240" fill="#5C1220"/>
-        <line x1="160" y1="300" x2="160" y2="340" stroke="#5C1220" stroke-width="2"/>
-        <polygon points="156,333 164,333 160,340" fill="#5C1220"/>
-        <line x1="230" y1="370" x2="350" y2="370" stroke="#5C1220" stroke-width="2"/>
+        <!-- 连接线: Step2 → Step3 -->
+        <line x1="160" y1="185" x2="160" y2="220" stroke="#5C1220" stroke-width="2" fill="none"/>
+        <polygon points="156,213 164,213 160,220" fill="#5C1220"/>
+        <!-- 连接线: Step3 → Step4 (L形: 先下再右，连续路径) -->
+        <path d="M 160 275 L 160 370 L 350 370" fill="none" stroke="#5C1220" stroke-width="2"/>
         <polygon points="343,366 343,374 350,370" fill="#5C1220"/>
-        <line x1="480" y1="370" x2="560" y2="370" stroke="#059669" stroke-width="2"/>
+        <!-- 连接线: Step4 → Step5 -->
+        <line x1="480" y1="370" x2="560" y2="370" stroke="#059669" stroke-width="2" fill="none"/>
         <polygon points="553,366 553,374 560,370" fill="#059669"/>
-        <path d="M 415 340 L 415 300 L 230 300 L 230 270" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <polygon points="226,277 234,277 230,270" fill="#dc2626"/>
+        <!-- 打回修复: Step4 顶 → 回到 Step3 右侧 (虚线) -->
+        <path d="M 415 350 L 415 310 L 265 310 L 265 250" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <polygon points="261,257 269,257 265,250" fill="#dc2626"/>
+        <text x="340" y="305" font-size="8" fill="#dc2626" font-weight="500">打回修复</text>
 
+        <!-- Step 1: 工作拆分 -->
         <rect x="60" y="60" width="200" height="40" rx="8" fill="#f8f4f5" stroke="#5C1220" stroke-width="1.5"/>
         <circle cx="85" cy="80" r="12" fill="#5C1220"/><text x="85" y="85" text-anchor="middle" font-size="11" font-weight="700" fill="white">1</text>
         <text x="110" y="76" font-size="12" font-weight="600" fill="#5C1220">工作拆分</text>
         <text x="110" y="92" font-size="9" fill="#666">需求 → 任务卡 + 依赖</text>
 
-        <rect x="60" y="145" width="200" height="40" rx="8" fill="#f8f4f5" stroke="#5C1220" stroke-width="1.5"/>
-        <circle cx="85" cy="165" r="12" fill="#5C1220"/><text x="85" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="white">2</text>
-        <text x="110" y="161" font-size="12" font-weight="600" fill="#5C1220">计划编排</text>
-        <text x="110" y="177" font-size="9" fill="#666">Todo + 时间估算 + 路由</text>
+        <!-- Step 2: 计划编排 -->
+        <rect x="60" y="140" width="200" height="45" rx="8" fill="#f8f4f5" stroke="#5C1220" stroke-width="1.5"/>
+        <circle cx="85" cy="163" r="12" fill="#5C1220"/><text x="85" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="white">2</text>
+        <text x="110" y="158" font-size="12" font-weight="600" fill="#5C1220">计划编排</text>
+        <text x="110" y="175" font-size="9" fill="#666">Todo + 时间估算 + 路由</text>
 
-        <rect x="60" y="245" width="200" height="50" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
-        <circle cx="85" cy="270" r="12" fill="#1d4ed8"/><text x="85" y="275" text-anchor="middle" font-size="11" font-weight="700" fill="white">3</text>
-        <text x="110" y="264" font-size="12" font-weight="600" fill="#1d4ed8">工作执行</text>
-        <text x="110" y="280" font-size="9" fill="#666">产出 PRD/原型/脚本/代码</text>
-        <text x="110" y="292" font-size="8" fill="#7e22ce">可 Spawn 并行子任务</text>
+        <!-- Step 3: 工作执行 -->
+        <rect x="60" y="220" width="200" height="55" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+        <circle cx="85" cy="247" r="12" fill="#1d4ed8"/><text x="85" y="252" text-anchor="middle" font-size="11" font-weight="700" fill="white">3</text>
+        <text x="110" y="241" font-size="12" font-weight="600" fill="#1d4ed8">工作执行</text>
+        <text x="110" y="257" font-size="9" fill="#666">产出 PRD/原型/脚本/代码</text>
+        <text x="110" y="270" font-size="8" fill="#7e22ce">可 Spawn 并行子任务</text>
 
+        <!-- Step 4: 交付检核 -->
         <rect x="350" y="350" width="130" height="40" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
         <circle cx="370" cy="370" r="12" fill="#ea580c"/><text x="370" y="375" text-anchor="middle" font-size="11" font-weight="700" fill="white">4</text>
         <text x="395" y="366" font-size="12" font-weight="600" fill="#ea580c">交付检核</text>
         <text x="395" y="382" font-size="9" fill="#666">品牌/规范/字段</text>
 
-        <rect x="565" y="350" width="130" height="40" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
-        <circle cx="585" cy="370" r="12" fill="#059669"/><text x="585" y="375" text-anchor="middle" font-size="11" font-weight="700" fill="white">5</text>
-        <text x="610" y="366" font-size="12" font-weight="600" fill="#059669">验收完成</text>
-        <text x="610" y="382" font-size="9" fill="#666">收工三件套</text>
+        <!-- Step 5: 验收完成 -->
+        <rect x="560" y="350" width="130" height="40" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+        <circle cx="580" cy="370" r="12" fill="#059669"/><text x="580" y="375" text-anchor="middle" font-size="11" font-weight="700" fill="white">5</text>
+        <text x="605" y="366" font-size="12" font-weight="600" fill="#059669">验收完成</text>
+        <text x="605" y="382" font-size="9" fill="#666">收工三件套</text>
 
-        <text x="330" y="295" font-size="8" fill="#dc2626" font-weight="500">打回修复</text>
-
+        <!-- 右侧信息面板 -->
         <rect x="380" y="55" width="320" height="220" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1"/>
         <text x="400" y="78" font-size="10" font-weight="600" fill="#0f172a">各步核心产物</text>
         <text x="400" y="100" font-size="9" fill="#5C1220" font-weight="600">Step 1</text><text x="450" y="100" font-size="9" fill="#666">02-项目管理/ 下任务卡</text>
