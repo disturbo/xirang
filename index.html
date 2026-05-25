@@ -659,7 +659,8 @@
       <text x="525" y="55" text-anchor="middle" font-size="9" font-weight="600" fill="#e11d48">红霉素</text>
 
       <!-- 调用箭头 Agent -> 生命周期 -->
-      <path d="M 240 80 L 240 110" stroke="#64748b" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line x1="240" y1="80" x2="240" y2="110" stroke="#64748b" stroke-width="1.2" fill="none"/>
+      <polygon points="236,103 244,103 240,110" fill="#64748b"/>
       <text x="248" y="100" font-size="8" fill="#64748b">调用</text>
 
       <!-- 生命周期层 -->
@@ -687,7 +688,8 @@
       <text x="803" y="163" text-anchor="middle" font-size="8.5" fill="#b91c1c">pre-write-chk</text>
 
       <!-- 调用关系: 生命周期 -> 门禁 -->
-      <path d="M 430 152 L 450 152" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+      <line x1="430" y1="152" x2="450" y2="152" stroke="#dc2626" stroke-width="1.5" fill="none"/>
+      <polygon points="443,148 443,156 450,152" fill="#dc2626"/>
       <text x="435" y="145" font-size="7.5" fill="#dc2626">硬调用</text>
 
       <!-- Lint 层 -->
