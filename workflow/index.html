@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>流程 — 息壤 V9</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+</head>
+<body data-page="workflow">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-brand-icon">壤</span>
+      <span>息壤 V9</span>
+    </a>
+    <div class="nav-links">
+      <a href="/">首页</a>
+      <a href="/architecture/">架构</a>
+      <a href="/workflow/">流程</a>
+      <a href="/agents/">Agent</a>
+      <a href="/rules/">规则</a>
+      <a href="/deploy/">部署</a>
+      <a href="/cost/">成本</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="菜单">&#9776;</button>
+  </div>
+  <div class="nav-mobile-panel">
+    <a href="/">首页</a>
+    <a href="/architecture/">架构</a>
+    <a href="/workflow/">流程</a>
+    <a href="/agents/">Agent</a>
+    <a href="/rules/">规则</a>
+    <a href="/deploy/">部署</a>
+    <a href="/cost/">成本</a>
+  </div>
+</nav>
+
+<!-- ====== Section 1: Binary Trigger ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#7e22ce"></span> <span style="color:#7e22ce">二元触发器</span></div>
+        <h2 class="section-title">一个判断，统一所有合规</h2>
+        <p class="section-subtitle">收到消息后的第一判断：这个任务会写文件吗？</p>
+      </div>
+    </div>
+
+    <div class="flowchart-container" style="text-align:center;margin-bottom:2.5rem;">
+      <svg viewBox="0 0 600 250" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;width:100%;">
+        <!-- Start: 收到消息 -->
+        <rect x="20" y="105" width="100" height="40" rx="20" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="70" y="130" text-anchor="middle" font-size="12" font-weight="600" fill="#1d4ed8">收到消息</text>
+
+        <!-- Arrow to diamond -->
+        <line x1="120" y1="125" x2="175" y2="125" stroke="#1d4ed8" stroke-width="1.5"/>
+        <polygon points="170,121 170,129 177,125" fill="#1d4ed8"/>
+
+        <!-- Decision diamond -->
+        <polygon points="235,125 280,90 325,125 280,160" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+        <text x="280" y="121" text-anchor="middle" font-size="10" font-weight="600" fill="#92400e">会写文件</text>
+        <text x="280" y="135" text-anchor="middle" font-size="10" font-weight="600" fill="#92400e">吗？</text>
+
+        <!-- No path (up-left) -->
+        <line x1="280" y1="90" x2="280" y2="45" stroke="#059669" stroke-width="1.5"/>
+        <polygon points="276,52 284,52 280,45" fill="#059669"/>
+        <rect x="220" y="10" width="120" height="35" rx="17" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+        <text x="280" y="32" text-anchor="middle" font-size="12" font-weight="600" fill="#047857">直接回复</text>
+        <text x="305" y="72" font-size="9" fill="#059669" font-weight="500">不写</text>
+        <text x="280" y="55" text-anchor="middle" font-size="8" fill="#059669">零合规开销</text>
+
+        <!-- Yes path (right) -->
+        <line x1="325" y1="125" x2="365" y2="125" stroke="#7e22ce" stroke-width="1.5"/>
+        <polygon points="360,121 360,129 367,125" fill="#7e22ce"/>
+        <text x="345" y="117" font-size="9" fill="#7e22ce" font-weight="500">写</text>
+
+        <!-- 声明 -->
+        <rect x="367" y="107" width="55" height="36" rx="6" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.5"/>
+        <text x="394" y="130" text-anchor="middle" font-size="11" font-weight="600" fill="#7e22ce">声明</text>
+
+        <!-- Arrow to 选档位 -->
+        <line x1="422" y1="125" x2="445" y2="125" stroke="#7e22ce" stroke-width="1.2"/>
+        <polygon points="440,121 440,129 447,125" fill="#7e22ce"/>
+
+        <!-- 选档位 -->
+        <rect x="447" y="107" width="55" height="36" rx="6" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.2"/>
+        <text x="474" y="130" text-anchor="middle" font-size="11" font-weight="600" fill="#7e22ce">选档位</text>
+
+        <!-- Arrow down to 执行 -->
+        <line x1="474" y1="143" x2="474" y2="175" stroke="#7e22ce" stroke-width="1.2"/>
+        <polygon points="470,170 478,170 474,177" fill="#7e22ce"/>
+
+        <!-- 执行 -->
+        <rect x="447" y="177" width="55" height="36" rx="6" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.2"/>
+        <text x="474" y="200" text-anchor="middle" font-size="11" font-weight="600" fill="#1d4ed8">执行</text>
+
+        <!-- Arrow to 收工 -->
+        <line x1="502" y1="195" x2="530" y2="195" stroke="#1d4ed8" stroke-width="1.2"/>
+        <polygon points="525,191 525,199 532,195" fill="#1d4ed8"/>
+
+        <!-- 收工 -->
+        <rect x="532" y="177" width="55" height="36" rx="18" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+        <text x="559" y="200" text-anchor="middle" font-size="11" font-weight="600" fill="#047857">收工</text>
+      </svg>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card clr-green">
+        <div class="card-header">
+          <div class="card-icon">-</div>
+          <h3 class="card-title">不写文件的 5 类场景</h3>
+        </div>
+        <ol style="margin:0;padding-left:1.25rem;font-size:0.9rem;color:var(--fg-muted);line-height:2;">
+          <li>解释概念 / 纯问答</li>
+          <li>讨论方案 / 头脑风暴</li>
+          <li>评审 / 比较 / 核对</li>
+          <li>日常闲聊 / 询问下一步</li>
+          <li>巡检无异常 / 状态查询</li>
+        </ol>
+      </div>
+      <div class="card clr-purple">
+        <div class="card-header">
+          <div class="card-icon">?</div>
+          <h3 class="card-title">灰区判定</h3>
+        </div>
+        <div class="table-wrap" style="border:none;box-shadow:none;">
+          <table>
+            <thead>
+              <tr><th>信号</th><th>判定</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>有具体对象 + 明确产出物</td><td>写文件 → pre-flight</td></tr>
+              <tr><td>咨询语气</td><td>不写 → 直接回复</td></tr>
+              <tr><td>无法判定</td><td>问用户，1轮内决定</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 2: Gear System ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#d97706"></span> <span style="color:#d97706">档位系统</span></div>
+        <h2 class="section-title">三档声明制度</h2>
+        <p class="section-subtitle">确定"要写文件"后，档位决定声明格式和流程重量</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <svg viewBox="0 0 550 200" xmlns="http://www.w3.org/2000/svg" style="max-width:550px;width:100%;">
+        <!-- Root node -->
+        <rect x="20" y="82" width="100" height="36" rx="18" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.5"/>
+        <text x="70" y="105" text-anchor="middle" font-size="11" font-weight="600" fill="#7e22ce">要写文件</text>
+
+        <!-- Branch lines -->
+        <line x1="120" y1="100" x2="170" y2="100" stroke="#64748b" stroke-width="1"/>
+
+        <!-- Split into 3 -->
+        <line x1="170" y1="100" x2="170" y2="40" stroke="#64748b" stroke-width="1"/>
+        <line x1="170" y1="100" x2="170" y2="100" stroke="#64748b" stroke-width="1"/>
+        <line x1="170" y1="100" x2="170" y2="160" stroke="#64748b" stroke-width="1"/>
+
+        <!-- M3 branch -->
+        <line x1="170" y1="40" x2="230" y2="40" stroke="#d97706" stroke-width="1.2"/>
+        <polygon points="225,36 225,44 232,40" fill="#d97706"/>
+        <text x="200" y="32" font-size="8" fill="#64748b">只改1文件 + &lt;20min</text>
+        <rect x="232" y="22" width="70" height="36" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+        <text x="267" y="45" text-anchor="middle" font-size="13" font-weight="700" fill="#d97706">M3</text>
+
+        <!-- M4 branch -->
+        <line x1="170" y1="100" x2="230" y2="100" stroke="#ea580c" stroke-width="1.2"/>
+        <polygon points="225,96 225,104 232,100" fill="#ea580c"/>
+        <text x="200" y="92" font-size="8" fill="#64748b">改多文件 / 有交付物</text>
+        <rect x="232" y="82" width="70" height="36" rx="6" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="267" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#ea580c">M4</text>
+
+        <!-- M5 branch -->
+        <line x1="170" y1="160" x2="230" y2="160" stroke="#dc2626" stroke-width="1.2"/>
+        <polygon points="225,156 225,164 232,160" fill="#dc2626"/>
+        <text x="200" y="152" font-size="8" fill="#64748b">跨Agent / &gt;2h / 需拆分</text>
+        <rect x="232" y="142" width="70" height="36" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="267" y="165" text-anchor="middle" font-size="13" font-weight="700" fill="#dc2626">M5</text>
+
+        <!-- M3 description -->
+        <text x="320" y="37" font-size="9" fill="#b45309">轻量单文件</text>
+        <text x="320" y="50" font-size="8" fill="#64748b">一行声明 + 运行日志</text>
+
+        <!-- M4 description -->
+        <text x="320" y="97" font-size="9" fill="#c2410c">多文件产出</text>
+        <text x="320" y="110" font-size="8" fill="#64748b">完整声明 + 收工三件套</text>
+
+        <!-- M5 description -->
+        <text x="320" y="157" font-size="9" fill="#b91c1c">跨Agent长任务</text>
+        <text x="320" y="170" font-size="8" fill="#64748b">预算+拆分+Handoff必写</text>
+      </svg>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card clr-amber">
+        <div class="card-header">
+          <div class="card-icon">3</div>
+          <h3 class="card-title">M3 · 轻量单文件</h3>
+        </div>
+        <div style="font-size:0.88rem;color:var(--fg-muted);line-height:1.8;">
+          <p style="margin:0 0 0.5rem;"><strong>场景：</strong>单文件修改，&lt;20分钟</p>
+          <p style="margin:0 0 0.5rem;"><strong>声明：</strong>一行 <code>V9 写入声明：{路径} | {摘要}</code></p>
+          <p style="margin:0 0 0.75rem;"><strong>收工：</strong>追加运行日志一行</p>
+          <span class="tag clr-amber">不更新状态文件</span>
+        </div>
+      </div>
+      <div class="card clr-orange">
+        <div class="card-header">
+          <div class="card-icon">4</div>
+          <h3 class="card-title">M4 · 多文件产出</h3>
+        </div>
+        <div style="font-size:0.88rem;color:var(--fg-muted);line-height:1.8;">
+          <p style="margin:0 0 0.5rem;"><strong>场景：</strong>多文件/有交付物，20min-2h</p>
+          <p style="margin:0 0 0.5rem;"><strong>声明：</strong>完整 V9 已激活 块</p>
+          <p style="margin:0 0 0.75rem;"><strong>收工：</strong>产物清单 + 自查 + 验收建议</p>
+          <span class="tag clr-orange">亮灯 + 事件流 + 看板</span>
+        </div>
+      </div>
+      <div class="card clr-red">
+        <div class="card-header">
+          <div class="card-icon">5</div>
+          <h3 class="card-title">M5 · 跨Agent长任务</h3>
+        </div>
+        <div style="font-size:0.88rem;color:var(--fg-muted);line-height:1.8;">
+          <p style="margin:0 0 0.5rem;"><strong>场景：</strong>跨Agent / &gt;2h / 需拆分</p>
+          <p style="margin:0 0 0.5rem;"><strong>声明：</strong>M4 + 预算 + 拆分计划</p>
+          <p style="margin:0 0 0.75rem;"><strong>收工：</strong>Handoff必写 + 子任务记录</p>
+          <span class="tag clr-red">heartbeat + 子任务 + budget</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accordion: detailed comparison -->
+    <div class="accordion mt-4" data-single>
+      <div class="accordion-item">
+        <div class="accordion-header">档位规格对比表</div>
+        <div class="accordion-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>维度</th><th>M3</th><th>M4</th><th>M5</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>状态文件</td><td>不更新</td><td>亮灯+熄灯</td><td>亮灯+heartbeat+熄灯</td></tr>
+                <tr><td>事件流</td><td>不写</td><td>start+end</td><td>start+heartbeat+end</td></tr>
+                <tr><td>看板</td><td>不更新</td><td>更新</td><td>更新+拆分</td></tr>
+                <tr><td>task card</td><td>不建</td><td>建</td><td>建+budget</td></tr>
+                <tr><td>Handoff</td><td>不写</td><td>有下游时写</td><td>必写</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">升档/降档规则</div>
+        <div class="accordion-body">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>触发</th><th>动作</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>M3 发现需写第2文件</td><td>升 M4</td></tr>
+                <tr><td>M4 需跨Agent</td><td>升 M5</td></tr>
+                <tr><td>已亮灯</td><td>不可降档</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 3: Six-Step Pipeline ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#0d9488"></span> <span style="color:#0d9488">六步流程</span></div>
+        <h2 class="section-title">从拆分到验收的完整管道</h2>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <svg viewBox="0 0 700 120" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;">
+        <!-- Step circles and labels -->
+        <!-- Step 1 -->
+        <circle cx="70" cy="50" r="24" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+        <text x="70" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#1d4ed8">1</text>
+        <text x="70" y="95" text-anchor="middle" font-size="11" font-weight="600" fill="#1e40af">拆分</text>
+
+        <!-- Arrow 1→2 -->
+        <line x1="94" y1="50" x2="136" y2="50" stroke="#6366f1" stroke-width="1.5"/>
+        <polygon points="131,46 131,54 138,50" fill="#6366f1"/>
+
+        <!-- Step 2 -->
+        <circle cx="160" cy="50" r="24" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+        <text x="160" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#4f46e5">2</text>
+        <text x="160" y="95" text-anchor="middle" font-size="11" font-weight="600" fill="#4338ca">计划</text>
+
+        <!-- Arrow 2→3 -->
+        <line x1="184" y1="50" x2="226" y2="50" stroke="#7c3aed" stroke-width="1.5"/>
+        <polygon points="221,46 221,54 228,50" fill="#7c3aed"/>
+
+        <!-- Step 3 -->
+        <circle cx="250" cy="50" r="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+        <text x="250" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#7c3aed">3</text>
+        <text x="250" y="95" text-anchor="middle" font-size="11" font-weight="600" fill="#6d28d9">执行</text>
+
+        <!-- Arrow 3→4 -->
+        <line x1="274" y1="50" x2="316" y2="50" stroke="#9333ea" stroke-width="1.5"/>
+        <polygon points="311,46 311,54 318,50" fill="#9333ea"/>
+
+        <!-- Step 4 -->
+        <circle cx="340" cy="50" r="24" fill="#faf5ff" stroke="#9333ea" stroke-width="2"/>
+        <text x="340" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#9333ea">4</text>
+        <text x="340" y="95" text-anchor="middle" font-size="11" font-weight="600" fill="#7e22ce">监控</text>
+
+        <!-- Arrow 4→5 -->
+        <line x1="364" y1="50" x2="406" y2="50" stroke="#a855f7" stroke-width="1.5"/>
+        <polygon points="401,46 401,54 408,50" fill="#a855f7"/>
+
+        <!-- Step 5 -->
+        <circle cx="430" cy="50" r="24" fill="#fdf4ff" stroke="#a855f7" stroke-width="2"/>
+        <text x="430" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#a855f7">5</text>
+        <text x="430" y="95" text-anchor="middle" font-size="11" font-weight="600" fill="#9333ea">检核</text>
+
+        <!-- Arrow 5→6 -->
+        <line x1="454" y1="50" x2="496" y2="50" stroke="#c084fc" stroke-width="1.5"/>
+        <polygon points="491,46 491,54 498,50" fill="#c084fc"/>
+
+        <!-- Step 6 -->
+        <circle cx="520" cy="50" r="24" fill="#faf5ff" stroke="#c084fc" stroke-width="2"/>
+        <text x="520" y="55" text-anchor="middle" font-size="14" font-weight="700" fill="#c084fc">6</text>
+        <text x="520" y="95" text-anchor="middle" font-size="11" font-weight="600" fill="#a855f7">验收</text>
+      </svg>
+    </div>
+
+    <div class="accordion" data-single>
+      <div class="accordion-item">
+        <div class="accordion-header">1. 拆分（Decompose）</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">把大任务拆成可独立执行的子任务，每个子任务有明确输入/输出。拆分粒度以"一个 Agent 在一个 session 内可完成"为基准。每个子任务须有：任务名、输入物、输出物、预估时间、执行 Agent。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">2. 计划（Plan）</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">确定执行顺序、依赖关系、预估时间，选择执行 Agent。产出物：task card（M4/M5）或计划声明（M3）。明确 blockers 和并行机会。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">3. 执行（Execute）</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">按声明写入文件，遵循档位规格执行。每次写入前自问："我声明过要写这个文件吗？"没有则先暂停、补充声明、再继续。执行中发现范围扩大须升档。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">4. 监控（Monitor）</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">heartbeat 更新（M5 长任务每 30min）、状态检查、超时检测。状态文件是存活证明，超时无 heartbeat 触发告警。监控指标：进度百分比、token 消耗、耗时。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">5. 检核（Verify）</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">自检三件套：路径合规 / frontmatter 完整 / 无装饰性 emoji。Gate 门禁自动验证（pre-write-check + post-write-check）。检核不通过则阻止提交，必须修正后重跑。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">6. 验收（Accept）</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">验收方确认产物质量。核心原则：<code>submitted</code> 不等于 <code>accepted</code>。未经验收方确认，不得声称"已验收"。验收通过后状态标为 completed，写收工三件套。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 4: Error Escalation Chain ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#dc2626"></span> <span style="color:#dc2626">错误升级</span></div>
+        <h2 class="section-title">五级升级链</h2>
+        <p class="section-subtitle">从自动重试到人工介入的分级响应</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" style="max-width:400px;width:100%;">
+        <!-- Level 0 -->
+        <rect x="100" y="10" width="200" height="40" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+        <text x="200" y="27" text-anchor="middle" font-size="10" font-weight="700" fill="#059669">Level 0</text>
+        <text x="200" y="42" text-anchor="middle" font-size="9" fill="#047857">自动重试 — 指数退避，最多3次</text>
+
+        <!-- Arrow -->
+        <line x1="200" y1="50" x2="200" y2="65" stroke="#64748b" stroke-width="1" stroke-dasharray="3,2"/>
+        <polygon points="196,61 204,61 200,67" fill="#64748b"/>
+
+        <!-- Level 0.5 -->
+        <rect x="100" y="67" width="200" height="40" rx="8" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5"/>
+        <text x="200" y="84" text-anchor="middle" font-size="10" font-weight="700" fill="#0d9488">Level 0.5</text>
+        <text x="200" y="99" text-anchor="middle" font-size="9" fill="#0f766e">切换策略 — 换模型/换Provider</text>
+
+        <!-- Arrow -->
+        <line x1="200" y1="107" x2="200" y2="122" stroke="#64748b" stroke-width="1" stroke-dasharray="3,2"/>
+        <polygon points="196,118 204,118 200,124" fill="#64748b"/>
+
+        <!-- Level 1 -->
+        <rect x="100" y="124" width="200" height="40" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="200" y="141" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">Level 1</text>
+        <text x="200" y="156" text-anchor="middle" font-size="9" fill="#1e40af">Phoenix自愈 — 匹配抗体库自动修复</text>
+
+        <!-- Arrow -->
+        <line x1="200" y1="164" x2="200" y2="179" stroke="#64748b" stroke-width="1" stroke-dasharray="3,2"/>
+        <polygon points="196,175 204,175 200,181" fill="#64748b"/>
+
+        <!-- Level 2 -->
+        <rect x="100" y="181" width="200" height="40" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+        <text x="200" y="198" text-anchor="middle" font-size="10" font-weight="700" fill="#d97706">Level 2</text>
+        <text x="200" y="213" text-anchor="middle" font-size="9" fill="#b45309">Owner修复 — 升级到负责Agent</text>
+
+        <!-- Arrow -->
+        <line x1="200" y1="221" x2="200" y2="236" stroke="#64748b" stroke-width="1" stroke-dasharray="3,2"/>
+        <polygon points="196,232 204,232 200,238" fill="#64748b"/>
+
+        <!-- Level 3 -->
+        <rect x="100" y="238" width="200" height="40" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="200" y="255" text-anchor="middle" font-size="10" font-weight="700" fill="#dc2626">Level 3</text>
+        <text x="200" y="270" text-anchor="middle" font-size="9" fill="#b91c1c">人工介入 — 通知人类决策</text>
+      </svg>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>级别</th><th>名称</th><th>触发条件</th><th>示例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Level 0</td><td>自动重试</td><td>瞬时错误 / 网络超时</td><td>API 429 → 指数退避重试</td></tr>
+          <tr><td>Level 0.5</td><td>切换策略</td><td>重试 3 次仍失败</td><td>Sonnet 限流 → 切换 Haiku</td></tr>
+          <tr><td>Level 1</td><td>Phoenix自愈</td><td>已知错误模式匹配</td><td>frontmatter 缺失 → 自动补写</td></tr>
+          <tr><td>Level 2</td><td>Owner修复</td><td>自愈失败 / 未知模式</td><td>路径冲突 → 升级到东风处理</td></tr>
+          <tr><td>Level 3</td><td>人工介入</td><td>涉及决策 / 数据安全</td><td>生产环境异常 → 通知人类</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 5: Failure Types ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#b91c1c"></span> <span style="color:#b91c1c">违规判定</span></div>
+        <h2 class="section-title">5 类违规判定</h2>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>类型</th><th>表现</th><th>处理</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>范围溢出</td><td>写了声明外的文件</td><td>暂停 → 补充声明</td></tr>
+          <tr><td>格式缺失</td><td>产出无 frontmatter</td><td>补写</td></tr>
+          <tr><td>品牌违规</td><td>错误品牌名/色值</td><td>立即修正</td></tr>
+          <tr><td>升档不足</td><td>M3 写多文件未升 M4</td><td>补声明 + 亮灯</td></tr>
+          <tr><td>静默写入</td><td>完全无声明</td><td>回退 + 重新声明（最严重）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+  </div>
+</footer>
+
+<script src="/assets/js/shared.js"></script>
+</body>
+</html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>架构 — 息壤 V9</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+</head>
+<body data-page="architecture">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-brand-icon">壤</span>
+      <span>息壤 V9</span>
+    </a>
+    <div class="nav-links">
+      <a href="/">首页</a>
+      <a href="/architecture/">架构</a>
+      <a href="/workflow/">流程</a>
+      <a href="/agents/">Agent</a>
+      <a href="/rules/">规则</a>
+      <a href="/deploy/">部署</a>
+      <a href="/cost/">成本</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="菜单">&#9776;</button>
+  </div>
+  <div class="nav-mobile-panel">
+    <a href="/">首页</a>
+    <a href="/architecture/">架构</a>
+    <a href="/workflow/">流程</a>
+    <a href="/agents/">Agent</a>
+    <a href="/rules/">规则</a>
+    <a href="/deploy/">部署</a>
+    <a href="/cost/">成本</a>
+  </div>
+</nav>
+
+<!-- ====== Section 1: Four-Layer Architecture ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#1d4ed8"></span> <span style="color:#1d4ed8">四层架构</span></div>
+        <h2 class="section-title">从基础设施到 Agent 编排</h2>
+        <p class="section-subtitle">息壤的四层架构映射到 Agent 原理的四个能力层</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;">
+        <!-- L4 Infrastructure Layer (bottom) -->
+        <rect x="90" y="230" width="560" height="50" rx="8" fill="#f8fafc" stroke="#334155" stroke-width="1.5"/>
+        <text x="370" y="252" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">L4 基础设施层</text>
+        <text x="370" y="270" text-anchor="middle" font-size="10" fill="#475569">Vault + TokenManager + 事件流</text>
+
+        <!-- L2 Flow Layer -->
+        <rect x="90" y="110" width="560" height="50" rx="8" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.5"/>
+        <text x="370" y="132" text-anchor="middle" font-size="13" font-weight="700" fill="#7e22ce">L2 流程层</text>
+        <text x="370" y="150" text-anchor="middle" font-size="10" fill="#6b21a8">六步管道 + 编排</text>
+
+        <!-- L1 Agent Layer (top) -->
+        <rect x="90" y="50" width="560" height="50" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="370" y="72" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">L1 Agent 层</text>
+        <text x="370" y="90" text-anchor="middle" font-size="10" fill="#1e40af">6 原子角色 + 分子池</text>
+
+        <!-- L3 六脉约束层 (vertical bar on left) -->
+        <rect x="20" y="45" width="55" height="240" rx="6" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <text x="47" y="140" text-anchor="middle" font-size="10" font-weight="700" fill="#0d9488" transform="rotate(-90 47 165)">L3 六脉约束层</text>
+        <text x="47" y="200" text-anchor="middle" font-size="8" fill="#0f766e" transform="rotate(-90 47 200)">贯穿所有层的治理规则</text>
+
+        <!-- Dashed lines from L3 to each layer -->
+        <line x1="75" y1="75" x2="90" y2="75" stroke="#0d9488" stroke-width="1" stroke-dasharray="3 2"/>
+        <line x1="75" y1="135" x2="90" y2="135" stroke="#0d9488" stroke-width="1" stroke-dasharray="3 2"/>
+        <line x1="75" y1="195" x2="90" y2="195" stroke="#0d9488" stroke-width="1" stroke-dasharray="3 2"/>
+        <line x1="75" y1="255" x2="90" y2="255" stroke="#0d9488" stroke-width="1" stroke-dasharray="3 2"/>
+
+        <!-- Upward arrows between layers -->
+        <line x1="370" y1="230" x2="370" y2="170" stroke="#64748b" stroke-width="1.2"/>
+        <polygon points="366,175 374,175 370,168" fill="#64748b"/>
+
+        <!-- Arrow between invisible gap (L2 to L1) -->
+        <line x1="370" y1="110" x2="370" y2="105" stroke="#64748b" stroke-width="1.2"/>
+        <polygon points="366,107 374,107 370,100" fill="#64748b"/>
+
+        <!-- Middle gap area for visual spacing (between L2 and L4) -->
+        <rect x="90" y="170" width="560" height="50" rx="8" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 2"/>
+        <text x="370" y="195" text-anchor="middle" font-size="10" fill="#64748b" font-style="italic">通信协议 + 状态文件 + 错误升级</text>
+      </svg>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card clr-blue">
+        <div class="card-header">
+          <div class="card-icon">L1</div>
+          <h3 class="card-title">Agent 层</h3>
+        </div>
+        <div class="card-desc">6 个原子 Agent（Claudian/青霉素/红霉素/阿莫西林/WorkBuddy/头孢）+ 动态 Subagent 池</div>
+      </div>
+      <div class="card clr-purple">
+        <div class="card-header">
+          <div class="card-icon">L2</div>
+          <h3 class="card-title">流程层</h3>
+        </div>
+        <div class="card-desc">六步流程管道 + 通信协议 + 错误升级链</div>
+      </div>
+      <div class="card clr-teal">
+        <div class="card-header">
+          <div class="card-icon">L3</div>
+          <h3 class="card-title">六脉约束层</h3>
+        </div>
+        <div class="card-desc">Claude Design / 驾驭工程 / 不死鸟 / LLM Wiki / GBrain / Skill 清单</div>
+      </div>
+      <div class="card clr-slate">
+        <div class="card-header">
+          <div class="card-icon">L4</div>
+          <h3 class="card-title">基础设施层</h3>
+        </div>
+        <div class="card-desc">Vault 文件系统 + 状态表 + 事件流 + prompt-build 分发</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 2: Six Pulse System ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#0d9488"></span> <span style="color:#0d9488">六脉体系</span></div>
+        <h2 class="section-title">六个子系统，贯穿所有层级</h2>
+        <p class="section-subtitle">每条脉是一个独立子系统。六脉是「规矩」，不是「动作」。</p>
+      </div>
+    </div>
+
+    <div class="flow-tabs">
+      <button class="flow-tab active" data-target="pulse-1">① Claude Design</button>
+      <button class="flow-tab" data-target="pulse-2">② 驾驭工程</button>
+      <button class="flow-tab" data-target="pulse-3">③ 不死鸟</button>
+      <button class="flow-tab" data-target="pulse-4">④ LLM Wiki</button>
+      <button class="flow-tab" data-target="pulse-5">⑤ GBrain</button>
+      <button class="flow-tab" data-target="pulse-6">⑥ Skill 清单</button>
+    </div>
+
+    <!-- Pane 1: Claude Design -->
+    <div id="pulse-1" class="flow-pane active">
+      <p style="font-size:1.05rem;font-weight:600;margin-bottom:0.25rem;">方案设计和大块产出的工程方法</p>
+      <p class="text-muted" style="margin-bottom:1.5rem;">核心理念：价值在逼近过程，而非一次性产物</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>阶段</th><th>步骤</th><th>产出</th></tr>
+          </thead>
+          <tbody>
+            <tr><td rowspan="3"><strong>Phase 1</strong><br>构建 Design System</td><td>1. 资料收集</td><td>Source 库</td></tr>
+            <tr><td>2. 用户画像</td><td>画像文档</td></tr>
+            <tr><td>3. 设计评审</td><td>Review 反馈</td></tr>
+            <tr><td rowspan="3"><strong>Phase 2</strong><br>需求收敛</td><td>4. 需求拆解</td><td>PRD 初稿</td></tr>
+            <tr><td>5. 探索对齐</td><td>方案比较矩阵</td></tr>
+            <tr><td>6. 约束确认</td><td>边界声明</td></tr>
+            <tr><td rowspan="4"><strong>Phase 3</strong><br>产物生成</td><td>7. 结构设计</td><td>骨架稿</td></tr>
+            <tr><td>8. 内容填充</td><td>完整初稿</td></tr>
+            <tr><td>9. 验证迭代</td><td>修订版</td></tr>
+            <tr><td>10. 发布归档</td><td>终稿 + Wiki</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="mt-3" style="font-size:0.9rem;">5 设计选择</h4>
+      <ul style="font-size:0.88rem;color:var(--fg-muted);padding-left:1.25rem;margin-top:0.5rem;">
+        <li>先收敛再发散，避免无锚探索</li>
+        <li>Design System 前置，减少后期返工</li>
+        <li>显式评审节点，杜绝自说自话</li>
+        <li>三阶段可回溯，允许迭代回退</li>
+        <li>产物与过程分离，Wiki 归档终稿</li>
+      </ul>
+    </div>
+
+    <!-- Pane 2: 驾驭工程 -->
+    <div id="pulse-2" class="flow-pane">
+      <p style="font-size:1.05rem;font-weight:600;margin-bottom:0.25rem;">Agent 的可靠性、可观测性、治理</p>
+      <p class="text-muted" style="margin-bottom:1.5rem;">三层可观测性 + 四道 Gate 门禁</p>
+
+      <div class="table-wrap mb-2">
+        <table>
+          <thead>
+            <tr><th>层</th><th>载体</th><th>频率</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>状态层</td><td><code>智能体状态/*.md</code></td><td>任务开始/结束</td></tr>
+            <tr><td>事件层</td><td><code>智能体事件.jsonl</code></td><td>每个节点</td></tr>
+            <tr><td>指标层</td><td><code>health-metrics</code> 报告</td><td>周度</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 style="font-size:0.9rem;margin-top:1.5rem;">4 Gate 检查点</h4>
+      <div class="grid grid-4 mt-1" style="gap:0.75rem;">
+        <div class="card" style="padding:1rem;text-align:center;">
+          <div style="font-weight:700;color:var(--primary);font-size:0.85rem;">pre-start</div>
+          <div style="font-size:0.78rem;color:var(--fg-muted);margin-top:0.25rem;">环境/状态校验</div>
+        </div>
+        <div class="card" style="padding:1rem;text-align:center;">
+          <div style="font-weight:700;color:var(--primary);font-size:0.85rem;">pre-write</div>
+          <div style="font-size:0.78rem;color:var(--fg-muted);margin-top:0.25rem;">声明/路径合规</div>
+        </div>
+        <div class="card" style="padding:1rem;text-align:center;">
+          <div style="font-weight:700;color:var(--primary);font-size:0.85rem;">cost-fuse</div>
+          <div style="font-size:0.78rem;color:var(--fg-muted);margin-top:0.25rem;">预算熔断</div>
+        </div>
+        <div class="card" style="padding:1rem;text-align:center;">
+          <div style="font-weight:700;color:var(--primary);font-size:0.85rem;">handoff</div>
+          <div style="font-size:0.78rem;color:var(--fg-muted);margin-top:0.25rem;">交接完整性</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pane 3: 不死鸟 Phoenix -->
+    <div id="pulse-3" class="flow-pane">
+      <p style="font-size:1.05rem;font-weight:600;margin-bottom:0.25rem;">错误自愈：先自动修复，而非直接升级到人</p>
+      <p class="text-muted" style="margin-bottom:1.5rem;">8 个抗体模式 + 10 步排障流程</p>
+
+      <div class="table-wrap mb-2">
+        <table>
+          <thead>
+            <tr><th>抗体</th><th>触发</th><th>动作</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>timeout-retry</code></td><td>网络超时</td><td>指数退避重试</td></tr>
+            <tr><td><code>rate-limit-wait</code></td><td>频率限制</td><td>等待冷却后继续</td></tr>
+            <tr><td><code>model-switch</code></td><td>模型不可用</td><td>降级链切换</td></tr>
+            <tr><td><code>path-fix</code></td><td>路径不存在</td><td>自动创建/修正</td></tr>
+            <tr><td><code>format-heal</code></td><td>格式异常</td><td>重新解析/修复</td></tr>
+            <tr><td><code>state-reset</code></td><td>状态不一致</td><td>重置为已知良好状态</td></tr>
+            <tr><td><code>context-trim</code></td><td>上下文超限</td><td>压缩/裁剪上下文</td></tr>
+            <tr><td><code>escalate</code></td><td>自愈失败</td><td>升级到人类</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="font-size:0.88rem;color:var(--fg-muted);">完整的 10 步排障流程覆盖：识别 → 分类 → 匹配抗体 → 执行 → 验证 → 记录 → 升级判定 → 通知 → 回溯 → 归档。</p>
+    </div>
+
+    <!-- Pane 4: LLM Wiki -->
+    <div id="pulse-4" class="flow-pane">
+      <p style="font-size:1.05rem;font-weight:600;margin-bottom:0.25rem;">三层资料结构。LLM 写/维护 wiki，人类提供 source</p>
+      <p class="text-muted" style="margin-bottom:1.5rem;">Source → Summary → Published 逐层精炼</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>层</th><th>路径</th><th>内容</th><th>维护者</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Source</strong></td><td><code>20-资料/</code></td><td>原始文件（PDF/截图/笔记）</td><td>人类</td></tr>
+            <tr><td><strong>Summary</strong></td><td><code>10-项目/摘要</code></td><td>结构化提取摘要</td><td>LLM</td></tr>
+            <tr><td><strong>Published</strong></td><td><code>PRD/设计方案</code></td><td>经评审终稿</td><td>LLM + 人类评审</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-2" style="font-size:0.88rem;color:var(--fg-muted);">设计原则：人类只管输入 Source；LLM 负责提取、整理、发布；人类保留 Review 否决权。</p>
+    </div>
+
+    <!-- Pane 5: GBrain -->
+    <div id="pulse-5" class="flow-pane">
+      <p style="font-size:1.05rem;font-weight:600;margin-bottom:0.25rem;">语义搜索 + Brain Score + 自动维护</p>
+      <p class="text-muted" style="margin-bottom:1.5rem;">Vault 的知识基础设施层</p>
+
+      <div class="grid grid-3 mt-2" style="gap:1rem;">
+        <div class="card" style="padding:1.25rem;">
+          <h4 style="font-size:0.9rem;margin-bottom:0.5rem;">向量索引</h4>
+          <p style="font-size:0.82rem;color:var(--fg-muted);">对 Vault 文档建立语义向量索引，支持自然语言查询</p>
+        </div>
+        <div class="card" style="padding:1.25rem;">
+          <h4 style="font-size:0.9rem;margin-bottom:0.5rem;">Cron Dream</h4>
+          <p style="font-size:0.82rem;color:var(--fg-muted);">定时巡检：发现断链、过时文档、orphan 文件并自动修复</p>
+        </div>
+        <div class="card" style="padding:1.25rem;">
+          <h4 style="font-size:0.9rem;margin-bottom:0.5rem;">Brain Score</h4>
+          <p style="font-size:0.82rem;color:var(--fg-muted);">知识健康度评分：覆盖率、新鲜度、链接完整度三维度</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pane 6: Skill 清单 -->
+    <div id="pulse-6" class="flow-pane">
+      <p style="font-size:1.05rem;font-weight:600;margin-bottom:0.25rem;">各平台 skill 目录 + 能力声明 + 发现机制</p>
+      <p class="text-muted" style="margin-bottom:1.5rem;">每个模块产出 SKILL.md 作为文件级上下文契约</p>
+
+      <div class="grid grid-2 mt-2" style="gap:1rem;">
+        <div class="card" style="padding:1.25rem;">
+          <h4 style="font-size:0.9rem;margin-bottom:0.5rem;">SKILL.md 契约</h4>
+          <p style="font-size:0.82rem;color:var(--fg-muted);">每个可复用模块顶部声明：输入/输出/前置条件/副作用，供 Agent 自动发现和调用</p>
+        </div>
+        <div class="card" style="padding:1.25rem;">
+          <h4 style="font-size:0.9rem;margin-bottom:0.5rem;">跨平台清单</h4>
+          <p style="font-size:0.82rem;color:var(--fg-muted);">统一管理 Claude Code / OpenClaw / GBrain / Hermes 各平台的 skill 注册和版本</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 3: Agent Topology ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#4f46e5"></span> <span style="color:#4f46e5">Agent 拓扑</span></div>
+        <h2 class="section-title">6 原子 + 动态分子</h2>
+        <p class="section-subtitle">六个持久角色围绕中心 Hub 协作，按需孵化临时 Subagent</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;width:100%;">
+        <!-- Center hub -->
+        <circle cx="300" cy="200" r="40" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+        <text x="300" y="196" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">息壤</text>
+        <text x="300" y="212" text-anchor="middle" font-size="10" fill="#1e40af">V9</text>
+
+        <!-- Agent positions (hexagon around center) -->
+        <!-- Claudian (top) -->
+        <line x1="300" y1="160" x2="300" y2="95" stroke="#1d4ed8" stroke-width="1.2" stroke-dasharray="4 2"/>
+        <circle cx="300" cy="72" r="32" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="300" y="68" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1d4ed8">Claudian</text>
+        <text x="300" y="82" text-anchor="middle" font-size="8" fill="#1e40af">管家</text>
+
+        <!-- 青霉素 (top-right) -->
+        <line x1="335" y1="170" x2="420" y2="115" stroke="#7e22ce" stroke-width="1.2" stroke-dasharray="4 2"/>
+        <circle cx="445" cy="100" r="32" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.5"/>
+        <text x="445" y="96" text-anchor="middle" font-size="9.5" font-weight="700" fill="#7e22ce">青霉素</text>
+        <text x="445" y="110" text-anchor="middle" font-size="8" fill="#6b21a8">方案师</text>
+
+        <!-- 头孢 (bottom-right) -->
+        <line x1="335" y1="225" x2="420" y2="285" stroke="#ea580c" stroke-width="1.2" stroke-dasharray="4 2"/>
+        <circle cx="445" cy="305" r="32" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="445" y="301" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ea580c">头孢</text>
+        <text x="445" y="315" text-anchor="middle" font-size="8" fill="#c2410c">采集</text>
+
+        <!-- WorkBuddy (bottom) -->
+        <line x1="300" y1="240" x2="300" y2="305" stroke="#059669" stroke-width="1.2" stroke-dasharray="4 2"/>
+        <circle cx="300" cy="330" r="32" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+        <text x="300" y="326" text-anchor="middle" font-size="9" font-weight="700" fill="#059669">WorkBuddy</text>
+        <text x="300" y="340" text-anchor="middle" font-size="8" fill="#047857">执行</text>
+
+        <!-- 阿莫西林 (bottom-left) -->
+        <line x1="265" y1="225" x2="180" y2="285" stroke="#0d9488" stroke-width="1.2" stroke-dasharray="4 2"/>
+        <circle cx="155" cy="305" r="32" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5"/>
+        <text x="155" y="301" text-anchor="middle" font-size="9" font-weight="700" fill="#0d9488">阿莫西林</text>
+        <text x="155" y="315" text-anchor="middle" font-size="8" fill="#0f766e">运维</text>
+
+        <!-- 红霉素 (top-left) -->
+        <line x1="265" y1="170" x2="180" y2="115" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="4 2"/>
+        <circle cx="155" cy="100" r="32" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="155" y="96" text-anchor="middle" font-size="9.5" font-weight="700" fill="#dc2626">红霉素</text>
+        <text x="155" y="110" text-anchor="middle" font-size="8" fill="#b91c1c">知识官</text>
+
+        <!-- Platform labels (small, below each agent) -->
+        <text x="300" y="30" text-anchor="middle" font-size="7.5" fill="#64748b">Claude Code</text>
+        <text x="445" y="62" text-anchor="middle" font-size="7.5" fill="#64748b">Claude Code</text>
+        <text x="155" y="62" text-anchor="middle" font-size="7.5" fill="#64748b">Claude Code</text>
+        <text x="155" y="348" text-anchor="middle" font-size="7.5" fill="#64748b">Claude Code</text>
+        <text x="300" y="372" text-anchor="middle" font-size="7.5" fill="#64748b">OpenClaw</text>
+        <text x="445" y="348" text-anchor="middle" font-size="7.5" fill="#64748b">飞书/浏览器</text>
+      </svg>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Agent</th><th>角色</th><th>平台</th><th>职责</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Claudian</strong></td><td>管家</td><td>Claude Code</td><td>统筹调度、规范守护</td></tr>
+          <tr><td><strong>青霉素</strong></td><td>方案师</td><td>Claude Code</td><td>PRD/原型/设计方案</td></tr>
+          <tr><td><strong>红霉素</strong></td><td>知识官</td><td>Claude Code</td><td>LLM Wiki/Skill/知识治理</td></tr>
+          <tr><td><strong>阿莫西林</strong></td><td>运维</td><td>Claude Code</td><td>状态/事件/健康度量</td></tr>
+          <tr><td><strong>WorkBuddy</strong></td><td>执行</td><td>OpenClaw</td><td>日常任务执行</td></tr>
+          <tr><td><strong>头孢</strong></td><td>采集</td><td>飞书/浏览器</td><td>资料采集/格式转换</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 4: Prompt-Build Distribution ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#ea580c"></span> <span style="color:#ea580c">分发架构</span></div>
+        <h2 class="section-title">单源分发，7 平台同步</h2>
+        <p class="section-subtitle"><code>prompt-build.py</code> 从 <code>.prompt-src/</code> 源文件编译出各平台的 Agent 指令，确保一次修改、全局生效。</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <svg viewBox="0 0 700 180" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;">
+        <!-- Source -->
+        <rect x="20" y="65" width="120" height="50" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+        <text x="80" y="87" text-anchor="middle" font-size="10" font-weight="700" fill="#ea580c">.prompt-src/</text>
+        <text x="80" y="103" text-anchor="middle" font-size="8.5" fill="#c2410c">模板 + delta</text>
+
+        <!-- Arrow -->
+        <line x1="140" y1="90" x2="185" y2="90" stroke="#ea580c" stroke-width="1.5"/>
+        <polygon points="179,86 179,94 186,90" fill="#ea580c"/>
+
+        <!-- Build script -->
+        <rect x="185" y="65" width="130" height="50" rx="8" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.5"/>
+        <text x="250" y="87" text-anchor="middle" font-size="10" font-weight="700" fill="#7e22ce">prompt-build.py</text>
+        <text x="250" y="103" text-anchor="middle" font-size="8.5" fill="#6b21a8">apply 命令</text>
+
+        <!-- Arrow to targets fan -->
+        <line x1="315" y1="90" x2="360" y2="90" stroke="#7e22ce" stroke-width="1.5"/>
+        <polygon points="354,86 354,94 361,90" fill="#7e22ce"/>
+
+        <!-- Target outputs (fanned) -->
+        <rect x="370" y="10" width="130" height="24" rx="4" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1"/>
+        <text x="435" y="26" text-anchor="middle" font-size="8.5" fill="#1d4ed8">Claude Code (CLAUDE.md)</text>
+
+        <rect x="370" y="40" width="130" height="24" rx="4" fill="#ecfdf5" stroke="#059669" stroke-width="1"/>
+        <text x="435" y="56" text-anchor="middle" font-size="8.5" fill="#059669">Codex (instructions.md)</text>
+
+        <rect x="370" y="70" width="130" height="24" rx="4" fill="#faf5ff" stroke="#7e22ce" stroke-width="1"/>
+        <text x="435" y="86" text-anchor="middle" font-size="8.5" fill="#7e22ce">OpenClaw (AGENTS.md)</text>
+
+        <rect x="370" y="100" width="130" height="24" rx="4" fill="#f0fdfa" stroke="#0d9488" stroke-width="1"/>
+        <text x="435" y="116" text-anchor="middle" font-size="8.5" fill="#0d9488">GBrain (system prompt)</text>
+
+        <rect x="370" y="130" width="130" height="24" rx="4" fill="#fff7ed" stroke="#ea580c" stroke-width="1"/>
+        <text x="435" y="146" text-anchor="middle" font-size="8.5" fill="#ea580c">Hermes (SOUL.md)</text>
+
+        <rect x="520" y="55" width="100" height="24" rx="4" fill="#eef2ff" stroke="#4f46e5" stroke-width="1"/>
+        <text x="570" y="71" text-anchor="middle" font-size="8.5" fill="#4f46e5">飞书 Bot</text>
+
+        <rect x="520" y="85" width="100" height="24" rx="4" fill="#fef2f2" stroke="#dc2626" stroke-width="1"/>
+        <text x="570" y="101" text-anchor="middle" font-size="8.5" fill="#dc2626">Obsidian Plugin</text>
+
+        <!-- Fan lines from arrow endpoint to each target -->
+        <line x1="360" y1="90" x2="370" y2="22" stroke="#94a3b8" stroke-width="0.8"/>
+        <line x1="360" y1="90" x2="370" y2="52" stroke="#94a3b8" stroke-width="0.8"/>
+        <line x1="360" y1="90" x2="370" y2="82" stroke="#94a3b8" stroke-width="0.8"/>
+        <line x1="360" y1="90" x2="370" y2="112" stroke="#94a3b8" stroke-width="0.8"/>
+        <line x1="360" y1="90" x2="370" y2="142" stroke="#94a3b8" stroke-width="0.8"/>
+        <line x1="500" y1="82" x2="520" y2="67" stroke="#94a3b8" stroke-width="0.8"/>
+        <line x1="500" y1="90" x2="520" y2="97" stroke="#94a3b8" stroke-width="0.8"/>
+      </svg>
+    </div>
+
+    <h4 style="font-size:0.95rem;margin-bottom:1rem;">模板变量</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>变量</th><th>说明</th><th>示例值</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>{{AGENT_ID}}</code></td><td>Agent 标识符</td><td>claudian / qingmeisu</td></tr>
+          <tr><td><code>{{AGENT_CN}}</code></td><td>中文名称</td><td>Claudian / 青霉素</td></tr>
+          <tr><td><code>{{VERSION}}</code></td><td>当前版本号</td><td>V9.2.0</td></tr>
+          <tr><td><code>{{PLATFORM}}</code></td><td>目标平台</td><td>claude-code / openclaw</td></tr>
+          <tr><td><code>{{DATE}}</code></td><td>构建日期</td><td>2026-05-29</td></tr>
+          <tr><td><code>{{ROLE}}</code></td><td>角色声明</td><td>管家 / 方案师</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+  </div>
+</footer>
+
+<script src="/assets/js/shared.js"></script>
+</body>
+</html>

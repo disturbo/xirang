@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>规则 — 息壤 V9</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+  <style>
+    .filter-group { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .filter-btn {
+      display: inline-flex; align-items: center;
+      padding: 0.35rem 0.75rem; border-radius: 9999px;
+      font-size: 0.78rem; font-weight: 600;
+      border: 1px solid var(--border); background: white;
+      color: var(--fg-muted); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-btn.active { background: var(--fg); color: white; border-color: var(--fg); }
+  </style>
+</head>
+<body data-page="rules">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-brand-icon">壤</span>
+      <span>息壤 V9</span>
+    </a>
+    <div class="nav-links">
+      <a href="/">首页</a>
+      <a href="/architecture/">架构</a>
+      <a href="/workflow/">流程</a>
+      <a href="/agents/">Agent</a>
+      <a href="/rules/">规则</a>
+      <a href="/deploy/">部署</a>
+      <a href="/cost/">成本</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="菜单">&#9776;</button>
+  </div>
+  <div class="nav-mobile-panel">
+    <a href="/">首页</a>
+    <a href="/architecture/">架构</a>
+    <a href="/workflow/">流程</a>
+    <a href="/agents/">Agent</a>
+    <a href="/rules/">规则</a>
+    <a href="/deploy/">部署</a>
+    <a href="/cost/">成本</a>
+  </div>
+</nav>
+
+<!-- ====== Section 1: Eight Core Laws ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#dc2626"></span> <span style="color:#dc2626">运行时契约</span></div>
+        <h2 class="section-title">8 条铁律</h2>
+        <p class="section-subtitle">每个 Agent 启动时必须加载的核心约束。违反任何一条即判定违规。</p>
+      </div>
+    </div>
+
+    <div class="accordion" data-single>
+      <div class="accordion-item">
+        <div class="accordion-header">铁律 1：二元触发器</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">收到消息 → 第一判断是「会写文件吗」→ 写 = 声明，不写 = 直接回复。没有第三种情况。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">铁律 2：违规定义</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">写了文件但没声明 = 违规。这是唯一的铁律。所有复杂规则都是这条的操作化展开。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">铁律 3：声明格式</div>
+        <div class="accordion-body">
+          <ul style="margin:0;padding-left:1.25rem;font-size:0.9rem;color:var(--fg-muted);line-height:2;">
+            <li><strong>M3:</strong> 一行 <code>V9 写入声明：{路径} | {摘要}</code></li>
+            <li><strong>M4:</strong> 完整 <code>V9 已激活：</code> 块（档位 + 任务 + 范围 + 验收方）</li>
+            <li><strong>M5:</strong> M4 + 预算 + 拆分计划</li>
+          </ul>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">铁律 4：豁免清单</div>
+        <div class="accordion-body">
+          <ul style="margin:0;padding-left:1.25rem;font-size:0.9rem;color:var(--fg-muted);line-height:2;">
+            <li>追加运行日志一行（M3 收工）免声明</li>
+            <li>heartbeat 更新（状态文件 last_heartbeat 字段）免声明</li>
+            <li>仅此两项，无其他豁免</li>
+          </ul>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">铁律 5：灰区处理</div>
+        <div class="accordion-body">
+          <ul style="margin:0;padding-left:1.25rem;font-size:0.9rem;color:var(--fg-muted);line-height:2;">
+            <li>有具体对象 + 明确产出物 → 写文件</li>
+            <li>咨询语气 → 不写</li>
+            <li>无法判定 → 问用户，1轮内确认</li>
+          </ul>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">铁律 6：不写文件场景</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">解释 / 讨论 / 评审 / 闲聊 / 巡检 = 不写文件 = 零合规开销。闲聊不是任务。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">铁律 7：执行中扩展</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">发现要写更多文件 → 暂停 → 补充声明 → 再继续。每次写入前自问：「我声明过要写这个文件吗？」没有 → 先声明。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">铁律 8：提交≠验收</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);"><code>submitted</code> 不等于 <code>accepted</code>。未经验收方确认，不得声称已验收。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 2: Gate & Hook Mechanism ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#7e22ce"></span> <span style="color:#7e22ce">Gate 机制</span></div>
+        <h2 class="section-title">自动门禁拦截</h2>
+        <p class="section-subtitle">pre-write-hook.sh → gate-enforce.py 管道，22 条规则按优先级自动检查</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <svg viewBox="0 0 600 100" xmlns="http://www.w3.org/2000/svg" style="max-width:600px;width:100%;">
+        <!-- Box 1: 文件写入 -->
+        <rect x="10" y="25" width="100" height="40" rx="6" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="60" y="50" text-anchor="middle" font-size="12" font-weight="600" fill="#1d4ed8">文件写入</text>
+
+        <!-- Arrow 1 -->
+        <line x1="110" y1="45" x2="155" y2="45" stroke="#64748b" stroke-width="1.5"/>
+        <polygon points="150,41 150,49 157,45" fill="#64748b"/>
+
+        <!-- Box 2: pre-write-hook.sh -->
+        <rect x="158" y="25" width="140" height="40" rx="6" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.5"/>
+        <text x="228" y="50" text-anchor="middle" font-size="11" font-weight="600" fill="#7e22ce">pre-write-hook.sh</text>
+        <text x="228" y="82" text-anchor="middle" font-size="9" fill="#6b21a8">3 层检查</text>
+
+        <!-- Arrow 2 -->
+        <line x1="298" y1="45" x2="343" y2="45" stroke="#64748b" stroke-width="1.5"/>
+        <polygon points="338,41 338,49 345,45" fill="#64748b"/>
+
+        <!-- Box 3: gate-enforce.py -->
+        <rect x="346" y="25" width="130" height="40" rx="6" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.5"/>
+        <text x="411" y="50" text-anchor="middle" font-size="11" font-weight="600" fill="#7e22ce">gate-enforce.py</text>
+        <text x="411" y="82" text-anchor="middle" font-size="9" fill="#6b21a8">22 条规则</text>
+
+        <!-- Arrow 3 -->
+        <line x1="476" y1="45" x2="521" y2="45" stroke="#64748b" stroke-width="1.5"/>
+        <polygon points="516,41 516,49 523,45" fill="#64748b"/>
+
+        <!-- Box 4: 通过/拒绝 -->
+        <rect x="524" y="25" width="70" height="40" rx="20" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+        <text x="559" y="50" text-anchor="middle" font-size="11" font-weight="600" fill="#047857">通过/拒绝</text>
+      </svg>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card clr-purple">
+        <div class="card-header">
+          <div class="card-icon">H</div>
+          <h3 class="card-title">pre-write-hook.sh</h3>
+        </div>
+        <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">3 层检查：路径合法性 → frontmatter 格式 → brand-lint 品牌色。任一层失败即拒绝写入。</p>
+      </div>
+      <div class="card clr-purple">
+        <div class="card-header">
+          <div class="card-icon">G</div>
+          <h3 class="card-title">gate-enforce.py</h3>
+        </div>
+        <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">4 子命令：pre-start / pre-write / cost-fuse / handoff。22 条规则按 P0-P3 优先级排列。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 3: 22 Rules Table ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">22 条 Gate 规则</h2>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all">全部</button>
+      <button class="filter-btn" data-filter="P0">P0 硬拦截</button>
+      <button class="filter-btn" data-filter="P1">P1 强警告</button>
+      <button class="filter-btn" data-filter="P2">P2 建议</button>
+      <button class="filter-btn" data-filter="P3">P3 信息</button>
+    </div>
+
+    <div class="table-wrap">
+      <table class="filterable-table">
+        <thead>
+          <tr>
+            <th>优先级</th>
+            <th>规则</th>
+            <th>检查内容</th>
+            <th>失败动作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-priority="P0">
+            <td><span class="badge clr-red">P0</span></td>
+            <td>声明存在</td>
+            <td>写文件前必须有写入声明</td>
+            <td>硬拦截，不可绕过</td>
+          </tr>
+          <tr data-priority="P0">
+            <td><span class="badge clr-red">P0</span></td>
+            <td>路径合法</td>
+            <td>写入路径在 Agent 的路径白名单内</td>
+            <td>硬拦截</td>
+          </tr>
+          <tr data-priority="P0">
+            <td><span class="badge clr-red">P0</span></td>
+            <td>禁止跨Vault</td>
+            <td>不得写入 obsidianVault 之外</td>
+            <td>硬拦截</td>
+          </tr>
+          <tr data-priority="P0">
+            <td><span class="badge clr-red">P0</span></td>
+            <td>状态亮灯</td>
+            <td>M4/M5 必须先 status→busy</td>
+            <td>硬拦截</td>
+          </tr>
+          <tr data-priority="P0">
+            <td><span class="badge clr-red">P0</span></td>
+            <td>事件记录</td>
+            <td>M4/M5 必须有 task_start 事件</td>
+            <td>硬拦截</td>
+          </tr>
+          <tr data-priority="P1">
+            <td><span class="badge clr-orange">P1</span></td>
+            <td>Frontmatter 完整</td>
+            <td>产物文件必须有 title/status/version/created</td>
+            <td>强警告，要求补写</td>
+          </tr>
+          <tr data-priority="P1">
+            <td><span class="badge clr-orange">P1</span></td>
+            <td>看板登记</td>
+            <td>M4/M5 任务在看板有记录</td>
+            <td>强警告</td>
+          </tr>
+          <tr data-priority="P1">
+            <td><span class="badge clr-orange">P1</span></td>
+            <td>Handoff 完整</td>
+            <td>M5 必须写 Handoff</td>
+            <td>强警告</td>
+          </tr>
+          <tr data-priority="P1">
+            <td><span class="badge clr-orange">P1</span></td>
+            <td>档位匹配</td>
+            <td>实际操作与声明档位一致</td>
+            <td>强警告，要求升档</td>
+          </tr>
+          <tr data-priority="P1">
+            <td><span class="badge clr-orange">P1</span></td>
+            <td>验收方指定</td>
+            <td>M4/M5 声明包含验收方</td>
+            <td>强警告</td>
+          </tr>
+          <tr data-priority="P1">
+            <td><span class="badge clr-orange">P1</span></td>
+            <td>产物清单</td>
+            <td>收工时列出所有写入文件</td>
+            <td>强警告</td>
+          </tr>
+          <tr data-priority="P1">
+            <td><span class="badge clr-orange">P1</span></td>
+            <td>自查完成</td>
+            <td>收工三件套中自查项已执行</td>
+            <td>强警告</td>
+          </tr>
+          <tr data-priority="P2">
+            <td><span class="badge clr-amber">P2</span></td>
+            <td>品牌合规</td>
+            <td>无装饰性 emoji，品牌名/色值正确</td>
+            <td>建议修正</td>
+          </tr>
+          <tr data-priority="P2">
+            <td><span class="badge clr-amber">P2</span></td>
+            <td>路径规范</td>
+            <td>文件路径符合 Vault 目录规范</td>
+            <td>建议调整</td>
+          </tr>
+          <tr data-priority="P2">
+            <td><span class="badge clr-amber">P2</span></td>
+            <td>模板遵循</td>
+            <td>产物格式符合对应模板</td>
+            <td>建议</td>
+          </tr>
+          <tr data-priority="P2">
+            <td><span class="badge clr-amber">P2</span></td>
+            <td>成本记录</td>
+            <td>有成本的任务已追加成本事件</td>
+            <td>建议补写</td>
+          </tr>
+          <tr data-priority="P2">
+            <td><span class="badge clr-amber">P2</span></td>
+            <td>运行日志</td>
+            <td>M3 任务追加了运行日志行</td>
+            <td>建议</td>
+          </tr>
+          <tr data-priority="P2">
+            <td><span class="badge clr-amber">P2</span></td>
+            <td>子任务记录</td>
+            <td>M5 spawn 的子任务有 subtask-record</td>
+            <td>建议</td>
+          </tr>
+          <tr data-priority="P3">
+            <td><span class="badge clr-slate">P3</span></td>
+            <td>Heartbeat</td>
+            <td>长任务(>30min)有 heartbeat 更新</td>
+            <td>信息提示</td>
+          </tr>
+          <tr data-priority="P3">
+            <td><span class="badge clr-slate">P3</span></td>
+            <td>Budget 追踪</td>
+            <td>M5 预算消耗可追溯</td>
+            <td>信息提示</td>
+          </tr>
+          <tr data-priority="P3">
+            <td><span class="badge clr-slate">P3</span></td>
+            <td>版本号递增</td>
+            <td>文档更新时 version 递增</td>
+            <td>信息提示</td>
+          </tr>
+          <tr data-priority="P3">
+            <td><span class="badge clr-slate">P3</span></td>
+            <td>Changelog 维护</td>
+            <td>重要变更追加 changelog 记录</td>
+            <td>信息提示</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 4: Exemptions & Grey Areas ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#0d9488"></span> <span style="color:#0d9488">豁免与灰区</span></div>
+        <h2 class="section-title">什么情况可以不严格遵循</h2>
+      </div>
+    </div>
+
+    <div class="accordion" data-single>
+      <div class="accordion-item">
+        <div class="accordion-header">日志追加（M3 收工一行）</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">追加运行日志一行免声明。这是最常见的豁免。格式：<code>- HH:MM | M3 | 动作摘要 | 结果 | 产物路径(可选)</code></p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">Heartbeat 更新</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">状态文件的 last_heartbeat 字段更新免声明。纯状态同步，不是内容写入。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">V9 豁免路径</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">pre-write-hook.sh 对 <code>.standards/event-rotate.py</code> 和 heartbeat 更新自动放行。这是系统级白名单，非 Agent 可主动触发。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">灰区：改1个文件但更新看板</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">看板也是文件，所以是 M4（2个文件）。需完整声明。不要因为看板"只是更新状态"就忽略它。</p>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <div class="accordion-header">灰区：批量修改同一字段</div>
+        <div class="accordion-body">
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">即使内容一致，改 3+ 文件 = M4。档位取决于文件数量和复杂度，不取决于"改动是否一样"。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 5: External Agent Protocol ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">外部 Agent 接入最低要求</h2>
+        <p class="section-subtitle">非息壤原生 Agent 接入协作时的最小合规集</p>
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card clr-blue card-hover">
+        <div class="card-header">
+          <div class="card-icon">1</div>
+          <h3 class="card-title">写入声明</h3>
+        </div>
+        <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">外部 Agent 写文件前也必须声明。格式同 M3/M4。无声明写入会被 gate-enforce 硬拦截。</p>
+      </div>
+      <div class="card clr-teal card-hover">
+        <div class="card-header">
+          <div class="card-icon">2</div>
+          <h3 class="card-title">路径隔离</h3>
+        </div>
+        <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">只能写入分配的路径，不碰 <code>.standards/</code> 和其他 Agent 的文件。越界写入 = P0 拦截。</p>
+      </div>
+      <div class="card clr-indigo card-hover">
+        <div class="card-header">
+          <div class="card-icon">3</div>
+          <h3 class="card-title">状态报告</h3>
+        </div>
+        <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">任务开始和结束时更新看板，或通过消息区报告。长任务需 heartbeat。</p>
+      </div>
+      <div class="card clr-green card-hover">
+        <div class="card-header">
+          <div class="card-icon">4</div>
+          <h3 class="card-title">摘要回传</h3>
+        </div>
+        <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">完成后返回 ≤500 字摘要给调用方，不泄漏全部上下文。摘要包含：产物清单 + 状态 + 风险。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+  </div>
+</footer>
+
+<script src="/assets/js/shared.js"></script>
+</body>
+</html>

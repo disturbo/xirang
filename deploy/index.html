@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>部署指南 — 息壤 V9</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+</head>
+<body data-page="deploy" data-platform="mac">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <span class="nav-brand-icon">壤</span>
+      <span>息壤 V9</span>
+    </a>
+    <div class="nav-links">
+      <a href="/">首页</a>
+      <a href="/architecture/">架构</a>
+      <a href="/workflow/">流程</a>
+      <a href="/agents/">Agent</a>
+      <a href="/rules/">规则</a>
+      <a href="/deploy/">部署</a>
+      <a href="/cost/">成本</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="菜单">&#9776;</button>
+  </div>
+  <div class="nav-mobile-panel">
+    <a href="/">首页</a>
+    <a href="/architecture/">架构</a>
+    <a href="/workflow/">流程</a>
+    <a href="/agents/">Agent</a>
+    <a href="/rules/">规则</a>
+    <a href="/deploy/">部署</a>
+    <a href="/cost/">成本</a>
+  </div>
+</nav>
+
+<!-- ====== Hero ====== -->
+<section class="section" style="padding-top:6rem;padding-bottom:2rem">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
+      <div>
+        <div class="section-eyebrow"><span class="dot dot-green"></span> 部署指南</div>
+        <h1 style="margin-top:0.5rem">选择你的阶段，按步骤部署</h1>
+        <p class="text-muted" style="max-width:36rem">部署不是复制环境，是和使用者逐步对齐工作方式。不是每个人都要达到完全体。</p>
+      </div>
+      <div class="platform-toggle-group" style="display:flex;gap:0.25rem;background:var(--bg-muted);border-radius:var(--radius);padding:0.25rem">
+        <button class="platform-toggle active" data-platform="mac">Mac</button>
+        <button class="platform-toggle" data-platform="windows">Windows</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Level Cards ====== -->
+<section class="section" style="padding-top:1rem">
+  <div class="container">
+    <div class="level-cards">
+      <div class="level-card active" data-level="l0">
+        <div class="level-card-level">L0</div>
+        <div class="level-card-name">浏览者</div>
+        <div class="level-card-time">2 分钟</div>
+        <div class="level-card-desc">看文档就行</div>
+      </div>
+      <div class="level-card" data-level="l1">
+        <div class="level-card-level">L1</div>
+        <div class="level-card-name">问答者</div>
+        <div class="level-card-time">10 分钟</div>
+        <div class="level-card-desc">偶尔问 AI</div>
+      </div>
+      <div class="level-card" data-level="l2">
+        <div class="level-card-level">L2</div>
+        <div class="level-card-name">产出者</div>
+        <div class="level-card-time">20 分钟</div>
+        <div class="level-card-desc">AI 帮我出活</div>
+      </div>
+      <div class="level-card" data-level="l3">
+        <div class="level-card-level">L3</div>
+        <div class="level-card-name">协作者</div>
+        <div class="level-card-time">1 小时</div>
+        <div class="level-card-desc">多 AI 跑流程</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Level Details ====== -->
+<section class="section">
+  <div class="container">
+
+    <!-- ===== L0 Detail ===== -->
+    <div class="level-detail active" data-level="l0">
+      <div class="card">
+        <h3>L0 浏览者 · 2 分钟</h3>
+        <p class="text-muted">目标：能打开 Vault 浏览文档和看板</p>
+
+        <div class="progress-info">
+          <span>部署进度</span>
+          <span>0/3</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+
+        <ul class="checklist">
+          <li class="checklist-item">
+            <input type="checkbox" id="l0-s1">
+            <label for="l0-s1"><strong>Step 1：安装 Obsidian</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l0-s2">
+            <label for="l0-s2"><strong>Step 2：获取 Vault</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l0-s3">
+            <label for="l0-s3"><strong>Step 3：打开 Vault</strong></label>
+          </li>
+        </ul>
+
+        <div class="accordion mt-2">
+          <div class="accordion-item">
+            <div class="accordion-header">Step 1 详细操作：安装 Obsidian</div>
+            <div class="accordion-body">
+              <p class="mac-only"><code>brew install --cask obsidian</code><br>或直接下载：<a href="https://obsidian.md/download">obsidian.md/download</a> → DMG → 拖到 Applications</p>
+              <p class="win-only"><code>winget install Obsidian.Obsidian</code><br>或直接下载：<a href="https://obsidian.md/download">obsidian.md/download</a> → exe 安装包 → 双击安装</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 2 详细操作：获取 Vault</div>
+            <div class="accordion-body">
+              <p>获取方式：U盘/网盘 zip（推荐最快）、AirDrop（Mac）、或 Git clone</p>
+              <p class="mac-only">放到：<code>~/Desktop/obsidianVault/</code></p>
+              <p class="win-only">放到：<code>C:\Users\你的用户名\Desktop\obsidianVault\</code></p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 3 详细操作：打开 Vault</div>
+            <div class="accordion-body">
+              <ol>
+                <li>启动 Obsidian → "打开文件夹作为仓库" → 选择 Vault 目录</li>
+                <li>等待 30 秒索引加载</li>
+                <li class="mac-only">按 Cmd + O 搜索「Home」→ 打开 00-MOC/Home.md</li>
+                <li class="win-only">按 Ctrl + O 搜索「Home」→ 打开 00-MOC/Home.md</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-2" style="background:var(--bg-soft)">
+          <h4>验证清单</h4>
+          <ul class="checklist">
+            <li class="checklist-item"><input type="checkbox" id="l0-v1"><label for="l0-v1">Obsidian 能启动</label></li>
+            <li class="checklist-item"><input type="checkbox" id="l0-v2"><label for="l0-v2">Vault 能打开，左侧文件树有内容</label></li>
+            <li class="checklist-item"><input type="checkbox" id="l0-v3"><label for="l0-v3"><span class="mac-only">Cmd + O</span><span class="win-only">Ctrl + O</span> 能搜索到文件</label></li>
+          </ul>
+        </div>
+
+        <div class="card mt-2" style="background:var(--bg-soft)">
+          <h4>L0 日常速查</h4>
+          <table><thead><tr><th>操作</th><th>快捷键</th></tr></thead><tbody>
+            <tr><td>搜索文件</td><td><span class="mac-only">Cmd + O</span><span class="win-only">Ctrl + O</span></td></tr>
+            <tr><td>全文搜索</td><td><span class="mac-only">Cmd + Shift + F</span><span class="win-only">Ctrl + Shift + F</span></td></tr>
+            <tr><td>命令面板</td><td><span class="mac-only">Cmd + P</span><span class="win-only">Ctrl + P</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== L1 Detail ===== -->
+    <div class="level-detail" data-level="l1">
+      <div class="card">
+        <h3>L1 问答者 · 10 分钟</h3>
+        <p class="text-muted">目标：能在终端与 AI 对话，偶尔问问题</p>
+
+        <div class="progress-info">
+          <span>部署进度</span>
+          <span>0/5</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+
+        <ul class="checklist">
+          <li class="checklist-item">
+            <input type="checkbox" id="l1-s1">
+            <label for="l1-s1"><strong>Step 1：安装基础环境</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l1-s2">
+            <label for="l1-s2"><strong>Step 2：安装 AI 对话工具</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l1-s3">
+            <label for="l1-s3"><strong>Step 3：配置 API Key</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l1-s4">
+            <label for="l1-s4"><strong>Step 4：创建最小项目记忆</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l1-s5">
+            <label for="l1-s5"><strong>Step 5：验证对话</strong></label>
+          </li>
+        </ul>
+
+        <div class="accordion mt-2">
+          <div class="accordion-item">
+            <div class="accordion-header">Step 1 详细操作：安装基础环境（Node.js）</div>
+            <div class="accordion-body">
+              <p class="mac-only"><code>brew install node</code><br>验证：<code>node --version</code> 输出 v18+ 即可</p>
+              <p class="win-only"><code>winget install OpenJS.NodeJS.LTS</code><br>验证：打开 PowerShell → <code>node --version</code> 输出 v18+ 即可</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 2 详细操作：安装 AI 对话工具</div>
+            <div class="accordion-body">
+              <p>推荐 Claude Code（官方 CLI）：</p>
+              <p><code>npm install -g @anthropic-ai/claude-code</code></p>
+              <p>或 OpenClaw（开源替代）：</p>
+              <p><code>npm install -g openclaw</code></p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 3 详细操作：配置 API Key</div>
+            <div class="accordion-body">
+              <p>Claude Code 首次启动自动引导登录，按提示完成即可。</p>
+              <p>如使用 API Key 模式：</p>
+              <p class="mac-only"><code>export ANTHROPIC_API_KEY="sk-ant-..."</code><br>永久生效：追加到 <code>~/.zshrc</code></p>
+              <p class="win-only">系统设置 → 环境变量 → 新建用户变量<br>变量名：<code>ANTHROPIC_API_KEY</code>，值：<code>sk-ant-...</code></p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 4 详细操作：创建最小项目记忆</div>
+            <div class="accordion-body">
+              <p>在 Vault 根目录创建 <code>project-context.md</code>：</p>
+<pre><code># 项目上下文
+
+## 这是什么
+这是一个 Obsidian 知识库，用于团队协作管理。
+
+## 目录结构
+- 00-MOC/：导航和索引
+- 01-项目/：项目文档
+- 02-项目管理/：看板和状态
+
+## 常用操作
+- 找文件：搜索文件名关键词
+- 看进度：打开「多智能体协作看板」</code></pre>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 5 详细操作：验证对话</div>
+            <div class="accordion-body">
+              <p class="mac-only">打开终端（Terminal），cd 到 Vault 目录：</p>
+              <p class="win-only">打开 PowerShell，cd 到 Vault 目录：</p>
+              <p><code>cd ~/Desktop/obsidianVault</code></p>
+              <p><code>claude "这个项目是做什么的？"</code></p>
+              <p>AI 应能基于 project-context.md 回答项目概况。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-2" style="background:var(--bg-soft)">
+          <h4>验证清单</h4>
+          <ul class="checklist">
+            <li class="checklist-item"><input type="checkbox" id="l1-v1"><label for="l1-v1"><code>node --version</code> 有输出</label></li>
+            <li class="checklist-item"><input type="checkbox" id="l1-v2"><label for="l1-v2">AI 工具能正常对话</label></li>
+            <li class="checklist-item"><input type="checkbox" id="l1-v3"><label for="l1-v3">project-context.md 已创建</label></li>
+          </ul>
+        </div>
+
+        <div class="card mt-2" style="background:var(--bg-soft)">
+          <h4>L1 日常速查</h4>
+          <table><thead><tr><th>操作</th><th>命令</th></tr></thead><tbody>
+            <tr><td>快速提问</td><td><code>claude "你的问题"</code></td></tr>
+            <tr><td>进入交互</td><td><code>claude</code>（回车进入对话模式）</td></tr>
+            <tr><td>OpenClaw</td><td><code>openclaw terminal</code></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== L2 Detail ===== -->
+    <div class="level-detail" data-level="l2">
+      <div class="card">
+        <h3>L2 产出者 · 20 分钟</h3>
+        <p class="text-muted">目标：能让 AI 按模板产出文档，理解 V9 二元触发器</p>
+
+        <div class="progress-info">
+          <span>部署进度</span>
+          <span>0/9</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+
+        <ul class="checklist">
+          <li class="checklist-item">
+            <input type="checkbox" id="l2-s1">
+            <label for="l2-s1"><strong>Step 1-5：完成 L1 部署</strong>（如已完成可跳过）</label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l2-s6">
+            <label for="l2-s6"><strong>Step 6：配置角色设定</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l2-s7">
+            <label for="l2-s7"><strong>Step 7：确认产出模板</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l2-s8">
+            <label for="l2-s8"><strong>Step 8：验证完整工作流</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l2-s9">
+            <label for="l2-s9"><strong>Step 9：理解分步产出法</strong></label>
+          </li>
+        </ul>
+
+        <div class="accordion mt-2">
+          <div class="accordion-item">
+            <div class="accordion-header">Step 1-5：完成 L1 部署</div>
+            <div class="accordion-body">
+              <p>请先切换到 L1 标签完成基础环境部署。已有 Node.js + AI 工具 + project-context.md 即可跳过。</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 6 详细操作：配置角色设定（.claude/CLAUDE.md）</div>
+            <div class="accordion-body">
+              <p>在 Vault 根目录创建 <code>.claude/CLAUDE.md</code>：</p>
+<pre><code># 项目指令
+
+## 身份
+你是一位[角色]。
+
+## 产出规则
+- 先列骨架大纲，确认后再展开
+- 不确定的标注「待确认」
+- 中文，Markdown 格式
+
+## 合规（V9 二元触发器）
+写文件前要声明：V9 写入声明：{路径} | {动作摘要}
+不写文件直接回复，无合规开销。</code></pre>
+              <p class="text-muted">把 [角色] 替换为你的实际角色，如「产品经理」「前端工程师」等。</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 7 详细操作：确认产出模板</div>
+            <div class="accordion-body">
+              <p>浏览 <code>30-规范/</code> 目录，确认已有的模板：</p>
+              <ul>
+                <li>PRD 模板：产品需求文档格式</li>
+                <li>技术方案模板：方案设计格式</li>
+                <li>会议纪要模板：记录格式</li>
+              </ul>
+              <p>如需自定义，在 <code>.claude/CLAUDE.md</code> 中添加产出格式说明。</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 8 详细操作：验证完整工作流</div>
+            <div class="accordion-body">
+              <p>测试一个完整产出流程：</p>
+              <ol>
+                <li>进入 Vault 目录，启动 claude</li>
+                <li>下达产出指令：「帮我写一份 XX 的 PRD 初稿」</li>
+                <li>AI 应先输出写入声明，再产出内容</li>
+                <li>确认产物写入位置和格式正确</li>
+              </ol>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 9 详细操作：理解分步产出法</div>
+            <div class="accordion-body">
+              <p>V9 产出方法论核心：</p>
+              <ol>
+                <li><strong>先聊后做</strong>：用 1-2 轮对话对齐需求，不急着产出</li>
+                <li><strong>骨架优先</strong>：先列大纲/结构，确认后再展开细节</li>
+                <li><strong>声明后写</strong>：确认写入范围后再落盘</li>
+                <li><strong>验后收工</strong>：产出后自查格式、路径、内容合规</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-2 clr-green" style="background:var(--c-bg);border:1px solid var(--c-border)">
+          <h4 style="color:var(--c-strong)">V9 要点</h4>
+          <p style="margin:0">L2 只需记住一条：<strong>写文件前要声明，不写文件直接做。</strong></p>
+        </div>
+
+        <div class="card mt-2" style="background:var(--bg-soft)">
+          <h4>验证清单</h4>
+          <ul class="checklist">
+            <li class="checklist-item"><input type="checkbox" id="l2-v1"><label for="l2-v1">.claude/CLAUDE.md 已创建并填入角色</label></li>
+            <li class="checklist-item"><input type="checkbox" id="l2-v2"><label for="l2-v2">能让 AI 产出一份带格式的文档</label></li>
+            <li class="checklist-item"><input type="checkbox" id="l2-v3"><label for="l2-v3">AI 产出前有写入声明输出</label></li>
+          </ul>
+        </div>
+
+        <div class="card mt-2" style="background:var(--bg-soft)">
+          <h4>L2 日常速查</h4>
+          <table><thead><tr><th>操作</th><th>命令 / 方法</th></tr></thead><tbody>
+            <tr><td>产出文档</td><td><code>claude</code> → 「帮我写 XX 的 PRD」</td></tr>
+            <tr><td>指定路径</td><td>在指令中说明「写到 01-项目/XX/」</td></tr>
+            <tr><td>分步产出</td><td>先要大纲 → 确认 → 再展开</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== L3 Detail ===== -->
+    <div class="level-detail" data-level="l3">
+      <div class="card">
+        <h3>L3 协作者 · 1 小时</h3>
+        <p class="text-muted">目标：完整多 Agent 协作环境，带门禁、状态流和成本追踪</p>
+
+        <div class="card mt-1 clr-amber" style="background:var(--c-bg);border:1px solid var(--c-border)">
+          <p style="margin:0;color:var(--c-strong)"><strong>提示：</strong>L3 是完全体，通常只有 1-2 人需要（系统管理员/架构师）。大部分团队成员停在 L2 即可。</p>
+        </div>
+
+        <div class="progress-info mt-2">
+          <span>部署进度</span>
+          <span>0/14</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+
+        <ul class="checklist">
+          <li class="checklist-item">
+            <input type="checkbox" id="l3-s1">
+            <label for="l3-s1"><strong>Step 1-9：完成 L2 部署</strong>（如已完成可跳过）</label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l3-s10">
+            <label for="l3-s10"><strong>Step 10：安装完整工具链</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l3-s11">
+            <label for="l3-s11"><strong>Step 11：配置多 Agent 环境</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l3-s12">
+            <label for="l3-s12"><strong>Step 12：启动状态表和事件流</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l3-s13">
+            <label for="l3-s13"><strong>Step 13：配置 Gate 门禁</strong></label>
+          </li>
+          <li class="checklist-item">
+            <input type="checkbox" id="l3-s14">
+            <label for="l3-s14"><strong>Step 14：验证完整协作流</strong></label>
+          </li>
+        </ul>
+
+        <div class="accordion mt-2">
+          <div class="accordion-item">
+            <div class="accordion-header">Step 1-9：完成 L2 部署</div>
+            <div class="accordion-body">
+              <p>请先完成 L2 所有步骤。L3 在 L2 基础上增加多 Agent 协作能力。</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 10 详细操作：安装完整工具链</div>
+            <div class="accordion-body">
+              <p class="mac-only">安装 Python 3.12+：<code>brew install python@3.12</code></p>
+              <p class="win-only">安装 Python 3.12+：<code>winget install Python.Python.3.12</code></p>
+              <p>安装 .standards/ 依赖：</p>
+              <pre><code>cd ~/Desktop/obsidianVault
+pip install jsonschema pyyaml</code></pre>
+              <p>验证：<code>python3 .standards/pre-start-check.py</code> 无报错</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 11 详细操作：配置多 Agent 环境</div>
+            <div class="accordion-body">
+              <p>V9 支持 6 个 Agent 角色协作。配置步骤：</p>
+              <ol>
+                <li>确认 <code>.prompt-src/</code> 目录存在（源 prompt 模板）</li>
+                <li>运行 prompt 构建：<code>python3 .prompt-src/prompt-build.py</code></li>
+                <li>确认 <code>.claude/agents/</code> 下生成了各 Agent 设定文件</li>
+              </ol>
+              <p>6 个 Agent：东风（架构）、红梅素（执行）、青霉素（质检）、小虫（巡检）、投保（协调）、WorkBuddy（日常）</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 12 详细操作：启动状态表和事件流</div>
+            <div class="accordion-body">
+              <p>确认以下文件存在：</p>
+              <ul>
+                <li><code>02-项目管理/智能体状态/*.md</code> — 每个 Agent 一张状态卡</li>
+                <li><code>02-项目管理/智能体状态/智能体事件.jsonl</code> — 事件流</li>
+                <li><code>02-项目管理/运行日志/</code> — 每日日志目录</li>
+              </ul>
+              <p>初始化状态：所有 Agent 的 status 应为 idle。</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 13 详细操作：配置 Gate 门禁</div>
+            <div class="accordion-body">
+              <p>Gate 门禁确保 Agent 不越权写入。配置方式：</p>
+              <ol>
+                <li>确认 <code>.standards/pre-write-check.py</code> 存在</li>
+                <li>在 <code>.claude/settings.json</code> 中配置 hook：
+<pre><code>{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "Write|Edit",
+      "hook": "python3 .standards/pre-write-check.py"
+    }]
+  }
+}</code></pre>
+                </li>
+                <li>测试：让 AI 尝试写入未声明路径，应被拦截</li>
+              </ol>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <div class="accordion-header">Step 14 详细操作：验证完整协作流</div>
+            <div class="accordion-body">
+              <p>完整验证清单：</p>
+              <ol>
+                <li>启动一个 M4 任务，确认状态文件更新</li>
+                <li>确认事件流 .jsonl 有 task_start 记录</li>
+                <li>完成任务，确认收工三件套输出</li>
+                <li>检查看板是否自动更新</li>
+                <li>确认成本事件已追踪</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-2" style="background:var(--bg-soft)">
+          <h4>验证清单</h4>
+          <ul class="checklist">
+            <li class="checklist-item"><input type="checkbox" id="l3-v1"><label for="l3-v1">python3 .standards/pre-start-check.py 无报错</label></li>
+            <li class="checklist-item"><input type="checkbox" id="l3-v2"><label for="l3-v2">prompt-build.py 生成全部 Agent 设定</label></li>
+            <li class="checklist-item"><input type="checkbox" id="l3-v3"><label for="l3-v3">Agent 状态表初始化为 idle</label></li>
+            <li class="checklist-item"><input type="checkbox" id="l3-v4"><label for="l3-v4">Gate 门禁能拦截未声明写入</label></li>
+            <li class="checklist-item"><input type="checkbox" id="l3-v5"><label for="l3-v5">完整 M4 流程跑通（状态 → 产出 → 收工）</label></li>
+          </ul>
+        </div>
+
+        <div class="card mt-2" style="background:var(--bg-soft)">
+          <h4>L3 日常速查</h4>
+          <table><thead><tr><th>操作</th><th>命令</th></tr></thead><tbody>
+            <tr><td>构建 prompt</td><td><code>python3 .prompt-src/prompt-build.py</code></td></tr>
+            <tr><td>检查门禁</td><td><code>python3 .standards/pre-write-check.py</code></td></tr>
+            <tr><td>查看事件流</td><td><code>tail -20 02-项目管理/智能体状态/智能体事件.jsonl</code></td></tr>
+            <tr><td>成本追踪</td><td><code>python3 .standards/agent-cost-events.py report</code></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ====== Upgrade Path ====== -->
+<section class="section" style="background:var(--bg-soft)">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dot dot-blue"></span> 升级路径</div>
+    <h2>什么时候该升级？</h2>
+    <p class="text-muted">不需要一步到位。当你感到当前阶段不够用时，再升级。</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem">
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem;font-weight:700;color:var(--fg-muted)">L0</div>
+        <div style="font-size:0.875rem;color:var(--fg-muted)">浏览者</div>
+        <div style="margin:1rem 0;font-size:1.5rem;color:var(--primary)">→</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--primary)">L1</div>
+        <div style="font-size:0.875rem;color:var(--fg-muted)">问答者</div>
+        <div class="card mt-1" style="background:var(--bg-muted);font-size:0.8rem">
+          <strong>升级信号：</strong><br>"想让 AI 帮忙回答问题"
+        </div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem;font-weight:700;color:var(--fg-muted)">L1</div>
+        <div style="font-size:0.875rem;color:var(--fg-muted)">问答者</div>
+        <div style="margin:1rem 0;font-size:1.5rem;color:var(--primary)">→</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--primary)">L2</div>
+        <div style="font-size:0.875rem;color:var(--fg-muted)">产出者</div>
+        <div class="card mt-1" style="background:var(--bg-muted);font-size:0.8rem">
+          <strong>升级信号：</strong><br>"有重复产出需求（PRD/方案）"
+        </div>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2rem;font-weight:700;color:var(--fg-muted)">L2</div>
+        <div style="font-size:0.875rem;color:var(--fg-muted)">产出者</div>
+        <div style="margin:1rem 0;font-size:1.5rem;color:var(--primary)">→</div>
+        <div style="font-size:2rem;font-weight:700;color:var(--primary)">L3</div>
+        <div style="font-size:0.875rem;color:var(--fg-muted)">协作者</div>
+        <div class="card mt-1" style="background:var(--bg-muted);font-size:0.8rem">
+          <strong>升级信号：</strong><br>"需要多 Agent 协作完整流程"
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Role Mapping ====== -->
+<section class="section">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dot dot-purple"></span> 角色对照</div>
+    <h2>不同角色推荐阶段</h2>
+    <p class="text-muted">按实际需求选择，不是越高越好。</p>
+
+    <div class="card mt-2">
+      <table style="width:100%">
+        <thead>
+          <tr><th>角色</th><th>推荐阶段</th><th>理由</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>管理者/总监</td><td><strong>L0-L1</strong></td><td>看文档、做决策、偶尔问 AI</td></tr>
+          <tr><td>项目经理</td><td><strong>L1</strong></td><td>看进度、偶尔问 AI 汇总信息</td></tr>
+          <tr><td>产品经理</td><td><strong>L2</strong></td><td>重复产出 PRD/方案/竞品分析</td></tr>
+          <tr><td>前端开发</td><td><strong>L2-L3</strong></td><td>跑原型、代码生成、多工具联动</td></tr>
+          <tr><td>基建/架构</td><td><strong>L3</strong></td><td>维护整套协作环境和门禁体系</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Footer ====== -->
+<footer class="footer">
+  <div class="container">
+    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+  </div>
+</footer>
+<script src="/assets/js/shared.js"></script>
+</body>
+</html>

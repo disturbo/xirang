@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent — 息壤 V9</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+  <style>
+    .sv-pane h3 { font-size: 1.15rem; }
+    .sv-pane h4 { color: var(--fg); }
+    .sv-pane ul { list-style: disc; }
+    .sv-pane code { font-size: 0.8rem; }
+    .agent-meta { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .agent-meta .tag { font-size: 0.72rem; }
+    .routing-note {
+      margin-top: 2rem;
+      padding: 1.25rem;
+      background: var(--bg-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      font-size: 0.88rem;
+      color: var(--fg-muted);
+      line-height: 1.7;
+    }
+    .routing-note strong { color: var(--fg); }
+    .state-legend {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-top: 1rem;
+      font-size: 0.78rem;
+      color: var(--fg-muted);
+    }
+    .state-legend span::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 0.375rem;
+      vertical-align: middle;
+    }
+    .state-legend .legend-ok::before { background: #059669; }
+    .state-legend .legend-err::before { background: #dc2626; }
+    .state-legend .legend-run::before { background: #1d4ed8; }
+  </style>
+</head>
+<body data-page="agents">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand"><span class="nav-brand-icon">壤</span><span>息壤 V9</span></a>
+    <div class="nav-links">
+      <a href="/">首页</a>
+      <a href="/architecture/">架构</a>
+      <a href="/workflow/">流程</a>
+      <a href="/agents/">Agent</a>
+      <a href="/rules/">规则</a>
+      <a href="/deploy/">部署</a>
+      <a href="/cost/">成本</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="菜单">&#9776;</button>
+  </div>
+  <div class="nav-mobile-panel">
+    <a href="/">首页</a><a href="/architecture/">架构</a><a href="/workflow/">流程</a><a href="/agents/">Agent</a><a href="/rules/">规则</a><a href="/deploy/">部署</a><a href="/cost/">成本</a>
+  </div>
+</nav>
+
+<!-- ====== Section 1: Six Atomic Agents ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#4f46e5"></span> <span style="color:#4f46e5">原子 Agent</span></div>
+        <h2 class="section-title">6 个持久角色</h2>
+        <p class="section-subtitle">每个 Agent 有独立人格、平台绑定和路径权限。不越权、不重叠。</p>
+      </div>
+    </div>
+
+    <div class="splitview">
+      <div class="sv-sidebar">
+        <div class="sv-item active" data-target="agent-claudian">Claudian · 管家</div>
+        <div class="sv-item" data-target="agent-qingmeisu">青霉素 · 方案师</div>
+        <div class="sv-item" data-target="agent-hongmeisu">红霉素 · 知识官</div>
+        <div class="sv-item" data-target="agent-amoxicillin">阿莫西林 · 运维</div>
+        <div class="sv-item" data-target="agent-workbuddy">WorkBuddy · 执行</div>
+        <div class="sv-item" data-target="agent-toubao">头孢 · 采集</div>
+      </div>
+      <div class="sv-detail">
+        <!-- Claudian -->
+        <div class="sv-pane active" id="agent-claudian">
+          <h3 style="margin-bottom:0.25rem;">Claudian — 管家/统筹</h3>
+          <div class="agent-meta">
+            <span class="tag clr-blue">Claude Code</span>
+            <span class="tag clr-indigo">常驻</span>
+            <span class="tag clr-slate">编排层</span>
+          </div>
+          <p style="margin-bottom:0.75rem;"><strong>Role:</strong> 统筹调度、规范守护、路径审计</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">职责</h4>
+          <ul style="margin:0 0 1rem;padding-left:1.25rem;font-size:0.88rem;line-height:1.8;">
+            <li>任务路由和分派</li>
+            <li>规范合规检查</li>
+            <li>Vault 结构维护</li>
+            <li>prompt-build 分发管理</li>
+          </ul>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">不可为</h4>
+          <p style="font-size:0.85rem;color:var(--fg-muted);margin:0 0 1rem;">不直接写 PRD、不做资料采集、不执行业务任务</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">路径权限</h4>
+          <p style="font-size:0.85rem;margin:0;"><code>.claude/</code> <code>00-MOC/</code> <code>02-项目管理/</code> <code>.standards/</code> <code>.prompt-src/</code></p>
+        </div>
+
+        <!-- 青霉素 -->
+        <div class="sv-pane" id="agent-qingmeisu">
+          <h3 style="margin-bottom:0.25rem;">青霉素 — 方案师</h3>
+          <div class="agent-meta">
+            <span class="tag clr-blue">Claude Code</span>
+            <span class="tag clr-purple">产出层</span>
+            <span class="tag clr-orange">PRD/原型</span>
+          </div>
+          <p style="margin-bottom:0.75rem;"><strong>Role:</strong> PRD/原型/设计方案产出</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">职责</h4>
+          <ul style="margin:0 0 1rem;padding-left:1.25rem;font-size:0.88rem;line-height:1.8;">
+            <li>Claude Design 方法论执行</li>
+            <li>PRD 和设计方案撰写</li>
+            <li>HTML 原型开发</li>
+            <li>方案评审和修改</li>
+          </ul>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">不可为</h4>
+          <p style="font-size:0.85rem;color:var(--fg-muted);margin:0 0 1rem;">不管运维、不碰状态表、不做知识整理</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">路径权限</h4>
+          <p style="font-size:0.85rem;margin:0;"><code>10-项目/</code> <code>沙箱/</code> <code>prototype/</code></p>
+        </div>
+
+        <!-- 红霉素 -->
+        <div class="sv-pane" id="agent-hongmeisu">
+          <h3 style="margin-bottom:0.25rem;">红霉素 — 知识官</h3>
+          <div class="agent-meta">
+            <span class="tag clr-blue">Claude Code</span>
+            <span class="tag clr-green">知识层</span>
+            <span class="tag clr-teal">Wiki/Skill</span>
+          </div>
+          <p style="margin-bottom:0.75rem;"><strong>Role:</strong> LLM Wiki/Skill 清单/知识体系治理</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">职责</h4>
+          <ul style="margin:0 0 1rem;padding-left:1.25rem;font-size:0.88rem;line-height:1.8;">
+            <li>资料摘要(Summary层)产出</li>
+            <li>Skill 目录维护</li>
+            <li>知识结构规划</li>
+            <li>Dataview 查询维护</li>
+          </ul>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">不可为</h4>
+          <p style="font-size:0.85rem;color:var(--fg-muted);margin:0 0 1rem;">不写 PRD、不管部署、不做运维</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">路径权限</h4>
+          <p style="font-size:0.85rem;margin:0;"><code>10-项目/*/资料摘要.md</code> <code>30-规范/</code> <code>.skills/</code></p>
+        </div>
+
+        <!-- 阿莫西林 -->
+        <div class="sv-pane" id="agent-amoxicillin">
+          <h3 style="margin-bottom:0.25rem;">阿莫西林 — 运维</h3>
+          <div class="agent-meta">
+            <span class="tag clr-blue">Claude Code</span>
+            <span class="tag clr-amber">基础设施</span>
+            <span class="tag clr-red">巡检/健康</span>
+          </div>
+          <p style="margin-bottom:0.75rem;"><strong>Role:</strong> 状态表/事件流/健康度量/巡检</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">职责</h4>
+          <ul style="margin:0 0 1rem;padding-left:1.25rem;font-size:0.88rem;line-height:1.8;">
+            <li>智能体状态文件维护</li>
+            <li>事件流写入和轮转</li>
+            <li>健康指标报告</li>
+            <li>Gate 规则更新</li>
+          </ul>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">不可为</h4>
+          <p style="font-size:0.85rem;color:var(--fg-muted);margin:0 0 1rem;">不写产出物、不做业务方案、不管知识</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">路径权限</h4>
+          <p style="font-size:0.85rem;margin:0;"><code>02-项目管理/智能体状态/</code> <code>.standards/</code></p>
+        </div>
+
+        <!-- WorkBuddy -->
+        <div class="sv-pane" id="agent-workbuddy">
+          <h3 style="margin-bottom:0.25rem;">WorkBuddy — 执行</h3>
+          <div class="agent-meta">
+            <span class="tag clr-green">OpenClaw</span>
+            <span class="tag clr-slate">执行层</span>
+            <span class="tag clr-blue">M3轻量</span>
+          </div>
+          <p style="margin-bottom:0.75rem;"><strong>Role:</strong> 日常任务执行、用户直接对话</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">职责</h4>
+          <ul style="margin:0 0 1rem;padding-left:1.25rem;font-size:0.88rem;line-height:1.8;">
+            <li>用户日常问答</li>
+            <li>轻量任务执行(M3)</li>
+            <li>信息查询和检索</li>
+            <li>简单文件修改</li>
+          </ul>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">不可为</h4>
+          <p style="font-size:0.85rem;color:var(--fg-muted);margin:0 0 1rem;">不做大型方案、不管多Agent编排、不碰.standards/</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">路径权限</h4>
+          <p style="font-size:0.85rem;margin:0;"><code>用户指定的项目目录</code></p>
+        </div>
+
+        <!-- 头孢 -->
+        <div class="sv-pane" id="agent-toubao">
+          <h3 style="margin-bottom:0.25rem;">头孢 — 采集</h3>
+          <div class="agent-meta">
+            <span class="tag clr-orange">飞书/浏览器插件</span>
+            <span class="tag clr-amber">Source层</span>
+            <span class="tag clr-slate">采集</span>
+          </div>
+          <p style="margin-bottom:0.75rem;"><strong>Role:</strong> 外部资料采集、格式转换</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">职责</h4>
+          <ul style="margin:0 0 1rem;padding-left:1.25rem;font-size:0.88rem;line-height:1.8;">
+            <li>飞书文档采集到 Vault</li>
+            <li>网页内容抓取</li>
+            <li>文件格式转换(docx→md)</li>
+            <li>Source 层资料入库</li>
+          </ul>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">不可为</h4>
+          <p style="font-size:0.85rem;color:var(--fg-muted);margin:0 0 1rem;">不做加工分析、不写Summary、不管状态</p>
+          <h4 style="font-size:0.88rem;margin-bottom:0.5rem;">路径权限</h4>
+          <p style="font-size:0.85rem;margin:0;"><code>20-资料/</code></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 2: Dynamic Molecular Agents ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#9333ea"></span> <span style="color:#9333ea">分子 Agent</span></div>
+        <h2 class="section-title">动态 Subagent 池</h2>
+        <p class="section-subtitle">按需 spawn，用完回收。核心价值是上下文隔离，不是并行。</p>
+      </div>
+    </div>
+
+    <!-- State Machine SVG -->
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg" style="max-width:560px;width:100%;background:white;border-radius:0.75rem;border:1px solid var(--border);padding:1rem;">
+        <!-- States -->
+        <rect x="20" y="55" width="90" height="36" rx="18" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+        <text x="65" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#047857">SPAWNED</text>
+
+        <rect x="175" y="55" width="90" height="36" rx="18" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="220" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#1e40af">RUNNING</text>
+
+        <rect x="370" y="55" width="100" height="36" rx="18" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+        <text x="420" y="78" text-anchor="middle" font-size="11" font-weight="600" fill="#047857">COLLECTED</text>
+
+        <rect x="340" y="115" width="80" height="28" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="380" y="134" text-anchor="middle" font-size="9" font-weight="600" fill="#b91c1c">TIMEOUT</text>
+
+        <rect x="440" y="115" width="55" height="28" rx="14" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+        <text x="467" y="134" text-anchor="middle" font-size="9" font-weight="600" fill="#b91c1c">FAILED</text>
+
+        <!-- Arrows: SPAWNED -> RUNNING -->
+        <line x1="110" y1="73" x2="170" y2="73" stroke="#059669" stroke-width="1.5" marker-end="url(#arrowGreen)"/>
+        <text x="140" y="64" text-anchor="middle" font-size="8" fill="#047857">注入约束包</text>
+
+        <!-- Arrows: RUNNING -> COLLECTED -->
+        <line x1="265" y1="73" x2="365" y2="73" stroke="#059669" stroke-width="1.5" marker-end="url(#arrowGreen)"/>
+        <text x="315" y="64" text-anchor="middle" font-size="8" fill="#047857">返回≤500字摘要</text>
+
+        <!-- Arrows: RUNNING -> TIMEOUT -->
+        <line x1="240" y1="91" x2="345" y2="122" stroke="#dc2626" stroke-width="1.2" marker-end="url(#arrowRed)"/>
+        <text x="275" y="115" text-anchor="middle" font-size="7" fill="#b91c1c">超时(S:15m/M:30m/L:60m/XL:120m)</text>
+
+        <!-- Arrows: RUNNING -> FAILED -->
+        <line x1="255" y1="91" x2="445" y2="122" stroke="#dc2626" stroke-width="1.2" marker-end="url(#arrowRed)"/>
+        <text x="380" y="105" text-anchor="middle" font-size="7" fill="#b91c1c">错误→升级链</text>
+
+        <!-- Arrow markers -->
+        <defs>
+          <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#059669"/>
+          </marker>
+          <marker id="arrowRed" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#dc2626"/>
+          </marker>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="state-legend">
+      <span class="legend-ok">正常状态</span>
+      <span class="legend-run">运行中</span>
+      <span class="legend-err">异常/超时</span>
+    </div>
+
+    <!-- Constraint Cards -->
+    <div class="grid grid-2" style="margin-top:2rem;">
+      <div class="card clr-indigo">
+        <div class="card-header">
+          <div class="card-icon">S</div>
+          <h3 class="card-title">Spawn 约束</h3>
+        </div>
+        <ul style="margin:0;padding-left:1.25rem;font-size:0.88rem;line-height:1.8;color:var(--fg-muted);">
+          <li>最大并行 ≤6</li>
+          <li>预算检查（token/时间）</li>
+          <li>约束包注入（路径+规范+超时）</li>
+        </ul>
+      </div>
+      <div class="card clr-purple">
+        <div class="card-header">
+          <div class="card-icon">C</div>
+          <h3 class="card-title">回收规则</h3>
+        </div>
+        <ul style="margin:0;padding-left:1.25rem;font-size:0.88rem;line-height:1.8;color:var(--fg-muted);">
+          <li>摘要 ≤500 字</li>
+          <li>不可互相调用</li>
+          <li>主 Agent 汇总结果</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 3: Communication Protocol ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#0d9488"></span> <span style="color:#0d9488">通信协议</span></div>
+        <h2 class="section-title">双层通信架构</h2>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:2.5rem;">
+      <div class="card clr-blue">
+        <div class="card-header">
+          <div class="card-icon">&#9889;</div>
+          <h3 class="card-title">CLI 直连（同步）</h3>
+        </div>
+        <p style="font-size:0.88rem;color:var(--fg-muted);margin:0;line-height:1.7;">同一 session 内直接调用。速度快，但无持久化审计。适用于 Subagent spawn/collect。</p>
+      </div>
+      <div class="card clr-teal">
+        <div class="card-header">
+          <div class="card-icon">&#128194;</div>
+          <h3 class="card-title">Vault 文件（持久化）</h3>
+        </div>
+        <p style="font-size:0.88rem;color:var(--fg-muted);margin:0;line-height:1.7;">通过 Vault 文件通信。可审计、可追溯、跨 session。适用于 Handoff、看板消息、事件流。</p>
+      </div>
+    </div>
+
+    <!-- Communication Modes Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>模式</th>
+            <th>载体</th>
+            <th>场景</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>直接调用</strong></td>
+            <td><code>CLI subprocess</code></td>
+            <td>Subagent spawn</td>
+          </tr>
+          <tr>
+            <td><strong>看板消息</strong></td>
+            <td><code>多智能体协作看板.md</code></td>
+            <td>跨Agent派活</td>
+          </tr>
+          <tr>
+            <td><strong>状态广播</strong></td>
+            <td><code>智能体状态/*.md</code></td>
+            <td>忙/闲/错误</td>
+          </tr>
+          <tr>
+            <td><strong>事件日志</strong></td>
+            <td><code>智能体事件.jsonl</code></td>
+            <td>生命周期审计</td>
+          </tr>
+          <tr>
+            <td><strong>Handoff</strong></td>
+            <td><code>task card 文件</code></td>
+            <td>任务移交</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Section 4: Routing Principles ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">路由决策三要素</h2>
+      </div>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card card-hover clr-blue">
+        <div class="card-header">
+          <div class="card-icon">1</div>
+          <h3 class="card-title">能力匹配</h3>
+        </div>
+        <p style="font-size:0.88rem;color:var(--fg-muted);margin:0;line-height:1.7;">任务需要什么 skill？哪个 Agent 有？能力表在 <code>.skills/</code> 目录维护。</p>
+      </div>
+      <div class="card card-hover clr-green">
+        <div class="card-header">
+          <div class="card-icon">2</div>
+          <h3 class="card-title">负载均衡</h3>
+        </div>
+        <p style="font-size:0.88rem;color:var(--fg-muted);margin:0;line-height:1.7;">谁空闲？谁已经在忙？状态文件实时反映 <code>busy/idle/error</code>。</p>
+      </div>
+      <div class="card card-hover clr-purple">
+        <div class="card-header">
+          <div class="card-icon">3</div>
+          <h3 class="card-title">路径权限</h3>
+        </div>
+        <p style="font-size:0.88rem;color:var(--fg-muted);margin:0;line-height:1.7;">任务要写什么路径？谁有权限？越权写入会被 <code>pre-write-check</code> 拦截。</p>
+      </div>
+    </div>
+
+    <div class="routing-note">
+      <strong>路由决策示例：</strong>用户说"帮我写 PRD" → Claudian 判定为 M4 → 检查青霉素状态(idle) → 确认路径 <code>10-项目/</code> 在青霉素权限内 → 派发任务 → 青霉素执行 → 返回 Handoff → Claudian 验收。整个过程通过看板和状态文件协调，无需人工介入中间环节。
+    </div>
+  </div>
+</section>
+
+<!-- ====== Footer ====== -->
+<footer class="footer">
+  <div class="container">
+    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+  </div>
+</footer>
+
+<script src="/assets/js/shared.js"></script>
+</body>
+</html>

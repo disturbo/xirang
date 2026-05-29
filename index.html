@@ -1,1178 +1,303 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>息壤 V8.5 — 方法论评审</title>
-  <style>
-    :root {
-      --bg:#fff; --bg-soft:#f8fafc; --bg-muted:#f1f5f9;
-      --fg:#0f172a; --fg-muted:#64748b; --fg-soft:#94a3b8;
-      --border:#e2e8f0; --border-soft:#f1f5f9;
-      --primary:#1d4ed8; --primary-soft:#eff6ff;
-      --radius:0.5rem; --radius-lg:0.75rem;
-      --shadow-xs:0 1px 2px 0 rgba(15,23,42,.04);
-      --shadow-sm:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
-      --shadow-md:0 6px 16px rgba(15,23,42,.08),0 2px 4px rgba(15,23,42,.04);
-    }
-    .clr-blue   { --c-bg:#eff6ff; --c-border:#dbeafe; --c-fg:#1e40af; --c-strong:#1d4ed8; }
-    .clr-green  { --c-bg:#ecfdf5; --c-border:#d1fae5; --c-fg:#047857; --c-strong:#059669; }
-    .clr-purple { --c-bg:#faf5ff; --c-border:#f3e8ff; --c-fg:#7e22ce; --c-strong:#9333ea; }
-    .clr-orange { --c-bg:#fff7ed; --c-border:#ffedd5; --c-fg:#c2410c; --c-strong:#ea580c; }
-    .clr-red    { --c-bg:#fef2f2; --c-border:#fee2e2; --c-fg:#b91c1c; --c-strong:#dc2626; }
-    .clr-amber  { --c-bg:#fffbeb; --c-border:#fef3c7; --c-fg:#b45309; --c-strong:#d97706; }
-    .clr-indigo { --c-bg:#eef2ff; --c-border:#e0e7ff; --c-fg:#4338ca; --c-strong:#4f46e5; }
-    .clr-teal   { --c-bg:#f0fdfa; --c-border:#ccfbf1; --c-fg:#0f766e; --c-strong:#0d9488; }
-    .clr-rose   { --c-bg:#fff1f2; --c-border:#ffe4e6; --c-fg:#be123c; --c-strong:#e11d48; }
-    .clr-slate  { --c-bg:#f8fafc; --c-border:#e2e8f0; --c-fg:#475569; --c-strong:#334155; }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { margin:0; font-family:ui-sans-serif,system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; font-size:15px; line-height:1.65; color:var(--fg); background:white; -webkit-font-smoothing:antialiased; }
-    a { color:var(--primary); text-decoration:none; }
-    a:hover { text-decoration:underline; }
-    h1,h2,h3,h4 { margin:0; line-height:1.3; letter-spacing:-0.015em; font-weight:600; }
-    p { margin:0; }
-    code { padding:0.125rem 0.4rem; background:var(--bg-muted); border-radius:0.25rem; font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:0.85em; color:var(--fg); }
-    img { max-width:100%; display:block; }
-
-    .nav { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.85); backdrop-filter:saturate(180%) blur(12px); -webkit-backdrop-filter:saturate(180%) blur(12px); border-bottom:1px solid var(--border); }
-    .nav-inner { max-width:1280px; margin:0 auto; padding:0.875rem 1.5rem; display:flex; align-items:center; gap:1.5rem; }
-    .nav-brand { display:flex; align-items:center; gap:0.625rem; font-weight:600; font-size:0.95rem; }
-    .nav-brand-icon { width:1.75rem; height:1.75rem; border-radius:0.5rem; background:linear-gradient(135deg,#1d4ed8 0%,#7e22ce 100%); color:white; display:grid; place-items:center; font-size:0.75rem; font-weight:700; }
-    .nav-links { display:flex; gap:0.125rem; flex-wrap:wrap; margin-left:auto; }
-    .nav-links a { padding:0.4rem 0.625rem; border-radius:0.375rem; color:var(--fg-muted); font-size:0.825rem; font-weight:500; transition:all 0.12s; }
-    .nav-links a:hover { background:var(--bg-muted); color:var(--fg); text-decoration:none; }
-    .nav-links a.active { background:var(--fg); color:white; }
-
-    .container { max-width:1280px; margin:0 auto; padding:0 1.5rem; }
-    section { padding:4rem 0 1rem; scroll-margin-top:4.5rem; position:relative; }
-    section.section-alt { background:var(--bg-soft); }
-    section.section-alt::before, section.section-alt::after { content:''; position:absolute; left:calc(50% - 50vw); right:calc(50% - 50vw); width:100vw; background:var(--bg-soft); top:0; bottom:0; z-index:-1; }
-
-    .hero { position:relative; padding:4.5rem 0 3.5rem; background:linear-gradient(180deg,#fff 0%,var(--bg-soft) 100%); border-bottom:1px solid var(--border); overflow:hidden; }
-    .hero::before { content:''; position:absolute; inset:0; pointer-events:none; background-image:radial-gradient(circle at 15% 20%,rgba(59,130,246,.08),transparent 40%),radial-gradient(circle at 85% 80%,rgba(168,85,247,.08),transparent 40%); }
-    .hero .container { position:relative; }
-    .hero-meta { display:inline-flex; align-items:center; gap:0.5rem; padding:0.375rem 0.75rem; border-radius:9999px; background:white; border:1px solid var(--border); font-size:0.8rem; color:var(--fg-muted); margin-bottom:1.25rem; box-shadow:var(--shadow-xs); }
-    .pulse { width:0.5rem; height:0.5rem; border-radius:9999px; background:#10b981; box-shadow:0 0 0 4px rgba(16,185,129,.18); animation:pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{box-shadow:0 0 0 4px rgba(16,185,129,.18);} 50%{box-shadow:0 0 0 6px rgba(16,185,129,.25);} }
-    .hero h1 { font-size:clamp(2rem,4.5vw,3rem); font-weight:700; letter-spacing:-0.025em; margin-bottom:1rem; }
-    .hero h1 .accent { background:linear-gradient(135deg,#1d4ed8 0%,#7e22ce 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
-    .hero p.lead { font-size:1.075rem; color:var(--fg-muted); max-width:44rem; margin-bottom:1.75rem; }
-    .hero-stats { margin-top:2.5rem; display:grid; grid-template-columns:repeat(4,1fr); gap:0.875rem; }
-    .hero-stat { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.125rem 1.25rem; box-shadow:var(--shadow-xs); position:relative; overflow:hidden; }
-    .hero-stat::after { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--c-strong,var(--primary)); }
-    .hero-stat-value { font-size:1.75rem; font-weight:700; line-height:1; color:var(--fg); letter-spacing:-0.02em; }
-    .hero-stat-label { font-size:0.78rem; color:var(--fg-muted); margin-top:0.5rem; font-weight:500; }
-    .hero-stat-sub { font-size:0.7rem; color:var(--fg-soft); margin-top:0.25rem; }
-    @media (max-width:768px) { .hero-stats { grid-template-columns:repeat(2,1fr); } .nav-links { display:none; } }
-
-    .section-header { display:flex; align-items:flex-end; justify-content:space-between; gap:1.5rem; margin-bottom:2rem; flex-wrap:wrap; }
-    .section-eyebrow { display:inline-flex; align-items:center; gap:0.375rem; font-size:0.74rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.5rem; }
-    .section-eyebrow-dot { width:0.375rem; height:0.375rem; border-radius:9999px; }
-    .section-title { font-size:1.625rem; font-weight:700; letter-spacing:-0.02em; margin-bottom:0.5rem; }
-    .section-subtitle { color:var(--fg-muted); font-size:0.95rem; max-width:56rem; }
-    .section-side-meta { display:inline-flex; align-items:center; gap:0.5rem; padding:0.375rem 0.75rem; border-radius:9999px; background:white; border:1px solid var(--border); font-size:0.8rem; color:var(--fg-muted); box-shadow:var(--shadow-xs); }
-
-    .card { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; box-shadow:var(--shadow-xs); }
-    .card-hover { transition:all 0.18s; }
-    .card-hover:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); border-color:var(--c-border,var(--border)); }
-    .card-header { display:flex; align-items:center; gap:0.75rem; margin-bottom:0.875rem; }
-    .card-icon { width:2.25rem; height:2.25rem; border-radius:var(--radius); display:grid; place-items:center; background:var(--c-bg,var(--primary-soft)); color:var(--c-strong,var(--primary)); flex-shrink:0; }
-    .card-title { font-size:1rem; font-weight:600; }
-    .card-desc { color:var(--fg-muted); font-size:0.9rem; line-height:1.6; }
-
-    .grid { display:grid; gap:1rem; }
-    .grid-2 { grid-template-columns:repeat(2,1fr); }
-    .grid-3 { grid-template-columns:repeat(3,1fr); }
-    .grid-4 { grid-template-columns:repeat(4,1fr); }
-    @media (max-width:1024px) { .grid-3,.grid-4 { grid-template-columns:repeat(2,1fr); } }
-    @media (max-width:640px) { .grid-2,.grid-3,.grid-4 { grid-template-columns:1fr; } }
-
-    .tag { display:inline-flex; align-items:center; gap:0.25rem; padding:0.125rem 0.5rem; border-radius:0.375rem; border:1px solid var(--c-border); background:var(--c-bg); color:var(--c-fg); font-size:0.72rem; font-weight:500; }
-    .badge { display:inline-flex; align-items:center; gap:0.25rem; padding:0.125rem 0.5rem; border-radius:9999px; font-size:0.72rem; font-weight:500; background:var(--c-bg); color:var(--c-fg); border:1px solid var(--c-border); }
-    .badge-success { --c-bg:#d1fae5; --c-fg:#065f46; --c-border:#a7f3d0; }
-    .badge-warning { --c-bg:#fef3c7; --c-fg:#92400e; --c-border:#fde68a; }
-    .badge-info { --c-bg:#dbeafe; --c-fg:#1e40af; --c-border:#bfdbfe; }
-
-    .table-wrap { border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:white; }
-    table { width:100%; border-collapse:collapse; font-size:0.875rem; }
-    thead { background:var(--bg-soft); }
-    th { padding:0.75rem 1rem; text-align:left; font-weight:600; font-size:0.74rem; color:var(--fg-muted); letter-spacing:0.05em; text-transform:uppercase; border-bottom:1px solid var(--border); }
-    td { padding:0.75rem 1rem; text-align:left; border-bottom:1px solid var(--border-soft); vertical-align:top; }
-    tbody tr:last-child td { border-bottom:none; }
-    tbody tr:hover { background:var(--bg-soft); }
-
-    .flow-tabs { display:flex; gap:0.25rem; margin-bottom:1.25rem; background:var(--bg-muted); padding:0.25rem; border-radius:var(--radius-lg); }
-    .flow-tab { padding:0.625rem 1.25rem; border-radius:var(--radius); border:none; background:transparent; font-size:0.875rem; font-weight:600; color:var(--fg-muted); cursor:pointer; transition:all 0.15s; white-space:nowrap; }
-    .flow-tab:hover { color:var(--fg); background:rgba(255,255,255,0.5); }
-    .flow-tab.active { background:var(--fg); color:white; box-shadow:var(--shadow-sm); }
-    .flow-pane { display:none; }
-    .flow-pane.active { display:block; }
-    @media (max-width:640px) { .flow-tabs { overflow-x:auto; } .flow-tab { font-size:0.8rem; padding:0.5rem 0.875rem; } }
-
-    .flowchart-container { background:linear-gradient(180deg,white 0%,var(--bg-soft) 100%); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem 1.5rem 1.5rem; margin-bottom:1.5rem; box-shadow:var(--shadow-xs); overflow-x:auto; }
-    .flowchart-svg { width:100%; height:auto; max-width:900px; margin:0 auto; display:block; }
-    .arch-diagram { background:linear-gradient(180deg,white 0%,var(--bg-soft) 100%); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem 1.5rem 1.5rem; margin-bottom:1.5rem; box-shadow:var(--shadow-xs); overflow-x:auto; }
-
-    .process-strip { background:linear-gradient(180deg,white 0%,var(--bg-soft) 100%); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem 1.5rem 1.5rem; margin-bottom:1.5rem; box-shadow:var(--shadow-xs); overflow-x:auto; }
-    .process-strip-title { display:inline-flex; align-items:center; gap:0.5rem; font-size:0.74rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--fg-muted); margin-bottom:1.125rem; }
-    .process-strip-title::before { content:''; width:0.375rem; height:0.375rem; border-radius:9999px; background:var(--primary); }
-    .process-strip-flow { display:flex; align-items:flex-start; gap:0; min-width:max-content; padding-top:0.25rem; }
-    .process-step { flex:0 0 8rem; display:flex; flex-direction:column; align-items:center; text-align:center; padding:0 0.5rem; position:relative; }
-    .process-step::after { content:''; position:absolute; top:0.875rem; left:50%; width:100%; height:2px; background:var(--border); z-index:0; }
-    .process-step:last-child::after { display:none; }
-    .process-step-num { position:relative; z-index:1; width:1.75rem; height:1.75rem; background:white; color:var(--fg); border:2px solid var(--border); border-radius:9999px; display:grid; place-items:center; font-size:0.75rem; font-weight:700; margin-bottom:0.625rem; transition:all 0.15s; }
-    .process-step:hover .process-step-num { background:var(--fg); color:white; border-color:var(--fg); transform:scale(1.08); }
-    .process-step-name { font-size:0.825rem; font-weight:600; color:var(--fg); line-height:1.3; margin-bottom:0.125rem; }
-    .process-step-actor { font-size:0.7rem; color:var(--fg-muted); line-height:1.3; }
-
-    .splitview { display:grid; grid-template-columns:14rem 1fr; gap:1.25rem; align-items:stretch; }
-    @media (max-width:880px) { .splitview { grid-template-columns:1fr; } }
-    .splitview-list { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:0.5rem; box-shadow:var(--shadow-xs); align-self:start; position:sticky; top:5rem; }
-    .splitview-item { display:flex; align-items:center; gap:0.625rem; padding:0.625rem 0.75rem; border-radius:var(--radius); cursor:pointer; transition:all 0.12s; user-select:none; border:1px solid transparent; }
-    .splitview-item:hover { background:var(--bg-soft); }
-    .splitview-item.active { background:var(--c-bg,var(--primary-soft)); border-color:var(--c-border,var(--primary-soft)); }
-    .splitview-item .sv-id { width:2.25rem; padding:0.125rem 0.375rem; background:var(--bg-muted); color:var(--fg-muted); border-radius:0.25rem; font-size:0.72rem; font-weight:700; text-align:center; flex-shrink:0; }
-    .splitview-item.active .sv-id { background:var(--c-strong); color:white; }
-    .splitview-item .sv-name { font-size:0.875rem; font-weight:500; color:var(--fg); }
-    .splitview-detail { min-height:22rem; }
-    .sv-pane { display:none; }
-    .sv-pane.active { display:block; }
-
-    .modhead { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem 1.5rem; margin-bottom:1rem; box-shadow:var(--shadow-xs); }
-    .modhead-meta { display:flex; gap:0.375rem; flex-wrap:wrap; align-items:center; margin-bottom:0.5rem; }
-    .modhead-title { font-size:1.25rem; font-weight:600; margin-bottom:0.5rem; }
-    .modhead-desc { color:var(--fg-muted); font-size:0.925rem; }
-    .modblock { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-top:1rem; }
-    .modblock h4 { font-size:0.78rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--fg-muted); margin-bottom:0.75rem; }
-    .modblock ul { list-style:none; padding:0; margin:0; font-size:0.875rem; color:var(--fg); }
-    .modblock ul li { padding:0.3125rem 0; line-height:1.55; }
-    .modblock ul li::before { content:'·'; color:var(--c-strong,var(--primary)); margin-right:0.5rem; font-weight:700; }
-
-    .fntree { background:var(--bg-soft); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; }
-    .fntree-row { display:grid; gap:1rem; }
-    @media (min-width:800px) { .fntree-row.cols-2 { grid-template-columns:1fr 1fr; } }
-    .fntree-layer { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1rem 1.25rem; }
-    .fntree-layer-head { display:flex; align-items:center; gap:0.625rem; margin-bottom:0.75rem; padding-bottom:0.625rem; border-bottom:1px dashed var(--border); }
-    .fntree-layer-icon { width:1.75rem; height:1.75rem; border-radius:var(--radius); display:grid; place-items:center; background:var(--c-bg); color:var(--c-strong); font-size:0.875rem; }
-    .fntree-layer-title { font-size:0.95rem; font-weight:600; color:var(--fg); }
-    .fntree-layer-sub { font-size:0.78rem; color:var(--fg-muted); margin-top:0.0625rem; }
-    .fntree-modules { display:grid; gap:0.5rem; }
-    .fntree-mod { display:flex; align-items:center; gap:0.5rem; padding:0.5rem 0.75rem; border-radius:var(--radius); background:var(--c-bg); color:var(--c-fg); border:1px solid var(--c-border); font-size:0.85rem; font-weight:500; }
-    .fntree-mod-id { width:2.5rem; padding:0.125rem 0.375rem; background:white; color:var(--c-strong); border-radius:0.25rem; font-size:0.7rem; font-weight:700; text-align:center; flex-shrink:0; border:1px solid var(--c-border); }
-
-    .decision-card { background:white; border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.375rem; transition:all 0.18s; }
-    .decision-card:hover { border-color:var(--c-border,var(--primary-soft)); box-shadow:var(--shadow-md); }
-    .decision-head { display:flex; align-items:center; gap:0.625rem; margin-bottom:0.625rem; }
-    .decision-num { width:1.75rem; height:1.75rem; border-radius:0.5rem; background:var(--c-bg,var(--primary-soft)); color:var(--c-strong,var(--primary)); display:grid; place-items:center; font-size:0.75rem; font-weight:700; flex-shrink:0; }
-    .decision-title { font-size:0.95rem; font-weight:600; }
-    .decision-choice { display:inline-flex; padding:0.25rem 0.625rem; background:var(--c-bg,var(--bg-muted)); color:var(--c-strong,var(--fg)); border:1px solid var(--c-border,var(--border)); border-radius:0.375rem; font-size:0.825rem; font-weight:600; margin:0.5rem 0; }
-    .decision-reason { font-size:0.875rem; color:var(--fg-muted); line-height:1.55; }
-
-    .oq-card { background:white; border:1px solid var(--border); border-left:3px solid #f59e0b; border-radius:var(--radius-lg); padding:1.125rem 1.375rem; margin-bottom:0.75rem; box-shadow:var(--shadow-xs); }
-    .oq-id { display:inline-block; font-size:0.7rem; font-weight:700; color:#b45309; letter-spacing:0.05em; background:#fef3c7; padding:0.125rem 0.5rem; border-radius:0.25rem; margin-bottom:0.5rem; }
-    .oq-q { font-weight:600; color:var(--fg); margin-bottom:0.5rem; }
-    .oq-default { font-size:0.875rem; color:var(--fg-muted); }
-
-    footer { margin-top:5rem; padding:3rem 0; background:white; border-top:1px solid var(--border); text-align:center; }
-    footer .footer-brand { font-weight:600; color:var(--fg); margin-bottom:0.5rem; }
-    footer .footer-meta { color:var(--fg-soft); font-size:0.825rem; }
-
-    .hero-cta { display:flex; gap:0.75rem; flex-wrap:wrap; margin:1.75rem 0 0; }
-    .btn { display:inline-flex; align-items:center; gap:0.375rem; padding:0.625rem 1.25rem; border-radius:var(--radius); font-size:0.875rem; font-weight:600; text-decoration:none!important; transition:all 0.15s; cursor:pointer; border:none; }
-    .btn-primary { background:var(--primary); color:white; box-shadow:0 1px 3px rgba(29,78,216,.3); }
-    .btn-primary:hover { background:#1e40af; transform:translateY(-1px); box-shadow:0 4px 12px rgba(29,78,216,.25); }
-    .btn-outline { background:white; color:var(--fg); border:1px solid var(--border); box-shadow:var(--shadow-xs); }
-    .btn-outline:hover { border-color:var(--primary); color:var(--primary); transform:translateY(-1px); }
-    .btn-ghost { background:transparent; color:var(--fg-muted); }
-    .btn-ghost:hover { background:var(--bg-muted); color:var(--fg); }
-
-    #overview .section-eyebrow { color:#1d4ed8; } #overview .section-eyebrow-dot { background:#1d4ed8; }
-    #lifecycle .section-eyebrow { color:#0891b2; } #lifecycle .section-eyebrow-dot { background:#0891b2; }
-    #architecture .section-eyebrow { color:#7e22ce; } #architecture .section-eyebrow-dot { background:#7e22ce; }
-    #tools .section-eyebrow { color:#ea580c; } #tools .section-eyebrow-dot { background:#ea580c; }
-    #agents .section-eyebrow { color:#4f46e5; } #agents .section-eyebrow-dot { background:#4f46e5; }
-    #rules .section-eyebrow { color:#db2777; } #rules .section-eyebrow-dot { background:#db2777; }
-    #decisions .section-eyebrow { color:#0d9488; } #decisions .section-eyebrow-dot { background:#0d9488; }
-    #oq .section-eyebrow { color:#f59e0b; } #oq .section-eyebrow-dot { background:#f59e0b; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>息壤 V9 — AI Agent 协作方法论</title>
+  <meta name="description" content="息壤方法论 V9：AI Agent 团队的作战手册。定义谁做什么、怎么流转、出错了谁修、怎么证明活干完了。">
+  <link rel="stylesheet" href="/assets/css/shared.css">
 </head>
-<body>
+<body data-page="home">
 
 <nav class="nav">
   <div class="nav-inner">
-    <span class="nav-brand">
-      <span class="nav-brand-icon">XR</span>
-      <span>息壤 V8.5 Review</span>
-    </span>
+    <a href="/" class="nav-brand">
+      <span class="nav-brand-icon">壤</span>
+      <span>息壤 V9</span>
+    </a>
     <div class="nav-links">
-      <a href="#overview">概述</a>
-      <a href="#lifecycle">生命周期</a>
-      <a href="#architecture">架构</a>
-      <a href="#tools">工具链</a>
-      <a href="#agents">Agent</a>
-      <a href="#rules">铁律</a>
-      <a href="#decisions">决策</a>
-      <a href="#oq">开放问题</a>
+      <a href="/">首页</a>
+      <a href="/architecture/">架构</a>
+      <a href="/workflow/">流程</a>
+      <a href="/agents/">Agent</a>
+      <a href="/rules/">规则</a>
+      <a href="/deploy/">部署</a>
+      <a href="/cost/">成本</a>
     </div>
+    <button class="nav-mobile-toggle" aria-label="菜单">&#9776;</button>
+  </div>
+  <div class="nav-mobile-panel">
+    <a href="/">首页</a>
+    <a href="/architecture/">架构</a>
+    <a href="/workflow/">流程</a>
+    <a href="/agents/">Agent</a>
+    <a href="/rules/">规则</a>
+    <a href="/deploy/">部署</a>
+    <a href="/cost/">成本</a>
   </div>
 </nav>
 
+<!-- ====== Hero ====== -->
 <header class="hero">
   <div class="container">
     <span class="hero-meta">
       <span class="pulse"></span>
-      V8.5.0 封版 · 2026-05-25 · Phase 0-5 全部交付
+      V9.2.0 · 2026-05-29 封版
     </span>
-    <h1>息壤方法论<br/><span class="accent">V8.5 运行时扩展层</span></h1>
-    <p class="lead" style="font-size:1.15rem;font-weight:500;color:var(--fg);margin-bottom:0.75rem;">一句话说清：让多个 AI Agent 像团队一样协作，不撞车、不越权、不超支。</p>
-    <p class="lead">息壤 = "AI Agent 的项目管理系统"。就像人类团队用 Jira + Git + Slack 协作一样，息壤给 AI Agent 提供了：<strong>状态看板</strong>（谁在干什么）、<strong>权限门禁</strong>（谁能动什么）、<strong>成本预算</strong>（花多少钱）。V8 定规则，V8.5 写代码强制执行。</p>
-
+    <h1>息壤方法论 <span class="accent">V9</span></h1>
+    <p class="lead">AI Agent 团队的作战手册。定义谁做什么、怎么流转、出错了谁修、怎么证明活干完了。</p>
     <div class="hero-cta">
-      <a href="#lifecycle" class="btn btn-primary">快速了解流程</a>
-      <a href="https://disturbo.github.io/xirang/" class="btn btn-outline" target="_blank">公网访问</a>
-      <a href="#tools" class="btn btn-outline">查看工具链</a>
-      <a href="#architecture" class="btn btn-ghost">架构总览</a>
+      <a href="/deploy/" class="btn btn-primary">开始部署 →</a>
+      <a href="/architecture/" class="btn btn-outline">查看架构 →</a>
     </div>
-
     <div class="hero-stats">
-      <div class="hero-stat clr-blue"><div class="hero-stat-value">23</div><div class="hero-stat-label">工具脚本</div><div class="hero-stat-sub">.standards/ 下 21 正式 + 2 spike</div></div>
-      <div class="hero-stat clr-purple"><div class="hero-stat-value">6</div><div class="hero-stat-label">Phase 交付</div><div class="hero-stat-sub">P0+1 / P2+3 / P4 / P5A / P5B</div></div>
-      <div class="hero-stat clr-green"><div class="hero-stat-value">5</div><div class="hero-stat-label">协作 Agent</div><div class="hero-stat-sub">3 平台 · 5 角色</div></div>
-      <div class="hero-stat clr-orange"><div class="hero-stat-value">6</div><div class="hero-stat-label">档位</div><div class="hero-stat-sub">M0 闲聊 ~ M5 跨Agent</div></div>
+      <div class="hero-stat clr-blue">
+        <div class="hero-stat-value">6</div>
+        <div class="hero-stat-label">原子 Agent</div>
+        <div class="hero-stat-sub">持久角色分工</div>
+      </div>
+      <div class="hero-stat clr-purple">
+        <div class="hero-stat-value">1</div>
+        <div class="hero-stat-label">二元触发器</div>
+        <div class="hero-stat-sub">写文件=声明</div>
+      </div>
+      <div class="hero-stat clr-green">
+        <div class="hero-stat-value">4</div>
+        <div class="hero-stat-label">Gate 检查点</div>
+        <div class="hero-stat-sub">自动门禁拦截</div>
+      </div>
+      <div class="hero-stat clr-orange">
+        <div class="hero-stat-value">7</div>
+        <div class="hero-stat-label">平台分发</div>
+        <div class="hero-stat-sub">prompt-build 单源</div>
+      </div>
     </div>
   </div>
 </header>
 
-<div class="container">
-
-<!-- ====== S1 OVERVIEW ====== -->
-<section id="overview">
-  <div class="section-header">
-    <div>
-      <div class="section-eyebrow"><span class="section-eyebrow-dot"></span> S1 Overview</div>
-      <h2 class="section-title">方法论概述</h2>
-      <p class="section-subtitle">核心问题、设计目标与版本关系</p>
-    </div>
-    <span class="section-side-meta">V8 宪法 + V8.5 工具链</span>
-  </div>
-  <div class="grid grid-2">
-    <div class="card clr-red">
-      <div class="card-header">
-        <div class="card-icon">!</div>
-        <h3 class="card-title">解决的问题</h3>
-      </div>
-      <div class="card-desc">
-        1. 多 Agent 协作缺乏统一的状态追踪和通信规范<br/>
-        2. 合规规则全靠"约定调用"，Agent 可跳过<br/>
-        3. 子任务 spawn 无运行时记录，无法追踪/回收<br/>
-        4. 成本无感知，超支才发现
-      </div>
-    </div>
-    <div class="card clr-green">
-      <div class="card-header">
-        <div class="card-icon">&#10003;</div>
-        <h3 class="card-title">V8.5 的解法</h3>
-      </div>
-      <div class="card-desc">
-        1. 统一 Schema 的 per-Agent 状态文件 + append-only 事件流<br/>
-        2. gate-enforce.py 硬门禁：P0 违规 = 操作被阻断<br/>
-        3. subtask-record.py CRUD + v8_spawn/v8_collect 自动维护<br/>
-        4. cost-fuse 熔断 + spawn-budget-check 预算评估
-      </div>
-    </div>
-  </div>
-
-  <!-- 通俗类比：让不懂技术的人也能理解 -->
-  <div class="card clr-indigo" style="margin-top:1.5rem;">
-    <div class="card-header">
-      <div class="card-icon">?</div>
-      <h3 class="card-title">通俗类比：息壤到底是什么？</h3>
-    </div>
-    <div class="card-desc" style="font-size:0.925rem;line-height:1.75;">
-      想象你管一个 5 人施工队，每人都很能干但互相看不见对方在干嘛：<br/><br/>
-      <strong style="color:var(--c-strong);">没有息壤时</strong> — 两个人可能同时改同一面墙；有人超预算了才发现；有人忘记报完工。<br/><br/>
-      <strong style="color:var(--c-strong);">有息壤后</strong> —<br/>
-      · <strong>看板</strong> = 工地白板（谁在干什么，一眼看清）<br/>
-      · <strong>握手</strong> = 开工前喊一声"我要动 3 楼东墙"（防撞车）<br/>
-      · <strong>门禁</strong> = 安全帽检查（没戴帽不让进工地，exit 1 阻断）<br/>
-      · <strong>预算</strong> = 开工前算材料费（超了就降级用便宜材料）<br/>
-      · <strong>收工</strong> = 完工拍照 + 报给监理（产物清单 + 验收方）
-    </div>
-  </div>
-
-  <div class="card" style="margin-top:1.5rem;">
-    <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:1rem;">版本关系</h3>
-    <div class="card-desc">
-      <code>V8（正文，已冻结 2026-05-19）</code> → 设计原理 / 宪法 / 10 态状态机 / 5 层通信<br/>
-      <code>V8.5（运行时扩展，2026-05-24~25）</code> → 可执行工具链 / 门禁 / 消息队列 / 成本调度<br/><br/>
-      V8.5 不替换 V8。两者共存：V8 为设计参考，V8.5 为执行标准。
-    </div>
-  </div>
-</section>
-
-<!-- ====== S2 LIFECYCLE ====== -->
-<section id="lifecycle" class="section-alt">
-  <div class="section-header">
-    <div>
-      <div class="section-eyebrow"><span class="section-eyebrow-dot"></span> S2 Task Lifecycle</div>
-      <h2 class="section-title">任务生命周期</h2>
-      <p class="section-subtitle">从档位判定到收工的完整流转，多视角理解</p>
-    </div>
-  </div>
-
-  <!-- 流程图标签切换 -->
-  <div class="flow-tabs">
-    <button class="flow-tab active" data-target="flow-decision">任务决策流程</button>
-    <button class="flow-tab" data-target="flow-sixstep">五步工作法</button>
-    <button class="flow-tab" data-target="flow-error">错误升级链</button>
-    <button class="flow-tab" data-target="flow-gear">档位判定逻辑</button>
-  </div>
-
-  <!-- Tab 1: 任务决策流程 -->
-  <div class="flow-pane active" id="flow-decision">
-    <div class="flowchart-container">
-      <svg viewBox="0 0 700 500" class="flowchart-svg" xmlns="http://www.w3.org/2000/svg">
-        <!-- 主干 -->
-        <line x1="120" y1="55" x2="120" y2="80" stroke="#64748b" stroke-width="1.5"/>
-        <polygon points="116,73 124,73 120,80" fill="#64748b"/>
-        <line x1="120" y1="140" x2="120" y2="165" stroke="#64748b" stroke-width="1.5"/>
-        <polygon points="116,158 124,158 120,165" fill="#64748b"/>
-        <line x1="120" y1="225" x2="120" y2="255" stroke="#059669" stroke-width="1.5"/>
-        <polygon points="116,248 124,248 120,255" fill="#059669"/>
-        <line x1="120" y1="315" x2="120" y2="345" stroke="#64748b" stroke-width="1.5"/>
-        <polygon points="116,338 124,338 120,345" fill="#64748b"/>
-        <line x1="120" y1="405" x2="120" y2="435" stroke="#059669" stroke-width="1.5"/>
-        <polygon points="116,428 124,428 120,435" fill="#059669"/>
-        <!-- 分支 -->
-        <line x1="180" y1="110" x2="310" y2="110" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <polygon points="303,106 303,114 310,110" fill="#059669"/>
-        <line x1="180" y1="195" x2="310" y2="195" stroke="#0891b2" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <polygon points="303,191 303,199 310,195" fill="#0891b2"/>
-        <line x1="180" y1="285" x2="310" y2="285" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <polygon points="303,281 303,289 310,285" fill="#dc2626"/>
-        <line x1="180" y1="375" x2="310" y2="375" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <polygon points="303,371 303,379 310,375" fill="#dc2626"/>
-        <!-- Spawn -->
-        <path d="M 190 375 L 460 375 L 460 345" fill="none" stroke="#7e22ce" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <polygon points="456,352 464,352 460,345" fill="#7e22ce"/>
-        <path d="M 460 285 L 460 260 L 190 260" fill="none" stroke="#7e22ce" stroke-width="1" stroke-dasharray="3,3"/>
-        <polygon points="197,256 197,264 190,260" fill="#7e22ce"/>
-
-        <!-- 节点 -->
-        <rect x="50" y="25" width="140" height="30" rx="15" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
-        <text x="120" y="45" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">收到用户消息</text>
-        <polygon points="120,85 180,110 120,140 60,110" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-        <text x="120" y="114" text-anchor="middle" font-size="10" font-weight="600" fill="#92400e">档位判定</text>
-        <polygon points="120,170 180,195 120,225 60,195" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
-        <text x="120" y="199" text-anchor="middle" font-size="10" font-weight="600" fill="#92400e">M3/4/5?</text>
-        <rect x="50" y="260" width="140" height="50" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
-        <text x="120" y="281" text-anchor="middle" font-size="11" font-weight="600" fill="#b91c1c">Gate pre-start</text>
-        <text x="120" y="297" text-anchor="middle" font-size="9" fill="#dc2626">门禁+握手+busy</text>
-        <rect x="50" y="350" width="140" height="50" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
-        <text x="120" y="371" text-anchor="middle" font-size="11" font-weight="600" fill="#1e40af">执行+pre-write</text>
-        <text x="120" y="387" text-anchor="middle" font-size="9" fill="#1d4ed8">产出交付物</text>
-        <rect x="50" y="440" width="140" height="35" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
-        <text x="120" y="462" text-anchor="middle" font-size="11" font-weight="600" fill="#047857">收工+idle+Handoff</text>
-
-        <!-- 右侧 -->
-        <rect x="315" y="95" width="130" height="30" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
-        <text x="380" y="114" text-anchor="middle" font-size="10" font-weight="500" fill="#047857">M0-M2: 直接回复</text>
-        <rect x="315" y="180" width="140" height="30" rx="6" fill="#f0fdfa" stroke="#0891b2" stroke-width="1.2"/>
-        <text x="385" y="199" text-anchor="middle" font-size="10" font-weight="500" fill="#0f766e">M3: 执行+一行日志</text>
-        <rect x="315" y="270" width="130" height="30" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1.2"/>
-        <text x="380" y="289" text-anchor="middle" font-size="10" font-weight="500" fill="#b91c1c">P0 BLOCK: 终止</text>
-        <rect x="315" y="360" width="130" height="30" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1.2"/>
-        <text x="380" y="379" text-anchor="middle" font-size="10" font-weight="500" fill="#b91c1c">SCOPE_VIOLATION</text>
-        <!-- Spawn 节点 -->
-        <rect x="420" y="290" width="110" height="50" rx="8" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.5"/>
-        <text x="475" y="311" text-anchor="middle" font-size="10" font-weight="600" fill="#7e22ce">Spawn 子任务</text>
-        <text x="475" y="327" text-anchor="middle" font-size="9" fill="#7e22ce">v8_spawn</text>
-
-        <!-- 标注 -->
-        <text x="245" y="106" font-size="8" fill="#059669">M0-M2</text>
-        <text x="245" y="191" font-size="8" fill="#0891b2">M3</text>
-        <text x="95" y="252" font-size="8" fill="#059669">M4/M5</text>
-        <text x="245" y="281" font-size="8" fill="#dc2626">BLOCK</text>
-        <text x="245" y="371" font-size="8" fill="#dc2626">BLOCK</text>
-        <text x="340" y="340" font-size="8" fill="#7e22ce">需要子任务?</text>
-        <text x="340" y="254" font-size="8" fill="#7e22ce">collect 回主流</text>
-
-        <!-- 图例 -->
-        <rect x="540" y="25" width="145" height="110" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1"/>
-        <text x="555" y="42" font-size="9" font-weight="600" fill="#0f172a">图例</text>
-        <rect x="555" y="50" width="10" height="10" rx="2" fill="#fffbeb" stroke="#d97706"/>
-        <text x="572" y="59" font-size="8" fill="#64748b">决策点</text>
-        <rect x="555" y="65" width="10" height="10" rx="5" fill="#f1f5f9" stroke="#64748b"/>
-        <text x="572" y="74" font-size="8" fill="#64748b">起止节点</text>
-        <rect x="555" y="80" width="10" height="10" rx="2" fill="#fef2f2" stroke="#dc2626"/>
-        <text x="572" y="89" font-size="8" fill="#64748b">门禁（红=阻断）</text>
-        <rect x="555" y="95" width="10" height="10" rx="2" fill="#eff6ff" stroke="#1d4ed8"/>
-        <text x="572" y="104" font-size="8" fill="#64748b">执行阶段</text>
-        <rect x="555" y="110" width="10" height="10" rx="2" fill="#faf5ff" stroke="#7e22ce"/>
-        <text x="572" y="119" font-size="8" fill="#64748b">子任务 Spawn</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- Tab 2: 五步工作法 -->
-  <div class="flow-pane" id="flow-sixstep">
-    <div class="flowchart-container">
-      <svg viewBox="0 0 750 420" class="flowchart-svg" xmlns="http://www.w3.org/2000/svg">
-        <!-- 连接线: Step1 → Step2 -->
-        <line x1="160" y1="100" x2="160" y2="140" stroke="#5C1220" stroke-width="2" fill="none"/>
-        <polygon points="156,133 164,133 160,140" fill="#5C1220"/>
-        <!-- 连接线: Step2 → Step3 -->
-        <line x1="160" y1="185" x2="160" y2="220" stroke="#5C1220" stroke-width="2" fill="none"/>
-        <polygon points="156,213 164,213 160,220" fill="#5C1220"/>
-        <!-- 连接线: Step3 → Step4 (L形: 先下再右，连续路径) -->
-        <path d="M 160 275 L 160 370 L 350 370" fill="none" stroke="#5C1220" stroke-width="2"/>
-        <polygon points="343,366 343,374 350,370" fill="#5C1220"/>
-        <!-- 连接线: Step4 → Step5 -->
-        <line x1="480" y1="370" x2="560" y2="370" stroke="#059669" stroke-width="2" fill="none"/>
-        <polygon points="553,366 553,374 560,370" fill="#059669"/>
-        <!-- 打回修复: Step4 顶 → 回到 Step3 右侧 (虚线) -->
-        <path d="M 415 350 L 415 310 L 265 310 L 265 250" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5,3"/>
-        <polygon points="261,257 269,257 265,250" fill="#dc2626"/>
-        <text x="340" y="305" font-size="8" fill="#dc2626" font-weight="500">打回修复</text>
-
-        <!-- Step 1: 工作拆分 -->
-        <rect x="60" y="60" width="200" height="40" rx="8" fill="#f8f4f5" stroke="#5C1220" stroke-width="1.5"/>
-        <circle cx="85" cy="80" r="12" fill="#5C1220"/><text x="85" y="85" text-anchor="middle" font-size="11" font-weight="700" fill="white">1</text>
-        <text x="110" y="76" font-size="12" font-weight="600" fill="#5C1220">工作拆分</text>
-        <text x="110" y="92" font-size="9" fill="#666">需求 → 任务卡 + 依赖</text>
-
-        <!-- Step 2: 计划编排 -->
-        <rect x="60" y="140" width="200" height="45" rx="8" fill="#f8f4f5" stroke="#5C1220" stroke-width="1.5"/>
-        <circle cx="85" cy="163" r="12" fill="#5C1220"/><text x="85" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="white">2</text>
-        <text x="110" y="158" font-size="12" font-weight="600" fill="#5C1220">计划编排</text>
-        <text x="110" y="175" font-size="9" fill="#666">Todo + 时间估算 + 路由</text>
-
-        <!-- Step 3: 工作执行 -->
-        <rect x="60" y="220" width="200" height="55" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
-        <circle cx="85" cy="247" r="12" fill="#1d4ed8"/><text x="85" y="252" text-anchor="middle" font-size="11" font-weight="700" fill="white">3</text>
-        <text x="110" y="241" font-size="12" font-weight="600" fill="#1d4ed8">工作执行</text>
-        <text x="110" y="257" font-size="9" fill="#666">产出 PRD/原型/脚本/代码</text>
-        <text x="110" y="270" font-size="8" fill="#7e22ce">可 Spawn 并行子任务</text>
-
-        <!-- Step 4: 交付检核 -->
-        <rect x="350" y="350" width="130" height="40" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
-        <circle cx="370" cy="370" r="12" fill="#ea580c"/><text x="370" y="375" text-anchor="middle" font-size="11" font-weight="700" fill="white">4</text>
-        <text x="395" y="366" font-size="12" font-weight="600" fill="#ea580c">交付检核</text>
-        <text x="395" y="382" font-size="9" fill="#666">品牌/规范/字段</text>
-
-        <!-- Step 5: 验收完成 -->
-        <rect x="560" y="350" width="130" height="40" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
-        <circle cx="580" cy="370" r="12" fill="#059669"/><text x="580" y="375" text-anchor="middle" font-size="11" font-weight="700" fill="white">5</text>
-        <text x="605" y="366" font-size="12" font-weight="600" fill="#059669">验收完成</text>
-        <text x="605" y="382" font-size="9" fill="#666">收工三件套</text>
-
-        <!-- 右侧信息面板 -->
-        <rect x="380" y="55" width="320" height="220" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1"/>
-        <text x="400" y="78" font-size="10" font-weight="600" fill="#0f172a">各步核心产物</text>
-        <text x="400" y="100" font-size="9" fill="#5C1220" font-weight="600">Step 1</text><text x="450" y="100" font-size="9" fill="#666">02-项目管理/ 下任务卡</text>
-        <text x="400" y="120" font-size="9" fill="#5C1220" font-weight="600">Step 2</text><text x="450" y="120" font-size="9" fill="#666">Todo + 依赖拓扑 + 预算分级</text>
-        <text x="400" y="140" font-size="9" fill="#5C1220" font-weight="600">Step 3</text><text x="450" y="140" font-size="9" fill="#666">PRD / 原型 / 脚本 / 配置</text>
-        <text x="400" y="160" font-size="9" fill="#5C1220" font-weight="600">Step 4</text><text x="450" y="160" font-size="9" fill="#666">检核意见（通过/打回）</text>
-        <text x="400" y="180" font-size="9" fill="#5C1220" font-weight="600">Step 5</text><text x="450" y="180" font-size="9" fill="#666">验收报告 + Handoff</text>
-        <line x1="400" y1="195" x2="680" y2="195" stroke="#e2e8f0" stroke-width="0.5"/>
-        <text x="400" y="215" font-size="9" fill="#64748b" font-weight="600">角色分工</text>
-        <text x="400" y="233" font-size="9" fill="#666">拆分/编排: 阿莫西林 | 执行: 东风/红霉素</text>
-        <text x="400" y="250" font-size="9" fill="#666">检核: 头孢 | 监控: WorkBuddy</text>
-        <text x="400" y="267" font-size="9" fill="#666">最终验收: 阿莫西林 + 用户</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- Tab 3: 错误升级链 -->
-  <div class="flow-pane" id="flow-error">
-    <div class="flowchart-container">
-      <svg viewBox="0 0 700 380" class="flowchart-svg" xmlns="http://www.w3.org/2000/svg">
-        <line x1="180" y1="70" x2="180" y2="95" stroke="#dc2626" stroke-width="1.5"/>
-        <polygon points="176,88 184,88 180,95" fill="#dc2626"/>
-        <line x1="180" y1="145" x2="180" y2="170" stroke="#dc2626" stroke-width="1.5"/>
-        <polygon points="176,163 184,163 180,170" fill="#dc2626"/>
-        <line x1="180" y1="220" x2="180" y2="245" stroke="#dc2626" stroke-width="1.5"/>
-        <polygon points="176,238 184,238 180,245" fill="#dc2626"/>
-        <line x1="180" y1="295" x2="180" y2="320" stroke="#dc2626" stroke-width="1.5"/>
-        <polygon points="176,313 184,313 180,320" fill="#dc2626"/>
-
-        <!-- L0.5 - 用 clipPath 避免 rect 重叠问题 -->
-        <rect x="60" y="25" width="240" height="45" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
-        <rect x="60" y="25" width="40" height="45" rx="8" fill="#ea580c" stroke="none"/>
-        <text x="80" y="52" text-anchor="middle" font-size="11" font-weight="700" fill="white">L0.5</text>
-        <text x="115" y="44" font-size="11" font-weight="600" fill="#5C1220">父 Agent 重试</text>
-        <text x="115" y="60" font-size="9" fill="#888">换模型/拆更细/回收自做 (2次)</text>
-
-        <rect x="60" y="100" width="240" height="45" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
-        <rect x="60" y="100" width="40" height="45" rx="8" fill="#ea580c" stroke="none"/>
-        <text x="80" y="127" text-anchor="middle" font-size="11" font-weight="700" fill="white">L1</text>
-        <text x="115" y="119" font-size="11" font-weight="600" fill="#5C1220">Phoenix 自愈</text>
-        <text x="115" y="135" font-size="9" fill="#888">抗体扫描 + 已知错误匹配</text>
-
-        <rect x="60" y="175" width="240" height="45" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
-        <rect x="60" y="175" width="40" height="45" rx="8" fill="#dc2626" stroke="none"/>
-        <text x="80" y="202" text-anchor="middle" font-size="11" font-weight="700" fill="white">L2</text>
-        <text x="115" y="194" font-size="11" font-weight="600" fill="#5C1220">Owner Agent 修复</text>
-        <text x="115" y="210" font-size="9" fill="#888">出错的 Agent 自己修</text>
-
-        <rect x="60" y="250" width="240" height="45" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
-        <rect x="60" y="250" width="40" height="45" rx="8" fill="#dc2626" stroke="none"/>
-        <text x="80" y="277" text-anchor="middle" font-size="11" font-weight="700" fill="white">L3</text>
-        <text x="115" y="269" font-size="11" font-weight="600" fill="#5C1220">协调者裁决</text>
-        <text x="115" y="285" font-size="9" fill="#888">阿莫西林综合上下文判断</text>
-
-        <rect x="60" y="325" width="240" height="45" rx="8" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
-        <rect x="60" y="325" width="40" height="45" rx="8" fill="#0f172a" stroke="none"/>
-        <text x="80" y="352" text-anchor="middle" font-size="11" font-weight="700" fill="white">L4</text>
-        <text x="115" y="344" font-size="11" font-weight="600" fill="#0f172a">人类拍板</text>
-        <text x="115" y="360" font-size="9" fill="#888">最终兜底 - 人力介入</text>
-
-        <text x="200" y="85" font-size="8" fill="#dc2626">重试耗尽</text>
-        <text x="200" y="160" font-size="8" fill="#dc2626">无匹配抗体</text>
-        <text x="200" y="235" font-size="8" fill="#dc2626">修不了</text>
-        <text x="200" y="310" font-size="8" fill="#dc2626">裁决无解</text>
-
-        <rect x="420" y="80" width="240" height="100" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="1" stroke-dasharray="5,3"/>
-        <text x="540" y="105" text-anchor="middle" font-size="11" font-weight="600" fill="#ea580c">WorkBuddy 全程监听</text>
-        <text x="540" y="125" text-anchor="middle" font-size="9" fill="#666">Agent status=error 自动介入</text>
-        <text x="540" y="145" text-anchor="middle" font-size="9" fill="#666">触发错误升级链</text>
-        <text x="540" y="165" text-anchor="middle" font-size="9" fill="#666">通知协调者 + 用户</text>
-
-        <rect x="420" y="220" width="240" height="80" rx="8" fill="white" stroke="#dc2626" stroke-width="1"/>
-        <text x="540" y="245" text-anchor="middle" font-size="11" font-weight="600" fill="#dc2626">回滚补偿事务</text>
-        <text x="440" y="265" font-size="9" fill="#666">有产出? 完整? 正确? 位置对?</text>
-        <text x="440" y="282" font-size="9" fill="#666">先备份再删除 / 批量保留已完成</text>
-        <text x="440" y="296" font-size="9" fill="#059669" font-weight="500">目标: 回到最后正确状态</text>
-      </svg>
-    </div>
-  </div>
-
-  <!-- Tab 4: 档位判定逻辑 -->
-  <div class="flow-pane" id="flow-gear">
-    <div class="flowchart-container">
-      <svg viewBox="0 0 720 420" class="flowchart-svg" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="200,60 300,110 200,160 100,110" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
-        <text x="200" y="105" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">收到消息</text>
-        <text x="200" y="122" text-anchor="middle" font-size="9" fill="#92400e">纯启发式判定</text>
-
-        <!-- M0/M1/M2 向上 -->
-        <path d="M 100 110 L 30 110 L 30 60" fill="none" stroke="#059669" stroke-width="1.5"/>
-        <polygon points="26,67 34,67 30,60" fill="#059669"/>
-        <rect x="0" y="20" width="60" height="35" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
-        <text x="30" y="35" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">M0</text>
-        <text x="30" y="48" text-anchor="middle" font-size="8" fill="#666">闲聊</text>
-
-        <path d="M 150 65 L 150 30" fill="none" stroke="#059669" stroke-width="1.5"/>
-        <polygon points="146,37 154,37 150,30" fill="#059669"/>
-        <rect x="120" y="0" width="60" height="25" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
-        <text x="150" y="16" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">M1 查状态</text>
-
-        <path d="M 250 65 L 250 30" fill="none" stroke="#059669" stroke-width="1.5"/>
-        <polygon points="246,37 254,37 250,30" fill="#059669"/>
-        <rect x="220" y="0" width="60" height="25" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
-        <text x="250" y="16" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">M2 评审</text>
-
-        <!-- M3 下方 -->
-        <line x1="200" y1="160" x2="200" y2="200" stroke="#0891b2" stroke-width="1.5"/>
-        <polygon points="196,193 204,193 200,200" fill="#0891b2"/>
-        <rect x="140" y="205" width="120" height="35" rx="6" fill="#f0fdfa" stroke="#0891b2" stroke-width="1.5"/>
-        <text x="200" y="220" text-anchor="middle" font-size="10" font-weight="600" fill="#0891b2">M3</text>
-        <text x="200" y="234" text-anchor="middle" font-size="9" fill="#666">单文件 10-20min</text>
-
-        <!-- M4 -->
-        <line x1="200" y1="240" x2="200" y2="280" stroke="#1d4ed8" stroke-width="1.5"/>
-        <polygon points="196,273 204,273 200,280" fill="#1d4ed8"/>
-        <rect x="120" y="285" width="160" height="45" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
-        <text x="200" y="305" text-anchor="middle" font-size="11" font-weight="600" fill="#1d4ed8">M4 产出任务</text>
-        <text x="200" y="320" text-anchor="middle" font-size="9" fill="#666">PRD/方案/规范/脚本</text>
-
-        <!-- M5 -->
-        <line x1="200" y1="330" x2="200" y2="365" stroke="#7e22ce" stroke-width="1.5"/>
-        <polygon points="196,358 204,358 200,365" fill="#7e22ce"/>
-        <rect x="120" y="370" width="160" height="45" rx="8" fill="#faf5ff" stroke="#7e22ce" stroke-width="2"/>
-        <text x="200" y="390" text-anchor="middle" font-size="11" font-weight="600" fill="#7e22ce">M5 跨 Agent</text>
-        <text x="200" y="405" text-anchor="middle" font-size="9" fill="#666">多模块+拆分+预算</text>
-
-        <!-- 右侧规则 -->
-        <rect x="380" y="30" width="320" height="380" rx="10" fill="white" stroke="#e2e8f0" stroke-width="1"/>
-        <text x="400" y="55" font-size="11" font-weight="700" fill="#0f172a">判定规则（满足任一即触发）</text>
-        <text x="400" y="80" font-size="10" font-weight="600" fill="#059669">M0-M2 条件</text>
-        <text x="400" y="98" font-size="9" fill="#666">解释概念 / 纯问答</text>
-        <text x="400" y="112" font-size="9" fill="#666">讨论方案（未到执行）</text>
-        <text x="400" y="126" font-size="9" fill="#666">评审观点 / 比较核对</text>
-        <text x="400" y="140" font-size="9" fill="#666">定时巡检无异常</text>
-        <line x1="400" y1="152" x2="680" y2="152" stroke="#e2e8f0" stroke-width="0.5"/>
-        <text x="400" y="172" font-size="10" font-weight="600" fill="#1d4ed8">M4/M5 触发条件</text>
-        <text x="400" y="190" font-size="9" fill="#666">1. 改多文件 / 高副作用命令</text>
-        <text x="400" y="204" font-size="9" fill="#666">2. 产出可保存交付物</text>
-        <text x="400" y="218" font-size="9" fill="#666">3. 多 Agent 协作 / 任务拆分</text>
-        <text x="400" y="232" font-size="9" fill="#666">4. 用户说"开始做/执行/推进"</text>
-        <text x="400" y="246" font-size="9" fill="#666">5. 已有阶段产物 + 推进意图</text>
-        <line x1="400" y1="258" x2="680" y2="258" stroke="#e2e8f0" stroke-width="0.5"/>
-        <text x="400" y="278" font-size="10" font-weight="600" fill="#ea580c">灰区兜底</text>
-        <text x="400" y="296" font-size="9" fill="#666">有具体对象+明确下一阶段产物</text>
-        <text x="400" y="310" font-size="9" fill="#059669" font-weight="500">  → 默认 M4</text>
-        <text x="400" y="328" font-size="9" fill="#666">"怎么推进"咨询语气</text>
-        <text x="400" y="342" font-size="9" fill="#059669" font-weight="500">  → M2，不建卡</text>
-        <text x="400" y="360" font-size="9" fill="#666">无法判定</text>
-        <text x="400" y="374" font-size="9" fill="#ea580c" font-weight="500">  → S级探测，1轮确认再升档</text>
-        <text x="400" y="396" font-size="9" fill="#dc2626" font-weight="600">铁律: 无握手 = V8 未激活</text>
-      </svg>
-    </div>
-  </div>
-
-  <h3 style="font-size:1.05rem;font-weight:600;margin:1.5rem 0 1rem;">档位判定矩阵</h3>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>档位</th><th>场景</th><th>动作</th><th>生命周期</th></tr></thead>
-      <tbody>
-        <tr><td><strong>M0</strong></td><td>闲聊、概念解释</td><td>直接回复</td><td>无</td></tr>
-        <tr><td><strong>M1</strong></td><td>查命令、看状态</td><td>直接执行</td><td>无</td></tr>
-        <tr><td><strong>M2</strong></td><td>评审方案、比较</td><td>输出结论</td><td>无</td></tr>
-        <tr><td><strong>M3</strong></td><td>单文件修改、10-20min</td><td>轻量执行</td><td>一行日志</td></tr>
-        <tr><td><strong>M4</strong></td><td>PRD/方案/规范/脚本</td><td>完整 pre-flight</td><td>状态+事件+看板</td></tr>
-        <tr><td><strong>M5</strong></td><td>多模块、跨Agent</td><td>pre-flight + 拆分</td><td>完整+Handoff</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<!-- ====== S3 ARCHITECTURE ====== -->
-<section id="architecture">
-  <div class="section-header">
-    <div>
-      <div class="section-eyebrow"><span class="section-eyebrow-dot"></span> S3 Architecture</div>
-      <h2 class="section-title">工具链架构</h2>
-      <p class="section-subtitle">分层组织：生命周期层 / 合规层 / 可观测层 / 通信层</p>
-    </div>
-  </div>
-  <!-- 数据流架构图 -->
-  <div class="arch-diagram">
-    <div class="process-strip-title">数据流与交互关系</div>
-    <svg viewBox="0 0 880 400" class="flowchart-svg" xmlns="http://www.w3.org/2000/svg">
-      <!-- Agent 层 (顶部) -->
-      <rect x="20" y="20" width="840" height="60" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
-      <text x="40" y="44" font-size="10" font-weight="600" fill="#64748b" letter-spacing="0.05em">AGENT 层</text>
-      <rect x="100" y="35" width="80" height="32" rx="6" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.2"/>
-      <text x="140" y="55" text-anchor="middle" font-size="9" font-weight="600" fill="#1d4ed8">东风助手</text>
-      <rect x="200" y="35" width="80" height="32" rx="6" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.2"/>
-      <text x="240" y="55" text-anchor="middle" font-size="9" font-weight="600" fill="#4f46e5">WorkBuddy</text>
-      <rect x="300" y="35" width="80" height="32" rx="6" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
-      <text x="340" y="55" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">阿莫西林</text>
-      <rect x="400" y="35" width="70" height="32" rx="6" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.2"/>
-      <text x="435" y="55" text-anchor="middle" font-size="9" font-weight="600" fill="#0d9488">头孢</text>
-      <rect x="490" y="35" width="70" height="32" rx="6" fill="#fff1f2" stroke="#e11d48" stroke-width="1.2"/>
-      <text x="525" y="55" text-anchor="middle" font-size="9" font-weight="600" fill="#e11d48">红霉素</text>
-
-      <!-- 调用箭头 Agent -> 生命周期 -->
-      <line x1="240" y1="80" x2="240" y2="110" stroke="#64748b" stroke-width="1.2" fill="none"/>
-      <polygon points="236,103 244,103 240,110" fill="#64748b"/>
-      <text x="248" y="100" font-size="8" fill="#64748b">调用</text>
-
-      <!-- 生命周期层 -->
-      <rect x="20" y="115" width="410" height="75" rx="10" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
-      <text x="40" y="135" font-size="10" font-weight="600" fill="#1d4ed8" letter-spacing="0.05em">生命周期层</text>
-      <rect x="40" y="145" width="100" height="28" rx="5" fill="white" stroke="#bfdbfe" stroke-width="1"/>
-      <text x="90" y="163" text-anchor="middle" font-size="8.5" fill="#1e40af">v8-handshake.sh</text>
-      <rect x="150" y="145" width="90" height="28" rx="5" fill="white" stroke="#bfdbfe" stroke-width="1"/>
-      <text x="195" y="163" text-anchor="middle" font-size="8.5" fill="#1e40af">subtask-record</text>
-      <rect x="250" y="145" width="80" height="28" rx="5" fill="white" stroke="#bfdbfe" stroke-width="1"/>
-      <text x="290" y="163" text-anchor="middle" font-size="8.5" fill="#1e40af">xirang-sm</text>
-      <rect x="340" y="145" width="80" height="28" rx="5" fill="white" stroke="#bfdbfe" stroke-width="1"/>
-      <text x="380" y="163" text-anchor="middle" font-size="8.5" fill="#1e40af">xirang-spawn</text>
-
-      <!-- 门禁强制层 -->
-      <rect x="450" y="115" width="410" height="75" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
-      <text x="470" y="135" font-size="10" font-weight="600" fill="#dc2626" letter-spacing="0.05em">门禁强制层</text>
-      <rect x="470" y="145" width="95" height="28" rx="5" fill="white" stroke="#fecaca" stroke-width="1"/>
-      <text x="518" y="163" text-anchor="middle" font-size="8.5" fill="#b91c1c">gate-enforce</text>
-      <rect x="575" y="145" width="90" height="28" rx="5" fill="white" stroke="#fecaca" stroke-width="1"/>
-      <text x="620" y="163" text-anchor="middle" font-size="8.5" fill="#b91c1c">budget-check</text>
-      <rect x="675" y="145" width="75" height="28" rx="5" fill="white" stroke="#fecaca" stroke-width="1"/>
-      <text x="713" y="163" text-anchor="middle" font-size="8.5" fill="#b91c1c">cost-fuse</text>
-      <rect x="760" y="145" width="85" height="28" rx="5" fill="white" stroke="#fecaca" stroke-width="1"/>
-      <text x="803" y="163" text-anchor="middle" font-size="8.5" fill="#b91c1c">pre-write-chk</text>
-
-      <!-- 调用关系: 生命周期 -> 门禁 -->
-      <line x1="430" y1="152" x2="450" y2="152" stroke="#dc2626" stroke-width="1.5" fill="none"/>
-      <polygon points="443,148 443,156 450,152" fill="#dc2626"/>
-      <text x="435" y="145" font-size="7.5" fill="#dc2626">硬调用</text>
-
-      <!-- Lint 层 -->
-      <rect x="20" y="215" width="410" height="75" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
-      <text x="40" y="235" font-size="10" font-weight="600" fill="#059669" letter-spacing="0.05em">合规 Lint 层</text>
-      <rect x="40" y="245" width="80" height="28" rx="5" fill="white" stroke="#a7f3d0" stroke-width="1"/>
-      <text x="80" y="263" text-anchor="middle" font-size="8.5" fill="#047857">xirang-lint</text>
-      <rect x="130" y="245" width="80" height="28" rx="5" fill="white" stroke="#a7f3d0" stroke-width="1"/>
-      <text x="170" y="263" text-anchor="middle" font-size="8.5" fill="#047857">frontmatter</text>
-      <rect x="220" y="245" width="60" height="28" rx="5" fill="white" stroke="#a7f3d0" stroke-width="1"/>
-      <text x="250" y="263" text-anchor="middle" font-size="8.5" fill="#047857">path</text>
-      <rect x="290" y="245" width="60" height="28" rx="5" fill="white" stroke="#a7f3d0" stroke-width="1"/>
-      <text x="320" y="263" text-anchor="middle" font-size="8.5" fill="#047857">brand</text>
-      <rect x="360" y="245" width="60" height="28" rx="5" fill="white" stroke="#a7f3d0" stroke-width="1"/>
-      <text x="390" y="263" text-anchor="middle" font-size="8.5" fill="#047857">state-lint</text>
-
-      <!-- 通信与可观测层 -->
-      <rect x="450" y="215" width="410" height="75" rx="10" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.5"/>
-      <text x="470" y="235" font-size="10" font-weight="600" fill="#7e22ce" letter-spacing="0.05em">通信与可观测层</text>
-      <rect x="470" y="245" width="80" height="28" rx="5" fill="white" stroke="#e9d5ff" stroke-width="1"/>
-      <text x="510" y="263" text-anchor="middle" font-size="8.5" fill="#7e22ce">msg-queue</text>
-      <rect x="560" y="245" width="80" height="28" rx="5" fill="white" stroke="#e9d5ff" stroke-width="1"/>
-      <text x="600" y="263" text-anchor="middle" font-size="8.5" fill="#7e22ce">cost-events</text>
-      <rect x="650" y="245" width="95" height="28" rx="5" fill="white" stroke="#e9d5ff" stroke-width="1"/>
-      <text x="698" y="263" text-anchor="middle" font-size="8.5" fill="#7e22ce">health-metrics</text>
-      <rect x="755" y="245" width="90" height="28" rx="5" fill="white" stroke="#e9d5ff" stroke-width="1"/>
-      <text x="800" y="263" text-anchor="middle" font-size="8.5" fill="#7e22ce">event-rotate</text>
-
-      <!-- 数据存储层 (底部) -->
-      <rect x="20" y="320" width="840" height="65" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <text x="40" y="340" font-size="10" font-weight="600" fill="#64748b" letter-spacing="0.05em">持久化存储</text>
-      <rect x="60" y="350" width="130" height="24" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
-      <text x="125" y="366" text-anchor="middle" font-size="8" fill="#475569">智能体状态/*.md</text>
-      <rect x="210" y="350" width="120" height="24" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
-      <text x="270" y="366" text-anchor="middle" font-size="8" fill="#475569">智能体事件.jsonl</text>
-      <rect x="350" y="350" width="120" height="24" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
-      <text x="410" y="366" text-anchor="middle" font-size="8" fill="#475569">cost-events.jsonl</text>
-      <rect x="490" y="350" width="130" height="24" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
-      <text x="555" y="366" text-anchor="middle" font-size="8" fill="#475569">msg-queue.jsonl</text>
-      <rect x="640" y="350" width="140" height="24" rx="4" fill="white" stroke="#e2e8f0" stroke-width="1"/>
-      <text x="710" y="366" text-anchor="middle" font-size="8" fill="#475569">_temp/subtasks/*.json</text>
-
-      <!-- 垂直连线: 各层 -> 存储 -->
-      <path d="M 200 190 L 200 215" stroke="#1d4ed8" stroke-width="1" stroke-dasharray="3,2"/>
-      <path d="M 200 290 L 200 320" stroke="#059669" stroke-width="1" stroke-dasharray="3,2"/>
-      <path d="M 650 290 L 650 320" stroke="#7e22ce" stroke-width="1" stroke-dasharray="3,2"/>
-      <path d="M 650 190 L 650 215" stroke="#dc2626" stroke-width="1" stroke-dasharray="3,2"/>
-
-      <!-- Agent -> 门禁 -->
-      <path d="M 525 80 L 650 115" stroke="#dc2626" stroke-width="1" stroke-dasharray="3,2"/>
-    </svg>
-  </div>
-
-  <!-- 保留原有文件树（折叠） -->
-  <details style="margin-top:1.5rem;">
-    <summary style="cursor:pointer;font-size:0.95rem;font-weight:600;color:var(--fg-muted);padding:0.75rem 0;">展开：完整工具文件清单</summary>
-  <div class="fntree" style="margin-top:0.75rem;">
-    <div class="fntree-row cols-2">
-      <div class="fntree-layer clr-blue">
-        <div class="fntree-layer-head">
-          <span class="fntree-layer-icon">C</span>
-          <div>
-            <div class="fntree-layer-title">生命周期层</div>
-            <div class="fntree-layer-sub">任务启动 / spawn / collect / 关闭</div>
-          </div>
-        </div>
-        <div class="fntree-modules">
-          <div class="fntree-mod"><span class="fntree-mod-id">core</span><span>v8-handshake.sh (v1.4.0)</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">P1</span><span>subtask-record.py</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">P1</span><span>subtask-query.py</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">lib</span><span>xirang-sm.py (状态机)</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">gen</span><span>xirang-spawn.py (prompt 生成)</span></div>
-        </div>
-      </div>
-      <div class="fntree-layer clr-red">
-        <div class="fntree-layer-head">
-          <span class="fntree-layer-icon">G</span>
-          <div>
-            <div class="fntree-layer-title">门禁强制层</div>
-            <div class="fntree-layer-sub">P0 硬阻断 / P1-P3 advisory</div>
-          </div>
-        </div>
-        <div class="fntree-modules">
-          <div class="fntree-mod"><span class="fntree-mod-id">P4</span><span>gate-enforce.py (统一入口)</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">P3</span><span>spawn-budget-check.py</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">P3</span><span>cost-fuse.py (成本熔断)</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">v8</span><span>pre-start-check.py</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">v8</span><span>pre-write-check.py</span></div>
-        </div>
-      </div>
-      <div class="fntree-layer clr-green">
-        <div class="fntree-layer-head">
-          <span class="fntree-layer-icon">L</span>
-          <div>
-            <div class="fntree-layer-title">合规 Lint 层</div>
-            <div class="fntree-layer-sub">六脉检查 + Schema 验证</div>
-          </div>
-        </div>
-        <div class="fntree-modules">
-          <div class="fntree-mod"><span class="fntree-mod-id">主控</span><span>xirang-lint.py</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">sub</span><span>frontmatter / path / brand-lint.py</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">P0</span><span>agent-state-lint.py</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">sh</span><span>post-write-check.sh</span></div>
-        </div>
-      </div>
-      <div class="fntree-layer clr-purple">
-        <div class="fntree-layer-head">
-          <span class="fntree-layer-icon">O</span>
-          <div>
-            <div class="fntree-layer-title">通信与可观测层</div>
-            <div class="fntree-layer-sub">消息队列 / 成本 / 健康度</div>
-          </div>
-        </div>
-        <div class="fntree-modules">
-          <div class="fntree-mod"><span class="fntree-mod-id">P2</span><span>msg-queue.py (Agent 通信)</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">obs</span><span>agent-cost-events.py</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">obs</span><span>v8-cost-observability.py</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">obs</span><span>v8-health-metrics.py</span></div>
-          <div class="fntree-mod"><span class="fntree-mod-id">P5B</span><span>event-rotate.py (事件轮转)</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  </details>
-</section>
-
-<!-- ====== S4 TOOLS ====== -->
-<section id="tools" class="section-alt">
-  <div class="section-header">
-    <div>
-      <div class="section-eyebrow"><span class="section-eyebrow-dot"></span> S4 Tool Details</div>
-      <h2 class="section-title">核心工具详情</h2>
-      <p class="section-subtitle">点击左侧查看工具用途、CLI 接口与关键行为</p>
-    </div>
-  </div>
-  <div class="splitview">
-    <div class="splitview-list" data-sv="tools">
-      <div class="splitview-item clr-blue active" data-svtarget="tool-handshake"><span class="sv-id">1</span><span class="sv-name">v8-handshake.sh</span></div>
-      <div class="splitview-item clr-red" data-svtarget="tool-gate"><span class="sv-id">2</span><span class="sv-name">gate-enforce.py</span></div>
-      <div class="splitview-item clr-blue" data-svtarget="tool-subtask"><span class="sv-id">3</span><span class="sv-name">subtask-record.py</span></div>
-      <div class="splitview-item clr-purple" data-svtarget="tool-msgqueue"><span class="sv-id">4</span><span class="sv-name">msg-queue.py</span></div>
-      <div class="splitview-item clr-orange" data-svtarget="tool-budget"><span class="sv-id">5</span><span class="sv-name">spawn-budget-check.py</span></div>
-      <div class="splitview-item clr-green" data-svtarget="tool-lint"><span class="sv-id">6</span><span class="sv-name">xirang-lint.py</span></div>
-    </div>
-    <div class="splitview-detail">
-      <div class="sv-pane clr-blue active" id="tool-handshake">
-        <div class="modhead">
-          <div class="modhead-meta"><span class="badge badge-info">核心</span><span class="tag clr-blue">Bash</span><span class="badge badge-success">v1.4.0</span></div>
-          <h3 class="modhead-title">v8-handshake.sh</h3>
-          <p class="modhead-desc">运行时握手工具。source 后调用 4 个函数管理任务全生命周期。v1.4.0 内嵌 gate-enforce 硬门禁。</p>
-        </div>
-        <div class="modblock"><h4>CLI 接口</h4><ul>
-          <li><code>v8_handshake &lt;档位&gt; &lt;任务名&gt; &lt;写入范围&gt; [验收方] [agent_id]</code></li>
-          <li><code>v8_spawn &lt;task_id&gt; &lt;sub_id&gt; &lt;agent&gt; &lt;model&gt; &lt;type&gt; &lt;name&gt; &lt;scope&gt;</code></li>
-          <li><code>v8_collect &lt;task_id&gt; &lt;sub_id&gt; [agent] [tokens] [cost]</code></li>
-          <li><code>v8_end &lt;task_id&gt; [agent_id] [result]</code></li>
-          <li><code>v8_log &lt;summary&gt; [result] [path]</code> (M3 轻量)</li>
-        </ul></div>
-        <div class="modblock"><h4>关键行为</h4><ul>
-          <li>M4/M5 自动触发 gate pre-start 门禁</li>
-          <li>更新 Agent 状态文件（status/current_task/heartbeat）</li>
-          <li>追加 task_start / task_end 到智能体事件.jsonl</li>
-          <li>M3 不触发门禁（轻量设计）</li>
-          <li>gate-enforce.py 不存在时优雅降级（[GATE-SKIP]）</li>
-        </ul></div>
-      </div>
-      <div class="sv-pane clr-red" id="tool-gate">
-        <div class="modhead">
-          <div class="modhead-meta"><span class="badge badge-info">Phase 4</span><span class="tag clr-red">Python</span><span class="badge badge-success">v1.0.0</span></div>
-          <h3 class="modhead-title">gate-enforce.py</h3>
-          <p class="modhead-desc">统一门禁入口。4 个子命令覆盖任务生命周期关键点。P0 = exit 1 硬阻断。</p>
-        </div>
-        <div class="modblock"><h4>子命令</h4><ul>
-          <li><code>pre-start</code> — Agent 已 busy / 任务被阻塞 → block</li>
-          <li><code>pre-spawn</code> — 无 task_id / 成本熔断 / 写入越权 → block</li>
-          <li><code>pre-write</code> — 路径越权 / 禁止目录 → block</li>
-          <li><code>pre-end</code> — 状态机非法转换 → block</li>
-        </ul></div>
-        <div class="modblock"><h4>优先级分级</h4><ul>
-          <li>P0: 硬阻断（exit 1）— AGENT_BUSY / FUSE_BLOWN / SCOPE_VIOLATION 等</li>
-          <li>P1: Advisory — BUDGET_WARNING / FRONTMATTER_MISSING / UNCOLLECTED_SUBTASKS</li>
-          <li>P2: Advisory — EMOJI_DETECTED / MODEL_DOWNGRADE</li>
-          <li>P3: Advisory — BRAND_COLOR</li>
-        </ul></div>
-      </div>
-      <div class="sv-pane clr-blue" id="tool-subtask">
-        <div class="modhead">
-          <div class="modhead-meta"><span class="badge badge-info">Phase 1</span><span class="tag clr-blue">Python</span><span class="badge badge-success">v1.0.0</span></div>
-          <h3 class="modhead-title">subtask-record.py</h3>
-          <p class="modhead-desc">子任务运行时记录 CRUD。每个 spawn 的子 Agent 都有一份 JSON 记录。</p>
-        </div>
-        <div class="modblock"><h4>子命令</h4><ul>
-          <li><code>create</code> — 创建子任务记录（JSON 文件）</li>
-          <li><code>transition</code> — 推进状态（PENDING → RUNNING → SUCCESS/FAILED）</li>
-          <li><code>collect</code> — 收集结果，标记 COLLECTED</li>
-          <li><code>destroy</code> — 销毁记录（清理）</li>
-        </ul></div>
-        <div class="modblock"><h4>存储位置</h4><ul>
-          <li><code>_temp/{task_id}/subtasks/{sub_id}.json</code></li>
-          <li>v8_spawn 自动调用 create，v8_collect 自动调用 collect</li>
-        </ul></div>
-      </div>
-      <div class="sv-pane clr-purple" id="tool-msgqueue">
-        <div class="modhead">
-          <div class="modhead-meta"><span class="badge badge-info">Phase 2</span><span class="tag clr-purple">Python</span><span class="badge badge-success">v1.0.0</span></div>
-          <h3 class="modhead-title">msg-queue.py</h3>
-          <p class="modhead-desc">Agent 间结构化通知。本地 JSONL + fcntl.flock 全局锁，解决并发安全。</p>
-        </div>
-        <div class="modblock"><h4>子命令</h4><ul>
-          <li><code>enqueue --to &lt;agent&gt; --type &lt;type&gt; --payload '{}'</code></li>
-          <li><code>dequeue --agent &lt;id&gt;</code> — 取出最早未处理消息</li>
-          <li><code>peek --agent &lt;id&gt;</code> — 只看不取</li>
-          <li><code>ack --id &lt;msg_id&gt;</code> — 确认处理完毕</li>
-          <li><code>expire --max-age 3600</code> — 清理过期消息</li>
-        </ul></div>
-      </div>
-      <div class="sv-pane clr-orange" id="tool-budget">
-        <div class="modhead">
-          <div class="modhead-meta"><span class="badge badge-info">Phase 3</span><span class="tag clr-orange">Python</span><span class="badge badge-success">v1.0.0</span></div>
-          <h3 class="modhead-title">spawn-budget-check.py</h3>
-          <p class="modhead-desc">Spawn 前预算评估。绿灯/黄灯/红灯 + 模型降级路径。</p>
-        </div>
-        <div class="modblock"><h4>信号灯</h4><ul>
-          <li>绿灯（exit 0）：预算充裕，可 spawn</li>
-          <li>黄灯（exit 1）：建议降级模型（opus→sonnet→haiku）</li>
-          <li>红灯（exit 2）：所有模型均超预算，禁止 spawn</li>
-        </ul></div>
-        <div class="modblock"><h4>降级路径</h4><ul>
-          <li>opus (21.84 CNY/1K) → sonnet (4.56) → haiku (0.375) → deepseek (0.55)</li>
-          <li>保留 20% buffer 作为安全边际</li>
-        </ul></div>
-      </div>
-      <div class="sv-pane clr-green" id="tool-lint">
-        <div class="modhead">
-          <div class="modhead-meta"><span class="badge badge-info">V8</span><span class="tag clr-green">Python</span><span class="badge badge-success">v1.0</span></div>
-          <h3 class="modhead-title">xirang-lint.py</h3>
-          <p class="modhead-desc">六脉合规主控。调度所有合规检查脚本，输出汇总报告。</p>
-        </div>
-        <div class="modblock"><h4>六脉检查项</h4><ul>
-          <li><code>brand</code> — 品牌色值/字体/命名</li>
-          <li><code>fm</code> — Frontmatter 深度校验</li>
-          <li><code>path</code> — 路径结构/命名/孤儿</li>
-          <li><code>pre</code> — 产物合规 pre-write</li>
-          <li><code>link</code> — Wiki-link 有效性 (TODO)</li>
-          <li><code>size</code> — 文件体积/行数限制</li>
-        </ul></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ====== S5 AGENTS ====== -->
-<section id="agents">
-  <div class="section-header">
-    <div>
-      <div class="section-eyebrow"><span class="section-eyebrow-dot"></span> S5 Agent Roster</div>
-      <h2 class="section-title">Agent 角色</h2>
-      <p class="section-subtitle">5 个协作 Agent，3 个平台，差异化能力与资源约束</p>
-    </div>
-  </div>
-  <div class="grid grid-3">
-    <div class="card card-hover clr-blue">
-      <div class="card-header"><div class="card-icon">D</div><h3 class="card-title">东风助手</h3></div>
-      <div class="card-desc"><strong>Claudian</strong> · dongfeng<br/>技术执行 / 方案设计 / PRD / 原型 / 脚本<br/><span class="badge badge-success">无额度限制</span></div>
-    </div>
-    <div class="card card-hover clr-indigo">
-      <div class="card-header"><div class="card-icon">W</div><h3 class="card-title">WorkBuddy</h3></div>
-      <div class="card-desc"><strong>Claudian</strong> · workbuddy<br/>监控 / 巡检 / 轻量协调<br/><span class="badge badge-success">无额度限制</span></div>
-    </div>
-    <div class="card card-hover clr-green">
-      <div class="card-header"><div class="card-icon">A</div><h3 class="card-title">阿莫西林</h3></div>
-      <div class="card-desc"><strong>OpenClaw</strong> · xiaochong<br/>协调中枢 / MOC / 轻量执行<br/><span class="badge badge-success">无上限</span></div>
-    </div>
-    <div class="card card-hover clr-teal">
-      <div class="card-header"><div class="card-icon">T</div><h3 class="card-title">头孢</h3></div>
-      <div class="card-desc"><strong>Hermes</strong> · toubao<br/>资料采集 / 竞品 / 审核报告<br/><span class="badge badge-success">无上限</span></div>
-    </div>
-    <div class="card card-hover clr-rose">
-      <div class="card-header"><div class="card-icon">H</div><h3 class="card-title">红霉素</h3></div>
-      <div class="card-desc"><strong>Codex</strong> · hongmeisu<br/>代码审核 / 批量生成<br/><span class="badge badge-warning">有冷却 5h + 额度</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ====== S6 RULES ====== -->
-<section id="rules" class="section-alt">
-  <div class="section-header">
-    <div>
-      <div class="section-eyebrow"><span class="section-eyebrow-dot"></span> S6 Iron Rules</div>
-      <h2 class="section-title">铁律与约束</h2>
-      <p class="section-subtitle">所有 Agent 必须遵守的不可协商规则</p>
-    </div>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>#</th><th>规则</th><th>违反后果</th></tr></thead>
-      <tbody>
-        <tr><td><strong>1</strong></td><td>所有项目操作必须记录看板</td><td>任务不可追踪</td></tr>
-        <tr><td><strong>2</strong></td><td>先核实文件系统，再信看板记录</td><td>基于过时信息决策</td></tr>
-        <tr><td><strong>3</strong></td><td>进 Vault 工作必须先走 MOC → 看板 → RESOLVER</td><td>遗漏上下文</td></tr>
-        <tr><td><strong>4</strong></td><td>禁止跨 Vault 操作</td><td>安全边界被突破</td></tr>
-        <tr><td><strong>5</strong></td><td>修改 00-MOC/ 必须说明目的</td><td>共享状态被意外修改</td></tr>
-        <tr><td><strong>6</strong></td><td>修改 30-规范/ 必须同步变更日志</td><td>规范变更不可追溯</td></tr>
-        <tr><td><strong>7</strong></td><td>无握手输出的 M3+ 任务 = V8 未激活</td><td>绕过治理框架</td></tr>
-        <tr><td><strong>8</strong></td><td>禁止装饰性 emoji（除非用户要求）</td><td>lint 报错</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3 style="font-size:1.05rem;font-weight:600;margin:2rem 0 1rem;">Gate P0 硬阻断规则</h3>
-  <div class="grid grid-2">
-    <div class="card clr-red">
-      <div class="card-header"><div class="card-icon">X</div><h3 class="card-title">pre-start / pre-end</h3></div>
-      <div class="card-desc">
-        <code>AGENT_BUSY</code> — 重复激活<br/>
-        <code>TASK_BLOCKED</code> — 任务被阻塞<br/>
-        <code>TASK_CANCELLED</code> — 任务已完成/取消<br/>
-        <code>ALREADY_IDLE</code> — 重复关闭
-      </div>
-    </div>
-    <div class="card clr-red">
-      <div class="card-header"><div class="card-icon">X</div><h3 class="card-title">pre-spawn / pre-write</h3></div>
-      <div class="card-desc">
-        <code>NO_TASK_ID</code> — 幽灵进程<br/>
-        <code>FUSE_BLOWN</code> — 成本熔断<br/>
-        <code>SCOPE_VIOLATION</code> — 写入越权<br/>
-        <code>PATH_FORBIDDEN</code> — 禁止目录
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ====== S7 DECISIONS ====== -->
-<section id="decisions">
-  <div class="section-header">
-    <div>
-      <div class="section-eyebrow"><span class="section-eyebrow-dot"></span> S7 Design Decisions</div>
-      <h2 class="section-title">关键设计决策</h2>
-      <p class="section-subtitle">V8.5 升级过程中的技术选型与架构决策</p>
-    </div>
-  </div>
-  <div class="grid grid-2">
-    <div class="decision-card clr-blue">
-      <div class="decision-head"><span class="decision-num">1</span><h4 class="decision-title">门禁实现方式</h4></div>
-      <div class="decision-choice">统一入口 + handshake 硬嵌入</div>
-      <div class="decision-reason">gate-enforce.py 作为编排层封装既有检查，v8-handshake 在生命周期函数中硬调用，Agent 不可绕过。</div>
-    </div>
-    <div class="decision-card clr-purple">
-      <div class="decision-head"><span class="decision-num">2</span><h4 class="decision-title">拦截分级</h4></div>
-      <div class="decision-choice">P0 硬阻断 / P1-P3 Advisory</div>
-      <div class="decision-reason">P0 违规严重到必须修复。P1-P3 输出到 stderr 提醒但不阻断，避免过度治理影响效率。</div>
-    </div>
-    <div class="decision-card clr-green">
-      <div class="decision-head"><span class="decision-num">3</span><h4 class="decision-title">消息队列并发模型</h4></div>
-      <div class="decision-choice">全局 flock 文件锁</div>
-      <div class="decision-reason">JSONL 文件驱动，fcntl.flock 全局锁保证 read-modify-write 原子性。10 进程并发压测零丢失。</div>
-    </div>
-    <div class="decision-card clr-orange">
-      <div class="decision-head"><span class="decision-num">4</span><h4 class="decision-title">M3 是否加门禁</h4></div>
-      <div class="decision-choice">不加</div>
-      <div class="decision-reason">M3 是 10-20 分钟轻量操作，加门禁开销不合理。仅 M4/M5 触发 gate check。</div>
-    </div>
-    <div class="decision-card clr-teal">
-      <div class="decision-head"><span class="decision-num">5</span><h4 class="decision-title">工具不存在时的行为</h4></div>
-      <div class="decision-choice">优雅降级（不阻断）</div>
-      <div class="decision-reason">gate-enforce.py 删除后 handshake 输出 [GATE-SKIP] warning 继续运行。回滚只需删文件。</div>
-    </div>
-    <div class="decision-card clr-indigo">
-      <div class="decision-head"><span class="decision-num">6</span><h4 class="decision-title">V8 与 V8.5 的关系</h4></div>
-      <div class="decision-choice">扩展层，非替换</div>
-      <div class="decision-reason">V8 正文永久冻结。V8.5 是可执行运行时层，两者共存。封版后只接受 bugfix。</div>
-    </div>
-  </div>
-</section>
-
-<!-- ====== S8 OPEN QUESTIONS ====== -->
-<section id="oq" class="section-alt">
-  <div class="section-header">
-    <div>
-      <div class="section-eyebrow"><span class="section-eyebrow-dot"></span> S8 Open Questions</div>
-      <h2 class="section-title">开放问题</h2>
-      <p class="section-subtitle">待后续版本解决的问题</p>
-    </div>
-  </div>
-  <div class="oq-card">
-    <span class="oq-id">OQ-01</span>
-    <div class="oq-q">事件流轮转的自动化触发机制</div>
-    <div class="oq-default">当前 event-rotate.py 需手动或 cron 触发。是否集成到 WorkBuddy 巡检中自动执行？<br/><strong>默认：</strong>暂不自动，由 WorkBuddy 巡检时建议用户执行。</div>
-  </div>
-  <div class="oq-card">
-    <span class="oq-id">OQ-02</span>
-    <div class="oq-q">非 Claudian Agent 的真实成本采集</div>
-    <div class="oq-default">OpenClaw/Hermes 无法自动报告 token 消耗。如何低成本采集？<br/><strong>默认：</strong>调度方手动估算并 append，source=manual。V9 考虑 API 自动化。</div>
-  </div>
-  <div class="oq-card">
-    <span class="oq-id">OQ-03</span>
-    <div class="oq-q">V9 跨机器协议何时从 spike 升级为正式</div>
-    <div class="oq-default">xirang-a2a-client/server 目前为 v0.1 spike。何时有真实需求驱动升级？<br/><strong>默认：</strong>等待真实跨机器场景出现（如 CI/CD Agent），不提前过度设计。</div>
-  </div>
-</section>
-
-</div><!-- /.container -->
-
-<!-- ====== CTA: Quick Start ====== -->
-<section id="quickstart" style="padding:3rem 0;">
+<!-- ====== V9 Core Innovation ====== -->
+<section class="section-alt">
   <div class="container">
-    <div class="card" style="text-align:center;padding:3rem 2rem;background:linear-gradient(135deg,#eff6ff 0%,#faf5ff 100%);border-color:#dbeafe;">
-      <h2 style="font-size:1.5rem;font-weight:700;margin-bottom:0.75rem;">想接入息壤？3 步开始</h2>
-      <p style="color:var(--fg-muted);font-size:1rem;margin-bottom:2rem;max-width:36rem;margin-left:auto;margin-right:auto;">无论你是新 Agent 还是想了解方法论的人类，下面是最快的上手路径。</p>
-      <div class="grid grid-3" style="text-align:left;max-width:48rem;margin:0 auto;">
-        <div class="card">
-          <div style="font-size:1.5rem;font-weight:700;color:var(--primary);margin-bottom:0.5rem;">1</div>
-          <h4 style="font-size:0.95rem;margin-bottom:0.375rem;">读运行时契约卡</h4>
-          <p class="card-desc">8 条铁律，5 分钟读完。这是 Agent 唯一必须加载的文件。</p>
-        </div>
-        <div class="card">
-          <div style="font-size:1.5rem;font-weight:700;color:#7e22ce;margin-bottom:0.5rem;">2</div>
-          <h4 style="font-size:0.95rem;margin-bottom:0.375rem;">跑一次 M3 任务</h4>
-          <p class="card-desc">source v8-handshake.sh，调 v8_log，体验轻量收工。无门禁，零风险。</p>
-        </div>
-        <div class="card">
-          <div style="font-size:1.5rem;font-weight:700;color:#059669;margin-bottom:0.5rem;">3</div>
-          <h4 style="font-size:0.95rem;margin-bottom:0.375rem;">升级到 M4</h4>
-          <p class="card-desc">调 v8_handshake M4，触发门禁，写产物，体验完整生命周期。</p>
-        </div>
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#7e22ce"></span> <span style="color:#7e22ce">核心创新</span></div>
+        <h2 class="section-title">一个判断，统一所有规则</h2>
+        <p class="section-subtitle">V9 将合规入口从 V8 的六档分类简化为一个二元判断——写文件还是不写文件。</p>
       </div>
-      <div style="margin-top:2rem;">
-        <a href="https://disturbo.github.io/xirang/" class="btn btn-primary" target="_blank" style="margin-right:0.5rem;">公网访问本页</a>
-        <a href="#tools" class="btn btn-outline">查看工具链详情</a>
+    </div>
+
+    <div class="flowchart-container">
+      <svg viewBox="0 0 500 200" class="flowchart-svg" xmlns="http://www.w3.org/2000/svg" style="max-width:500px;">
+        <!-- 收到消息 -->
+        <rect x="10" y="80" width="90" height="36" rx="18" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="55" y="103" text-anchor="middle" font-size="11" font-weight="600" fill="#1d4ed8">收到消息</text>
+
+        <!-- Arrow to decision -->
+        <line x1="100" y1="98" x2="140" y2="98" stroke="#1d4ed8" stroke-width="1.5"/>
+        <polygon points="134,94 134,102 141,98" fill="#1d4ed8"/>
+
+        <!-- Decision diamond -->
+        <polygon points="190,98 230,75 270,98 230,121" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+        <text x="230" y="95" text-anchor="middle" font-size="9" font-weight="600" fill="#92400e">会写文件</text>
+        <text x="230" y="107" text-anchor="middle" font-size="9" font-weight="600" fill="#92400e">吗？</text>
+
+        <!-- No path (up) -->
+        <line x1="230" y1="75" x2="230" y2="40" stroke="#059669" stroke-width="1.5"/>
+        <polygon points="226,47 234,47 230,40" fill="#059669"/>
+        <rect x="180" y="10" width="100" height="30" rx="15" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+        <text x="230" y="29" text-anchor="middle" font-size="10" font-weight="600" fill="#047857">直接回复</text>
+        <text x="260" y="65" font-size="8" fill="#059669" font-weight="500">不写</text>
+
+        <!-- Yes path (right) -->
+        <line x1="270" y1="98" x2="305" y2="98" stroke="#7e22ce" stroke-width="1.5"/>
+        <polygon points="299,94 299,102 306,98" fill="#7e22ce"/>
+        <text x="287" y="91" font-size="8" fill="#7e22ce" font-weight="500">写</text>
+
+        <!-- 声明 -->
+        <rect x="305" y="82" width="56" height="32" rx="6" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.5"/>
+        <text x="333" y="102" text-anchor="middle" font-size="10" font-weight="600" fill="#7e22ce">声明</text>
+
+        <!-- Arrow to 档位 -->
+        <line x1="361" y1="98" x2="380" y2="98" stroke="#7e22ce" stroke-width="1.2"/>
+        <polygon points="374,94 374,102 381,98" fill="#7e22ce"/>
+
+        <!-- 档位 -->
+        <rect x="380" y="78" width="50" height="40" rx="6" fill="#faf5ff" stroke="#7e22ce" stroke-width="1.2"/>
+        <text x="405" y="95" text-anchor="middle" font-size="8" font-weight="500" fill="#7e22ce">M3</text>
+        <text x="405" y="106" text-anchor="middle" font-size="8" font-weight="500" fill="#7e22ce">M4</text>
+        <text x="405" y="117" text-anchor="middle" font-size="8" font-weight="500" fill="#7e22ce">M5</text>
+
+        <!-- Arrow to 执行 -->
+        <line x1="405" y1="118" x2="405" y2="145" stroke="#7e22ce" stroke-width="1.2"/>
+        <polygon points="401,139 409,139 405,146" fill="#7e22ce"/>
+
+        <!-- 执行 -->
+        <rect x="375" y="146" width="60" height="26" rx="6" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.2"/>
+        <text x="405" y="163" text-anchor="middle" font-size="9" font-weight="600" fill="#1d4ed8">执行</text>
+
+        <!-- Arrow to 收工 -->
+        <line x1="435" y1="159" x2="455" y2="159" stroke="#1d4ed8" stroke-width="1.2"/>
+        <polygon points="449,155 449,163 456,159" fill="#1d4ed8"/>
+
+        <!-- 收工 -->
+        <rect x="455" y="146" width="40" height="26" rx="13" fill="#ecfdf5" stroke="#059669" stroke-width="1.2"/>
+        <text x="475" y="163" text-anchor="middle" font-size="9" font-weight="600" fill="#047857">收工</text>
+
+        <!-- Zero-overhead label -->
+        <text x="230" y="54" text-anchor="middle" font-size="7.5" fill="#059669">（零开销）</text>
+      </svg>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card clr-green">
+        <div class="card-header">
+          <div class="card-icon">-</div>
+          <h3 class="card-title">不写文件</h3>
+        </div>
+        <div class="card-desc">解释概念、讨论方案、评审核对、闲聊问答、状态巡检 — 零合规开销，直接回复。</div>
+      </div>
+      <div class="card clr-purple">
+        <div class="card-header">
+          <div class="card-icon">+</div>
+          <h3 class="card-title">写文件</h3>
+        </div>
+        <div class="card-desc">新建或修改任何文件 — 必须声明（M3 一行 / M4 完整块 / M5 加预算），Gate 自动拦截违规。</div>
       </div>
     </div>
   </div>
 </section>
 
-<footer>
-  <div class="footer-brand">息壤 Xi Rang V8.5.0</div>
-  <div class="footer-meta">封版: 2026-05-25 · 全部 Phase 交付 · 作者: dongfeng · <a href="https://disturbo.github.io/xirang/" target="_blank">公网链接</a></div>
+<!-- ====== Capabilities Overview ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#1d4ed8"></span> <span style="color:#1d4ed8">核心能力</span></div>
+        <h2 class="section-title">六个维度的工程化治理</h2>
+      </div>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card card-hover clr-blue">
+        <div class="card-header">
+          <div class="card-icon">分</div>
+          <h3 class="card-title">角色分工</h3>
+        </div>
+        <div class="card-desc">6 个原子 Agent 各有职责边界，不越权不重叠</div>
+      </div>
+      <div class="card card-hover clr-teal">
+        <div class="card-header">
+          <div class="card-icon">流</div>
+          <h3 class="card-title">流程管道</h3>
+        </div>
+        <div class="card-desc">六步流程：拆分→计划→执行→监控→检核→验收</div>
+      </div>
+      <div class="card card-hover clr-indigo">
+        <div class="card-header">
+          <div class="card-icon">通</div>
+          <h3 class="card-title">通信协议</h3>
+        </div>
+        <div class="card-desc">CLI 直连（同步）+ Vault 文件（持久化审计）双层</div>
+      </div>
+      <div class="card card-hover clr-purple">
+        <div class="card-header">
+          <div class="card-icon">规</div>
+          <h3 class="card-title">合规框架</h3>
+        </div>
+        <div class="card-desc">二元触发器 + M3/M4/M5 声明 + Gate 门禁</div>
+      </div>
+      <div class="card card-hover clr-red">
+        <div class="card-header">
+          <div class="card-icon">愈</div>
+          <h3 class="card-title">错误自愈</h3>
+        </div>
+        <div class="card-desc">五级升级链 + 不死鸟 Phoenix 抗体自动匹配</div>
+      </div>
+      <div class="card card-hover clr-amber">
+        <div class="card-header">
+          <div class="card-icon">算</div>
+          <h3 class="card-title">成本治理</h3>
+        </div>
+        <div class="card-desc">预算分级 + 熔断机制 + 可观测周报</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Site Navigation Cards ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#0d9488"></span> <span style="color:#0d9488">深入了解</span></div>
+        <h2 class="section-title">选择你感兴趣的方向</h2>
+      </div>
+    </div>
+
+    <div class="grid grid-3">
+      <a href="/architecture/" class="nav-card clr-blue">
+        <div class="nav-card-title">架构</div>
+        <div class="nav-card-desc">四层架构、六脉体系、Agent 拓扑</div>
+      </a>
+      <a href="/workflow/" class="nav-card clr-teal">
+        <div class="nav-card-title">流程</div>
+        <div class="nav-card-desc">二元触发器、档位系统、六步管道</div>
+      </a>
+      <a href="/agents/" class="nav-card clr-indigo">
+        <div class="nav-card-title">Agent</div>
+        <div class="nav-card-desc">6 原子角色、分子Agent、通信协议</div>
+      </a>
+      <a href="/rules/" class="nav-card clr-purple">
+        <div class="nav-card-title">规则</div>
+        <div class="nav-card-desc">8 铁律、Gate/Hook、22 条门禁规则</div>
+      </a>
+      <a href="/deploy/" class="nav-card clr-green">
+        <div class="nav-card-title">部署</div>
+        <div class="nav-card-desc">L0-L3 分级指南、环境还原清单</div>
+      </a>
+      <a href="/cost/" class="nav-card clr-amber">
+        <div class="nav-card-title">成本</div>
+        <div class="nav-card-desc">预算分级、熔断机制、成本事件</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Quick Start CTA ====== -->
+<section>
+  <div class="container">
+    <div class="cta-block">
+      <h2 class="section-title" style="text-align:center;">三步开始使用息壤</h2>
+      <div class="grid grid-3 steps">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <h3 class="step-title">确定阶段</h3>
+          <p class="step-desc">评估你的角色和需求，选择 L0-L3 部署级别</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <h3 class="step-title">按指南部署</h3>
+          <p class="step-desc">跟随交互式部署指南，逐步安装和配置</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <h3 class="step-title">开始协作</h3>
+          <p class="step-desc">按二元触发器工作：写文件声明，不写直接做</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:2rem;">
+        <a href="/deploy/" class="btn btn-primary">查看部署指南 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+  </div>
 </footer>
 
-<script>
-  // Nav highlight
-  const sections = document.querySelectorAll('section[id]');
-  const links = document.querySelectorAll('.nav-links a');
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
-      }
-    });
-  }, { rootMargin: '-30% 0px -60% 0px' });
-  sections.forEach(s => obs.observe(s));
-
-  // Flow tabs
-  document.querySelectorAll('.flow-tabs').forEach(tabs => {
-    tabs.querySelectorAll('.flow-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        const target = tab.dataset.target;
-        const section = tabs.closest('section');
-        tabs.querySelectorAll('.flow-tab').forEach(t => t.classList.toggle('active', t === tab));
-        section.querySelectorAll('.flow-pane').forEach(p => p.classList.toggle('active', p.id === target));
-      });
-    });
-  });
-
-  // Splitview
-  document.querySelectorAll('[data-sv]').forEach(list => {
-    const section = list.closest('section');
-    list.querySelectorAll('.splitview-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const target = item.dataset.svtarget;
-        list.querySelectorAll('.splitview-item').forEach(i => i.classList.toggle('active', i === item));
-        section.querySelectorAll('.sv-pane').forEach(p => p.classList.toggle('active', p.id === target));
-      });
-    });
-  });
-</script>
+<script src="/assets/js/shared.js"></script>
 </body>
 </html>
