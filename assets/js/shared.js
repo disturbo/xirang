@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const page = document.body.dataset.page;
   document.querySelectorAll('.nav-links a').forEach(a => {
     const href = a.getAttribute('href');
-    if ((page === 'home' && href === '/') || href.includes(page)) {
+    if ((page === 'home' && (href === '/' || href === './' || href === '../')) ||
+        (page !== 'home' && href.includes(page))) {
       a.classList.add('active');
     }
   });
