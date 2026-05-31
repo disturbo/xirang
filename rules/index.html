@@ -176,7 +176,7 @@
           <div class="card-icon">H</div>
           <h3 class="card-title">pre-write-hook.sh</h3>
         </div>
-        <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">3 层检查：路径合法性 → frontmatter 格式 → brand-lint 品牌色。任一层失败即拒绝写入。</p>
+        <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">V9.2 增强：无条件禁止路径拦截(Layer 0) → 任务卡授权验证(Layer 1) → gate-enforce 规则检查(Layer 2)。支持 V8_AGENT_ID 参数化，多 Agent 共用同一 hook。</p>
       </div>
       <div class="card clr-purple">
         <div class="card-header">
@@ -246,6 +246,12 @@
             <td>事件记录</td>
             <td>M4/M5 必须有 task_start 事件</td>
             <td>硬拦截</td>
+          </tr>
+          <tr data-priority="P0">
+            <td><span class="badge clr-red">P0</span></td>
+            <td>禁止路径无条件</td>
+            <td>00-MOC/ .standards/ 等禁止目录，即使 busy 状态也需 write_scope 声明</td>
+            <td>硬拦截，不依赖 gate</td>
           </tr>
           <tr data-priority="P1">
             <td><span class="badge clr-orange">P1</span></td>
@@ -375,7 +381,7 @@
       <div class="accordion-item">
         <div class="accordion-header">Heartbeat 更新</div>
         <div class="accordion-body">
-          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">状态文件的 last_heartbeat 字段更新免声明。纯状态同步，不是内容写入。</p>
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">状态文件的 last_heartbeat 字段更新免声明。V9.2 提供 <code>heartbeat-update.sh</code> 和 <code>heartbeat-check.sh</code> 自动化脚本，三级超时检测(15min/30min/60min)。</p>
         </div>
       </div>
       <div class="accordion-item">
@@ -445,7 +451,7 @@
 
 <footer class="footer">
   <div class="container">
-    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+    <p>息壤方法论 V9.2.1 · 2026-05-31 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
   </div>
 </footer>
 

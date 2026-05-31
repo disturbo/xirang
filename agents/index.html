@@ -135,7 +135,7 @@
         <div class="sv-pane" id="agent-hongmeisu">
           <h3 style="margin-bottom:0.25rem;">红霉素 — 知识官</h3>
           <div class="agent-meta">
-            <span class="tag clr-blue">Claude Code</span>
+            <span class="tag clr-indigo">Codex</span>
             <span class="tag clr-green">知识层</span>
             <span class="tag clr-teal">Wiki/Skill</span>
           </div>
@@ -157,7 +157,7 @@
         <div class="sv-pane" id="agent-amoxicillin">
           <h3 style="margin-bottom:0.25rem;">阿莫西林 — 运维</h3>
           <div class="agent-meta">
-            <span class="tag clr-blue">Claude Code</span>
+            <span class="tag clr-green">OpenClaw</span>
             <span class="tag clr-amber">基础设施</span>
             <span class="tag clr-red">巡检/健康</span>
           </div>
@@ -179,7 +179,7 @@
         <div class="sv-pane" id="agent-workbuddy">
           <h3 style="margin-bottom:0.25rem;">WorkBuddy — 执行</h3>
           <div class="agent-meta">
-            <span class="tag clr-green">OpenClaw</span>
+            <span class="tag clr-green">CodeBuddy</span>
             <span class="tag clr-slate">执行层</span>
             <span class="tag clr-blue">M3轻量</span>
           </div>
@@ -201,7 +201,7 @@
         <div class="sv-pane" id="agent-toubao">
           <h3 style="margin-bottom:0.25rem;">头孢 — 采集</h3>
           <div class="agent-meta">
-            <span class="tag clr-orange">飞书/浏览器插件</span>
+            <span class="tag clr-orange">Hermes</span>
             <span class="tag clr-amber">Source层</span>
             <span class="tag clr-slate">采集</span>
           </div>
@@ -423,10 +423,48 @@
   </div>
 </section>
 
+<!-- ====== Section 5: Agent Contract (V9.2) ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#ea580c"></span> <span style="color:#ea580c">V9.2 新增</span></div>
+        <h2 class="section-title">Agent 公共契约</h2>
+        <p class="section-subtitle">agent-contract.yaml 定义每个 Agent 的 6 个标准字段，是结构化的能力声明</p>
+      </div>
+    </div>
+    <div class="table-wrap" style="margin-bottom:2rem">
+      <table>
+        <thead>
+          <tr><th>字段</th><th>说明</th><th>示例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>agent_id</code></td><td>唯一标识符</td><td>claudian / xiaochong / toubao</td></tr>
+          <tr><td><code>platform</code></td><td>运行平台</td><td>claude-code / openclaw / hermes / codex</td></tr>
+          <tr><td><code>status_path</code></td><td>状态文件路径</td><td>02-项目管理/智能体状态/Claudian.md</td></tr>
+          <tr><td><code>hook_support</code></td><td>支持的 hook 列表</td><td>[pre-write, post-write, session-guard]</td></tr>
+          <tr><td><code>cost_policy</code></td><td>成本追踪策略</td><td>per-task-append / manual</td></tr>
+          <tr><td><code>fallback_model</code></td><td>模型降级配置</td><td>{primary: opus, chain: [sonnet, haiku]}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid grid-2">
+      <div class="card clr-green">
+        <div class="card-header"><div class="card-icon">A</div><h3 class="card-title">自动治理平台</h3></div>
+        <p style="margin:0;font-size:0.88rem;color:var(--fg-muted);">Claude Code: hook 硬拦截 + 事件流自动写入 + 心跳监控<br>OpenClaw: 脚本辅助 + watchdog cron</p>
+      </div>
+      <div class="card clr-amber">
+        <div class="card-header"><div class="card-icon">M</div><h3 class="card-title">手动合规平台</h3></div>
+        <p style="margin:0;font-size:0.88rem;color:var(--fg-muted);">Hermes: 信任制(SOUL.md 契约)<br>Codex: 静态权限(instructions.md)<br>标记: <code>compliance_mode: manual_compliance_required</code></p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ====== Footer ====== -->
 <footer class="footer">
   <div class="container">
-    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+    <p>息壤方法论 V9.2.1 · 2026-05-31 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
   </div>
 </footer>
 

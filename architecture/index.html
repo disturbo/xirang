@@ -207,7 +207,7 @@
         </div>
         <div class="card" style="padding:1rem;text-align:center;">
           <div style="font-weight:700;color:var(--primary);font-size:0.85rem;">cost-fuse</div>
-          <div style="font-size:0.78rem;color:var(--fg-muted);margin-top:0.25rem;">预算熔断</div>
+          <div style="font-size:0.78rem;color:var(--fg-muted);margin-top:0.25rem;">预算熔断 + 降级链</div>
         </div>
         <div class="card" style="padding:1rem;text-align:center;">
           <div style="font-weight:700;color:var(--primary);font-size:0.85rem;">handoff</div>
@@ -361,10 +361,10 @@
         <!-- Platform labels (small, below each agent) -->
         <text x="300" y="30" text-anchor="middle" font-size="7.5" fill="#64748b">Claude Code</text>
         <text x="445" y="62" text-anchor="middle" font-size="7.5" fill="#64748b">Claude Code</text>
-        <text x="155" y="62" text-anchor="middle" font-size="7.5" fill="#64748b">Claude Code</text>
-        <text x="155" y="348" text-anchor="middle" font-size="7.5" fill="#64748b">Claude Code</text>
-        <text x="300" y="372" text-anchor="middle" font-size="7.5" fill="#64748b">OpenClaw</text>
-        <text x="445" y="348" text-anchor="middle" font-size="7.5" fill="#64748b">飞书/浏览器</text>
+        <text x="155" y="62" text-anchor="middle" font-size="7.5" fill="#64748b">Codex</text>
+        <text x="155" y="348" text-anchor="middle" font-size="7.5" fill="#64748b">OpenClaw</text>
+        <text x="300" y="372" text-anchor="middle" font-size="7.5" fill="#64748b">CodeBuddy</text>
+        <text x="445" y="348" text-anchor="middle" font-size="7.5" fill="#64748b">Hermes</text>
       </svg>
     </div>
 
@@ -376,10 +376,10 @@
         <tbody>
           <tr><td><strong>Claudian</strong></td><td>管家</td><td>Claude Code</td><td>统筹调度、规范守护</td></tr>
           <tr><td><strong>青霉素</strong></td><td>方案师</td><td>Claude Code</td><td>PRD/原型/设计方案</td></tr>
-          <tr><td><strong>红霉素</strong></td><td>知识官</td><td>Claude Code</td><td>LLM Wiki/Skill/知识治理</td></tr>
-          <tr><td><strong>阿莫西林</strong></td><td>运维</td><td>Claude Code</td><td>状态/事件/健康度量</td></tr>
-          <tr><td><strong>WorkBuddy</strong></td><td>执行</td><td>OpenClaw</td><td>日常任务执行</td></tr>
-          <tr><td><strong>头孢</strong></td><td>采集</td><td>飞书/浏览器</td><td>资料采集/格式转换</td></tr>
+          <tr><td><strong>红霉素</strong></td><td>知识官</td><td>Codex</td><td>LLM Wiki/Skill/知识治理</td></tr>
+          <tr><td><strong>阿莫西林</strong></td><td>运维</td><td>OpenClaw</td><td>状态/事件/健康度量</td></tr>
+          <tr><td><strong>WorkBuddy</strong></td><td>执行</td><td>CodeBuddy</td><td>日常任务执行</td></tr>
+          <tr><td><strong>头孢</strong></td><td>采集</td><td>Hermes</td><td>资料采集/格式转换</td></tr>
         </tbody>
       </table>
     </div>
@@ -463,6 +463,7 @@
           <tr><td><code>{{PLATFORM}}</code></td><td>目标平台</td><td>claude-code / openclaw</td></tr>
           <tr><td><code>{{DATE}}</code></td><td>构建日期</td><td>2026-05-29</td></tr>
           <tr><td><code>{{ROLE}}</code></td><td>角色声明</td><td>管家 / 方案师</td></tr>
+          <tr><td><code>{{V8_AGENT_ID}}</code></td><td>Hook 参数化标识(V9.2)</td><td>claudian / xiaochong</td></tr>
         </tbody>
       </table>
     </div>
@@ -471,7 +472,7 @@
 
 <footer class="footer">
   <div class="container">
-    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+    <p>息壤方法论 V9.2.1 · 2026-05-31 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
   </div>
 </footer>
 

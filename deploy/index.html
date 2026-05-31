@@ -492,17 +492,19 @@ pip install jsonschema pyyaml</code></pre>
             <div class="accordion-body">
               <p>Gate 门禁确保 Agent 不越权写入。配置方式：</p>
               <ol>
-                <li>确认 <code>.standards/pre-write-check.py</code> 存在</li>
+                <li>确认 <code>.standards/hooks/pre-write-hook.sh</code> 存在（v1.1+）</li>
                 <li>在 <code>.claude/settings.json</code> 中配置 hook：
 <pre><code>{
   "hooks": {
     "PreToolUse": [{
-      "matcher": "Write|Edit",
-      "hook": "python3 .standards/pre-write-check.py"
+      "matcher": "Write|Edit|NotebookEdit",
+      "hook": "bash .standards/hooks/pre-write-hook.sh"
     }]
   }
 }</code></pre>
                 </li>
+                <li>设置环境变量（多 Agent 共用 hook 时）：<code>V8_AGENT_ID=claudian</code></li>
+                <li>确认 <code>.standards/agent-contract.yaml</code> 存在（V9.2 必需）</li>
                 <li>测试：让 AI 尝试写入未声明路径，应被拦截</li>
               </ol>
             </div>
@@ -540,6 +542,8 @@ pip install jsonschema pyyaml</code></pre>
             <tr><td>检查门禁</td><td><code>python3 .standards/pre-write-check.py</code></td></tr>
             <tr><td>查看事件流</td><td><code>tail -20 02-项目管理/智能体状态/智能体事件.jsonl</code></td></tr>
             <tr><td>成本追踪</td><td><code>python3 .standards/agent-cost-events.py report</code></td></tr>
+            <tr><td>心跳检查</td><td><code>bash .standards/hooks/heartbeat-check.sh</code></td></tr>
+            <tr><td>成本事件</td><td><code>bash .standards/hooks/cost-event.sh checkpoint &lt;task_id&gt; &lt;agent&gt; [tokens] [cost]</code></td></tr>
           </tbody></table>
         </div>
       </div>
@@ -617,7 +621,7 @@ pip install jsonschema pyyaml</code></pre>
 <!-- ====== Footer ====== -->
 <footer class="footer">
   <div class="container">
-    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+    <p>息壤方法论 V9.2.1 · 2026-05-31 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
   </div>
 </footer>
 <script src="../assets/js/shared.js"></script>

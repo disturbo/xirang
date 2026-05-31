@@ -116,7 +116,7 @@
           </tr>
           <tr>
             <td><strong>青霉素</strong></td>
-            <td><span class="tag clr-green">中</span></td>
+            <td><span class="tag clr-purple">高</span></td>
             <td>L size (60min)</td>
             <td>暂停+申请</td>
           </tr>
@@ -267,41 +267,76 @@
   </div>
 </section>
 
-<!-- ====== Section 4: Cost Event Pipeline ====== -->
+<!-- ====== Section 4: Cost Event Pipeline (V9.2) ====== -->
 <section class="section-alt">
   <div class="container">
     <div class="section-header">
       <div>
         <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#4f46e5"></span> <span style="color:#4f46e5">事件流</span></div>
-        <h2 class="section-title">成本事件记录</h2>
-        <p class="section-subtitle">每个产生成本的任务，在收工时追加成本事件</p>
+        <h2 class="section-title">三阶段成本事件流</h2>
+        <p class="section-subtitle">从「收工单次写入」进化为「持续三阶段追踪」，增量 delta 语义</p>
       </div>
     </div>
 
     <div class="card" style="margin-bottom:2rem">
-      <h4 style="font-size:0.9rem;font-weight:600;margin-bottom:0.75rem">事件 Schema</h4>
+      <h4 style="font-size:0.9rem;font-weight:600;margin-bottom:0.75rem">cost_start — 任务启动时写入</h4>
       <pre style="background:var(--bg-muted);border-radius:var(--radius);padding:1rem;overflow-x:auto;font-size:0.82rem;line-height:1.6;margin:0"><code>{
-  "ts": "2026-05-29T14:30:00+08:00",
+  "ts": "2026-05-31T10:00:00+08:00",
+  "event": "cost_start",
   "agent": "qingmeisu",
-  "task_id": "T-20260529-01",
-  "phase": "execute",
-  "model": "claude-sonnet-4",
-  "input_tokens": 45000,
-  "output_tokens": 8000,
-  "cost_usd": 0.12,
-  "duration_min": 15
+  "task_id": "T-20260531-01",
+  "tokens": 0,
+  "cost_cny": 0
 }</code></pre>
+      <p style="font-size:0.82rem;color:var(--fg-muted);margin-top:0.5rem">不计入汇总，仅标记任务开始时间</p>
+    </div>
+
+    <div class="card" style="margin-bottom:2rem">
+      <h4 style="font-size:0.9rem;font-weight:600;margin-bottom:0.75rem">cost_checkpoint — 关键阶段完成时写入增量</h4>
+      <pre style="background:var(--bg-muted);border-radius:var(--radius);padding:1rem;overflow-x:auto;font-size:0.82rem;line-height:1.6;margin:0"><code>{
+  "ts": "2026-05-31T10:15:00+08:00",
+  "event": "cost_checkpoint",
+  "agent": "qingmeisu",
+  "task_id": "T-20260531-01",
+  "tokens": 32000,
+  "cost_cny": 0.45
+}</code></pre>
+      <p style="font-size:0.82rem;color:var(--fg-muted);margin-top:0.5rem">计入汇总，tokens/cost_cny 为本阶段增量</p>
+    </div>
+
+    <div class="card" style="margin-bottom:2rem">
+      <h4 style="font-size:0.9rem;font-weight:600;margin-bottom:0.75rem">cost_finalize — 任务结束时写入最后增量</h4>
+      <pre style="background:var(--bg-muted);border-radius:var(--radius);padding:1rem;overflow-x:auto;font-size:0.82rem;line-height:1.6;margin:0"><code>{
+  "ts": "2026-05-31T10:28:00+08:00",
+  "event": "cost_finalize",
+  "agent": "qingmeisu",
+  "task_id": "T-20260531-01",
+  "tokens": 18000,
+  "cost_cny": 0.25
+}</code></pre>
+      <p style="font-size:0.82rem;color:var(--fg-muted);margin-top:0.5rem">计入汇总，标记任务完成</p>
     </div>
 
     <h3 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem">事件管道流程</h3>
-    <div class="card">
+    <div class="card" style="margin-bottom:2rem">
       <ol style="margin:0;padding-left:1.5rem;font-size:0.9rem;line-height:2">
-        <li>任务执行 → 记录 token 消耗</li>
-        <li>收工时调用 <code>agent-cost-events.py append</code></li>
+        <li><code>v8_handshake</code> 自动写入 <code>cost_start</code></li>
+        <li>执行中可按需写入 <code>cost_checkpoint</code>（可选，多次）</li>
+        <li><code>v8_end</code> 自动写入 <code>cost_finalize</code></li>
         <li>事件写入 <code>02-项目管理/cost-events.jsonl</code></li>
         <li>每周 <code>v8-cost-observability.py</code> 生成周报</li>
         <li>异常检测 → 触发 cost-fuse 熔断</li>
       </ol>
+    </div>
+
+    <div class="card" style="border-left:3px solid #4f46e5;margin-bottom:2rem">
+      <p style="margin:0 0 0.5rem 0;font-size:0.9rem"><strong>口径规则：</strong>每次写入的 tokens/cost_cny 是增量(delta)，不是累计。汇总时对 checkpoint + finalize 求和即为任务总成本。</p>
+    </div>
+
+    <div class="card" style="background:var(--bg-muted)">
+      <h4 style="font-size:0.9rem;font-weight:600;margin-bottom:0.5rem">调用脚本</h4>
+      <pre style="background:var(--bg);border-radius:var(--radius);padding:1rem;overflow-x:auto;font-size:0.82rem;line-height:1.6;margin:0"><code>bash .standards/hooks/cost-event.sh &lt;phase&gt; &lt;task_id&gt; &lt;agent_id&gt; [tokens] [cost_cny]</code></pre>
+      <p style="font-size:0.82rem;color:var(--fg-muted);margin-top:0.5rem">phase: cost_start | cost_checkpoint | cost_finalize</p>
     </div>
   </div>
 </section>
@@ -387,9 +422,71 @@
   </div>
 </section>
 
+<!-- ====== Section 6: Model Fallback Chain (V9.2) ====== -->
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#7e22ce"></span> <span style="color:#7e22ce">V9.2 新增</span></div>
+        <h2 class="section-title">模型降级链</h2>
+        <p class="section-subtitle">cost-fuse.py v1.1 集成 agent-contract.yaml，预算告警时自动建议降级模型</p>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-bottom:2rem">
+      <table>
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>主模型</th>
+            <th>降级链</th>
+            <th>自动降级</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Claudian</strong></td>
+            <td><span class="tag clr-purple">Opus</span></td>
+            <td>Sonnet → Haiku</td>
+            <td>否（建议）</td>
+          </tr>
+          <tr>
+            <td><strong>阿莫西林</strong></td>
+            <td><span class="tag clr-blue">o3</span></td>
+            <td>o4-mini</td>
+            <td>否</td>
+          </tr>
+          <tr>
+            <td><strong>头孢</strong></td>
+            <td><span class="tag clr-teal">DeepSeek-v4-pro</span></td>
+            <td>DeepSeek-v4</td>
+            <td>否</td>
+          </tr>
+          <tr>
+            <td><strong>红霉素</strong></td>
+            <td><span class="tag clr-indigo">GPT-5.5</span></td>
+            <td>o4-mini</td>
+            <td>否</td>
+          </tr>
+          <tr>
+            <td><strong>WorkBuddy</strong></td>
+            <td><span class="tag clr-slate">平台内置</span></td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="border-left:3px solid #7e22ce">
+      <p style="margin:0;font-size:0.9rem"><strong>触发逻辑：</strong>cost-fuse.py 检测到预算 ≥60% 时输出降级建议；≥100% 熔断时，若 agent-contract.yaml 配置 <code>auto_fallback: true</code> 则强制降级，否则仅建议。配置源：<code>.standards/agent-contract.yaml</code></p>
+    </div>
+  </div>
+</section>
+
 <footer class="footer">
   <div class="container">
-    <p>息壤方法论 V9.2.0 · 2026-05-29 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+    <p>息壤方法论 V9.2.1 · 2026-05-31 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
   </div>
 </footer>
 <script src="../assets/js/shared.js"></script>
