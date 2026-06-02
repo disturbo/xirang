@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>全文 — 息壤 V9</title>
+  <link rel="stylesheet" href="../assets/css/shared.css">
+  <style>
+    /* Methodology page: two-column layout */
+    .methodology-layout {
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      gap: 3rem;
+    }
+
+    /* Sidebar TOC */
+    .toc-sidebar {
+      position: sticky;
+      top: 5rem;
+      align-self: flex-start;
+      width: 250px;
+      min-width: 250px;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      padding-right: 1rem;
+      border-right: 1px solid #e2e8f0;
+    }
+
+    .toc-sidebar h2 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .toc-sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc-sidebar li {
+      margin-bottom: 0.25rem;
+    }
+
+    .toc-sidebar a {
+      display: block;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.82rem;
+      color: #475569;
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 4px 4px 0;
+      transition: all 0.15s;
+      line-height: 1.4;
+    }
+
+    .toc-sidebar a:hover {
+      color: #1d4ed8;
+      background: #eff6ff;
+    }
+
+    .toc-sidebar a.active {
+      color: #1d4ed8;
+      border-left-color: #1d4ed8;
+      background: #eff6ff;
+      font-weight: 600;
+    }
+
+    .toc-sidebar .toc-sub {
+      padding-left: 1rem;
+    }
+
+    .toc-sidebar .toc-sub a {
+      font-size: 0.78rem;
+      padding: 0.2rem 0.75rem;
+    }
+
+    /* Prose content */
+    .prose-content {
+      flex: 1;
+      max-width: 800px;
+      min-width: 0;
+    }
+
+    .prose-content section {
+      margin-bottom: 3.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .prose-content section:last-child {
+      border-bottom: none;
+    }
+
+    .prose-content h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 1.25rem;
+      padding-top: 1rem;
+    }
+
+    .prose-content h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .prose-content h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .prose-content p {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: #334155;
+      margin-bottom: 1rem;
+    }
+
+    .prose-content strong {
+      color: #0f172a;
+    }
+
+    .prose-content ul,
+    .prose-content ol {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+
+    .prose-content li {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #334155;
+      margin-bottom: 0.4rem;
+    }
+
+    .prose-content pre {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.25rem;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    .prose-content code {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.85em;
+      background: #f1f5f9;
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      color: #7c3aed;
+    }
+
+    .prose-content pre code {
+      background: none;
+      padding: 0;
+      color: #334155;
+      font-size: 1em;
+    }
+
+    .prose-content .table-wrap {
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+
+    .prose-content table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .prose-content th {
+      background: #f8fafc;
+      font-weight: 700;
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      border-bottom: 2px solid #e2e8f0;
+      color: #1e293b;
+      white-space: nowrap;
+    }
+
+    .prose-content td {
+      padding: 0.55rem 0.75rem;
+      border-bottom: 1px solid #f1f5f9;
+      color: #475569;
+      vertical-align: top;
+    }
+
+    .prose-content tr:hover td {
+      background: #f8fafc;
+    }
+
+    .prose-content blockquote {
+      border-left: 3px solid #1d4ed8;
+      background: #eff6ff;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .prose-content blockquote p {
+      margin-bottom: 0.5rem;
+      color: #1e40af;
+    }
+
+    .prose-content blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #1d4ed8;
+      background: #eff6ff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Mobile TOC toggle */
+    .toc-mobile-toggle {
+      display: none;
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 100;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #1d4ed8;
+      color: #fff;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(29,78,216,0.3);
+      transition: transform 0.2s;
+    }
+
+    .toc-mobile-toggle:active {
+      transform: scale(0.92);
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 900px) {
+      .methodology-layout {
+        flex-direction: column;
+        padding: 1.5rem 1rem;
+        gap: 0;
+      }
+
+      .toc-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        min-width: 280px;
+        height: 100vh;
+        max-height: 100vh;
+        background: #fff;
+        z-index: 200;
+        padding: 1.5rem;
+        border-right: 1px solid #e2e8f0;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+      }
+
+      .toc-sidebar.open {
+        transform: translateX(0);
+      }
+
+      .toc-mobile-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .toc-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.3);
+        z-index: 199;
+      }
+
+      .toc-overlay.open {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body data-page="methodology">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../" class="nav-brand">
+      <span class="nav-brand-icon">壤</span>
+      <span>息壤 V9</span>
+    </a>
+    <div class="nav-links">
+      <a href="../">首页</a>
+      <a href="../architecture/">架构</a>
+      <a href="../workflow/">流程</a>
+      <a href="../agents/">Agent</a>
+      <a href="../rules/">规则</a>
+      <a href="../deploy/">部署</a>
+      <a href="../cost/">成本</a>
+      <a href="../methodology/">全文</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="菜单">&#9776;</button>
+  </div>
+  <div class="nav-mobile-panel">
+    <a href="../">首页</a>
+    <a href="../architecture/">架构</a>
+    <a href="../workflow/">流程</a>
+    <a href="../agents/">Agent</a>
+    <a href="../rules/">规则</a>
+    <a href="../deploy/">部署</a>
+    <a href="../cost/">成本</a>
+    <a href="../methodology/">全文</a>
+  </div>
+</nav>
+
+<div class="toc-overlay" id="tocOverlay"></div>
+
+<div class="methodology-layout">
+  <!-- Sidebar TOC -->
+  <aside class="toc-sidebar" id="tocSidebar">
+    <h2>目录</h2>
+    <ul>
+      <li><a href="#s0">S0 什么是息壤</a>
+        <ul class="toc-sub">
+          <li><a href="#s0-1">S0.1 命名释义</a></li>
+          <li><a href="#s0-2">S0.2 项目记忆系统</a></li>
+          <li><a href="#s0-3">S0.3 Agent 12 原理</a></li>
+        </ul>
+      </li>
+      <li><a href="#s1">S1 二元触发器与合规框架</a></li>
+      <li><a href="#s2">S2 档位系统</a></li>
+      <li><a href="#s3">S3 写入声明与 Pre-flight</a></li>
+      <li><a href="#s4">S4 六脉体系</a></li>
+      <li><a href="#s5">S5 原子 Agent 层</a></li>
+      <li><a href="#s6">S6 动态分子 Agent</a></li>
+      <li><a href="#s7">S7 通信协议</a></li>
+      <li><a href="#s8">S8 六步流程</a></li>
+      <li><a href="#s9">S9 五级错误升级链</a></li>
+      <li><a href="#s9-5">S9.5 外部 Agent 接入</a></li>
+      <li><a href="#s10">S10 四层架构总图</a></li>
+      <li><a href="#s11">S11 Gate 与 Hook</a></li>
+      <li><a href="#s12">S12 Prompt-build 分发</a></li>
+      <li><a href="#s13">S13 成本治理</a></li>
+      <li><a href="#s14">S14 单人版降级路径</a></li>
+      <li><a href="#s15">S15 部署规范</a></li>
+      <li><a href="#s16">S16 版本演进与封版</a></li>
+      <li><a href="#appendix-a">附录A 术语表</a></li>
+      <li><a href="#appendix-b">附录B 路径 Owner 表</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main prose content -->
+  <main class="prose-content">
+
+    <!-- S0 -->
+    <section id="s0">
+      <span class="section-label">S0</span>
+      <h2>什么是息壤</h2>
+      <p><strong>一句话</strong>：AI Agent 团队的作战手册。定义了谁做什么、怎么流转、出错了谁修、怎么证明活干完了。</p>
+      <p>不是理论框架，是操作规程——每个 Agent 启动时读这一份，就知道自己在团队里的位置和行为边界。</p>
+      <p><strong>V9 核心突破</strong>：将合规判定从 V8 的"六档分类"简化为<strong>一个二元判断</strong>——写文件还是不写文件。写文件就声明，不写就直接回复。所有复杂规则都是这条铁律的操作化展开。</p>
+
+      <h3>息壤的核心能力</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>维度</th><th>息壤做了什么</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>角色分工</td><td>6 个原子 Agent 各有职责边界，不越权</td></tr>
+            <tr><td>流程管道</td><td>六步流程：拆分→计划→执行→监控→检核→验收</td></tr>
+            <tr><td>通信协议</td><td>CLI 直连（同步）+ Vault 文件（持久化审计）双层架构</td></tr>
+            <tr><td>合规框架</td><td>二元触发器 + M3/M4/M5 声明制度 + Gate 门禁自动拦截</td></tr>
+            <tr><td>错误处理</td><td>五级升级链 + 回滚补偿 + 不死鸟自愈</td></tr>
+            <tr><td>成本治理</td><td>预算分级 + 熔断机制 + 可观测周报</td></tr>
+            <tr><td>质量门禁</td><td>pre-write-hook + gate-enforce + 产物自检三件套</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- S0.1 -->
+    <section id="s0-1">
+      <span class="section-label">S0.1</span>
+      <h2>「息壤」命名释义</h2>
+      <p>「息壤」出自《山海经·海内经》鲧治水神话。息壤是能自行增生、取之不竭的神土。核心意象是<strong>会自己生长的基础材料</strong>。</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>《山海经》息壤意象</th><th>方法论对应</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>自行生长的土</td><td>task card、retrospective、规则、脚本在实践中持续增殖</td></tr>
+            <tr><td>用来应对洪水</td><td>应对多 Agent 协作中的上下文洪水、任务洪水、漂移洪水</td></tr>
+            <tr><td>不是普通材料，而是基础设施</td><td>不是单篇文档，而是入口、门禁、状态表、事件流、度量系统</td></tr>
+            <tr><td>鲧的失败：有神土也不能无治理地堵</td><td>不能只堆文档，必须有运行时激活、路由、升级和复盘</td></tr>
+            <tr><td>后续治水走向疏导与定九州</td><td>目标不是塞进一个 Agent，而是拆分、分流、验收、沉淀</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>「息壤」不是「无限扩张」的隐喻，而是「可生长且需治理」的隐喻。</p>
+    </section>
+
+    <!-- S0.2 -->
+    <section id="s0-2">
+      <span class="section-label">S0.2</span>
+      <h2>前提：项目记忆系统</h2>
+      <p>息壤的前提不是必须拥有 Obsidian Vault，而是必须有一个<strong>可持久化的项目记忆系统</strong>。</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>能力</th><th>为什么需要</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>可持久化</td><td>任务、资料、决策、产物不能只留在聊天记录里</td></tr>
+            <tr><td>可检索</td><td>Agent / 人接手时能重新找到上下文</td></tr>
+            <tr><td>可链接</td><td>需求、资料、方案、PRD、决策、复盘能互相引用</td></tr>
+            <tr><td>可审计</td><td>谁基于什么资料做了什么判断，有记录可追溯</td></tr>
+            <tr><td>可演化</td><td>模板、规范、案例、门禁能随着实践持续生长</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>三种部署形态</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>形态</th><th>适用对象</th><th>载体</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>团队版</td><td>多 Agent / 多同事 / 多模块长期项目</td><td>Obsidian Vault + CLI + 状态表 + 事件流</td></tr>
+            <tr><td>单人版</td><td>个人产品经理、单 Agent 协作</td><td>一个结构化项目文件夹</td></tr>
+            <tr><td>轻量项目包</td><td>没有 Vault 或临时项目</td><td>普通文件夹 / 云文档目录</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- S0.3 -->
+    <section id="s0-3">
+      <span class="section-label">S0.3</span>
+      <h2>底层理论基石：Agent 12 原理</h2>
+
+      <h3>四层模型映射</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>原理层</th><th>Agent 原理</th><th>息壤架构层</th><th>实现方式</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>基座层</td><td>Message数组 / 上下文窗口 / 自回归生成</td><td>L3 基础设施层</td><td>Vault 文件系统 + TokenManager</td></tr>
+            <tr><td>控制层</td><td>系统提示 / 预填充 / 停止序列</td><td>L1 Agent 层</td><td>SOUL 人格 + format-constrainer + ToolCall</td></tr>
+            <tr><td>能力层</td><td>CoT / Few-Shot / Tool Use / RAG / ReAct</td><td>L2 六步流程层</td><td>任务分解 + Skill + LLM Wiki + GBrain + TaskExecutor</td></tr>
+            <tr><td>编排层</td><td>Multi-Agent 编排</td><td>L1 分子池 + L2 流程编排</td><td>Subagent + 六步管道 + 通信协议</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>五个工程判断</h3>
+      <ol>
+        <li><strong>上下文隔离 &gt; 统一上下文</strong> — Subagent 核心价值是隔离，不是并行</li>
+        <li><strong>结构化模板 &gt; 自然语言约束</strong> — frontmatter + 硬约束可验证</li>
+        <li><strong>反馈闭环 ≠ 死循环</strong> — ReAct 必须设 max_steps + 重复检测熔断</li>
+        <li><strong>RAG 精度 &gt; RAG 广度</strong> — 三层结构控制分块粒度</li>
+        <li><strong>显式定义 &gt; 隐式学习</strong> — Skill 清单是持久化 Few-Shot 示例库</li>
+      </ol>
+    </section>
+
+    <!-- S1 -->
+    <section id="s1">
+      <span class="section-label">S1</span>
+      <h2>V9 核心：二元触发器与合规框架</h2>
+
+      <h3>设计动机</h3>
+      <p>V8 合规层的核心问题：</p>
+      <ol>
+        <li>M0-M5 六档判定过重，Agent 认知负担大</li>
+        <li>格式不统一，6 Agent 跨 4 平台各自维护</li>
+        <li>验证困难，无法程序化检测</li>
+      </ol>
+
+      <h3>二元触发器</h3>
+      <p>收到消息 → 第一判断：「这个任务会写文件吗？」</p>
+      <ul>
+        <li><strong>不写</strong> → 直接回复（零合规开销）</li>
+        <li><strong>写</strong> → pre-flight（声明 + 亮灯 + 执行）</li>
+      </ul>
+      <blockquote>
+        <p><strong>唯一铁律</strong>：写了文件但没声明 = 违规。</p>
+      </blockquote>
+
+      <h3>灰区判定</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>信号</th><th>判定</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>有具体对象 + 明确产出物</td><td>写文件 → pre-flight</td></tr>
+            <tr><td>咨询语气（"怎么推进"/"能不能做"）</td><td>不写文件 → 直接回复</td></tr>
+            <tr><td>无法判定</td><td>问用户确认，1 轮内决定</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- S2 -->
+    <section id="s2">
+      <span class="section-label">S2</span>
+      <h2>档位系统（M3/M4/M5）</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>档位</th><th>场景</th><th>文件数</th><th>时间</th><th>声明格式</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>M3</td><td>单文件修改，&lt;20min</td><td>1</td><td>&lt;20min</td><td>一行声明</td></tr>
+            <tr><td>M4</td><td>多文件产出/交付物</td><td>2+</td><td>20min-2h</td><td>完整 V9 已激活 块</td></tr>
+            <tr><td>M5</td><td>跨 Agent / &gt;2h / 需拆分</td><td>多</td><td>&gt;2h</td><td>M4 + 预算 + 拆分计划</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>判定决策树</h3>
+      <ul>
+        <li>只改 1 个文件 + &lt;20min → M3</li>
+        <li>改多文件 / 有明确交付物 → M4</li>
+        <li>跨 Agent / &gt;2h / 需拆分 → M5</li>
+      </ul>
+
+      <h3>升降档规则</h3>
+      <ul>
+        <li>M3 发现需写第 2 个文件 → 升为 M4</li>
+        <li>M4 发现需跨 Agent 协作 → 升为 M5</li>
+        <li>M4/M5 已亮灯 → 不可降档</li>
+      </ul>
+    </section>
+
+    <!-- S3 -->
+    <section id="s3">
+      <span class="section-label">S3</span>
+      <h2>写入声明与 Pre-flight 流程</h2>
+
+      <h3>M3 声明（一行）</h3>
+      <pre><code>V9 写入声明：{文件路径} | {动作摘要}</code></pre>
+
+      <h3>M4 声明（完整块）</h3>
+      <pre><code>V9 已激活：
+- 档位：M4
+- 任务：{任务名}
+- 写入范围：{将写入的文件/路径列表}
+- 验收方：{用户 / 具体Agent名}</code></pre>
+
+      <h3>M5 声明</h3>
+      <pre><code>V9 已激活：
+- 档位：M5
+- 任务：{任务名}
+- 预算：{预估 token/时间}
+- 写入范围：{路径}
+- 拆分计划：{子任务数} 个子任务
+- 验收方：{验收链}</code></pre>
+
+      <h3>5 类失败判定</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>类型</th><th>表现</th><th>处理</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>范围溢出</td><td>写了声明外的文件</td><td>暂停→补充声明→继续</td></tr>
+            <tr><td>格式缺失</td><td>产出无 frontmatter</td><td>补写</td></tr>
+            <tr><td>品牌违规</td><td>错误品牌名/色值</td><td>立即修正</td></tr>
+            <tr><td>升档不足</td><td>M3 写了多文件但未升 M4</td><td>补声明+亮灯</td></tr>
+            <tr><td>静默写入</td><td>写了文件完全无声明</td><td>回退+重新声明</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- S4 -->
+    <section id="s4">
+      <span class="section-label">S4</span>
+      <h2>六脉体系：六个子系统</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>脉</th><th>子系统</th><th>一句话</th><th>负责人</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>①</td><td>Claude Design 工艺</td><td>方案设计和 PRD/原型大块产出的工程方法</td><td>青霉素</td></tr>
+            <tr><td>②</td><td>驾驭工程</td><td>Agent 的可靠性、可观测性、治理</td><td>阿莫西林</td></tr>
+            <tr><td>③</td><td>不死鸟 Phoenix</td><td>错误自愈：抗体扫描、崩溃恢复、向量化诊断</td><td>WorkBuddy</td></tr>
+            <tr><td>④</td><td>LLM Wiki</td><td>三层资料结构 + frontmatter + Dataview 可查询</td><td>红霉素</td></tr>
+            <tr><td>⑤</td><td>GBrain</td><td>语义搜索 + Brain Score + cron dream 自动维护</td><td>Claudian</td></tr>
+            <tr><td>⑥</td><td>Skill 清单</td><td>各平台 skill 目录 + 能力声明 + 发现机制</td><td>红霉素</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>脉① Claude Design 工艺</h3>
+      <p>方案设计和 PRD/原型大块产出的工程方法。核心理念：价值在逼近过程，而非一次性产物。</p>
+      <h4>3 Phase x 10 Step 工作流</h4>
+      <ul>
+        <li><strong>Phase 1</strong>: 构建 Design System（资料→画像→Review）</li>
+        <li><strong>Phase 2</strong>: 需求收敛 → 探索对齐</li>
+        <li><strong>Phase 3</strong>: 产物生成 → 实现</li>
+      </ul>
+
+      <h3>脉② 驾驭工程</h3>
+      <p>Agent 的可靠性、可观测性、治理。三层可观测性：状态层、事件层、指标层。门禁体系 4 个检查点：pre-start、pre-write、cost-fuse、handoff。</p>
+
+      <h3>脉③ 不死鸟 Phoenix</h3>
+      <p>错误自愈子系统。8 个内置抗体模式 + 10 步排查流程 + 进化引擎。</p>
+
+      <h3>脉④ LLM Wiki</h3>
+      <p>三层资料结构：Source（原始源）→ Summary（摘要层）→ Published（发布层）。</p>
+
+      <h3>脉⑤ GBrain</h3>
+      <p>语义搜索引擎：bge-m3 嵌入 + PGLite 存储 + 混合搜索 + dream/sync 维护。</p>
+
+      <h3>脉⑥ Skill 清单</h3>
+      <p>各平台 skill 目录 + 能力声明 + 发现机制。SKILL.md 标准格式：When / Check / Steps / Chain / Quality Bar。</p>
+    </section>
+
+    <!-- S5 -->
+    <section id="s5">
+      <span class="section-label">S5</span>
+      <h2>原子 Agent 层（6 个持久角色）</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Agent</th><th>平台</th><th>主责</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>阿莫西林</td><td>OpenClaw</td><td>协调中枢、最终审核、MOC维护</td></tr>
+            <tr><td>Claudian</td><td>Obsidian嵌入</td><td>技术执行、批量操作、脚本开发</td></tr>
+            <tr><td>青霉素</td><td>Claude Desktop</td><td>方案设计、PRD大块产出、原型</td></tr>
+            <tr><td>红霉素</td><td>Codex</td><td>代码实现、规范修复、结构化治理</td></tr>
+            <tr><td>头孢</td><td>Hermes</td><td>资料采集、竞品整理、审核报告</td></tr>
+            <tr><td>WorkBuddy</td><td>Obsidian嵌入</td><td>崩溃修复、Agent排障、漂移检查</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>路由子任务三因素：<strong>能力匹配 &gt; 资源经济 &gt; 当前负载</strong>。</p>
+    </section>
+
+    <!-- S6 -->
+    <section id="s6">
+      <span class="section-label">S6</span>
+      <h2>动态分子 Agent（Subagent）</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>维度</th><th>原子 Agent</th><th>分子 Subagent</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>数量</td><td>6，固定</td><td>0~N，动态</td></tr>
+            <tr><td>生命周期</td><td>持久，跨会话</td><td>瞬态，用完即销</td></tr>
+            <tr><td>决策权</td><td>有</td><td>无（只执行）</td></tr>
+            <tr><td>写权限</td><td>vault 全范围</td><td>父 Agent 限定路径</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>硬约束</h3>
+      <ul>
+        <li>嵌套深度=1</li>
+        <li>最大并行 &le; 6</li>
+        <li>不可写 <code>00-MOC/</code> 和 <code>30-规范/</code></li>
+        <li>不可做决策</li>
+        <li>返回值 &le; 500字</li>
+        <li>路径互不重叠</li>
+      </ul>
+    </section>
+
+    <!-- S7 -->
+    <section id="s7">
+      <span class="section-label">S7</span>
+      <h2>通信协议</h2>
+
+      <h3>双层通信架构</h3>
+      <ul>
+        <li><strong>CLI 直连层</strong>（主传输层 — 主动通信 / 同步）</li>
+        <li><strong>Vault 文件层</strong>（持久化层 — 状态/审计）</li>
+      </ul>
+
+      <h3>五种通信模式</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>模式</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>CLI直连</td><td>Agent 间同步调用，实时响应</td></tr>
+            <tr><td>A↔A状态</td><td>Agent 之间通过状态文件异步通信</td></tr>
+            <tr><td>A→M spawn</td><td>原子 Agent 派生分子 Agent</td></tr>
+            <tr><td>M→A 回传</td><td>分子 Agent 完成后结果回传父 Agent</td></tr>
+            <tr><td>M↔M 暂存</td><td>分子 Agent 间通过暂存区共享数据</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- S8 -->
+    <section id="s8">
+      <span class="section-label">S8</span>
+      <h2>六步流程</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Step</th><th>名称</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>工作拆分</td><td>将需求拆解为可执行的子任务</td></tr>
+            <tr><td>2</td><td>计划编排</td><td>确定执行顺序、依赖关系、资源分配</td></tr>
+            <tr><td>3</td><td>工作执行</td><td>按计划产出交付物</td></tr>
+            <tr><td>4</td><td>执行监控</td><td>状态追踪、成本监控、漂移检测</td></tr>
+            <tr><td>5</td><td>交付物检核</td><td>自查三件套 + Gate 门禁验证</td></tr>
+            <tr><td>6</td><td>测试验收</td><td>验收方确认、归档、复盘</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>每步有明确的：主责 Agent、输入物、输出物、Gate 门禁、Subagent 策略。</p>
+    </section>
+
+    <!-- S9 -->
+    <section id="s9">
+      <span class="section-label">S9</span>
+      <h2>五级错误升级链</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>级别</th><th>处理者</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>L0.5</td><td>父Agent</td><td>重试（最多2次）</td></tr>
+            <tr><td>L1</td><td>不死鸟Phoenix</td><td>自愈（抗体模式匹配）</td></tr>
+            <tr><td>L2</td><td>Owner Agent</td><td>修复（根据路径Owner表）</td></tr>
+            <tr><td>L3</td><td>阿莫西林</td><td>裁决（协调中枢仲裁）</td></tr>
+            <tr><td>L4</td><td>人力介入</td><td>人工干预（最终兜底）</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>回滚补偿策略</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>情况</th><th>策略</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>无产出</td><td>重做</td></tr>
+            <tr><td>不完整</td><td>删除重做</td></tr>
+            <tr><td>错误</td><td>就地修复</td></tr>
+            <tr><td>错位</td><td>mv 移动到正确位置</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- S9.5 -->
+    <section id="s9-5">
+      <span class="section-label">S9.5</span>
+      <h2>外部 Agent 接入协议</h2>
+
+      <h3>四条最低要求</h3>
+      <ol>
+        <li><strong>CLAUDE.md 前置声明</strong> — 外部 Agent 必须声明身份和意图</li>
+        <li><strong>路径白名单</strong> — 只能写入指定暂存路径</li>
+        <li><strong>三检义务</strong> — frontmatter / 路径合规 / 无越权</li>
+        <li><strong>事后补办</strong> — 漏检可补，但不能跳过</li>
+      </ol>
+
+      <h3>信任边界</h3>
+      <p>外部 Agent 只能写暂存区，不可自行验收或移动到正式路径。</p>
+    </section>
+
+    <!-- S10 -->
+    <section id="s10">
+      <span class="section-label">S10</span>
+      <h2>四层架构总图</h2>
+
+      <pre><code>六脉约束层（贯穿）
+  ①Claude Design ┃ ②驾驭工程 ┃ ③不死鸟 ┃ ④LLM Wiki ┃ ⑤GBrain ┃ ⑥Skill
+────────────────────────────────────────────────────
+L1 · Agent 协作层（原子层 + 分子池 + 通信总线）
+────────────────────────────────────────────────────
+V9 合规层（二元触发器 → 写入声明 → Gate 门禁 → prompt-build）
+────────────────────────────────────────────────────
+L2 · 六步流程层（拆分→计划→执行→监控→检核→验收）
+────────────────────────────────────────────────────
+L3 · 基础设施层（Vault + CLI + .standards/ 工具链）</code></pre>
+    </section>
+
+    <!-- S11 -->
+    <section id="s11">
+      <span class="section-label">S11</span>
+      <h2>Gate 与 Hook 强制机制</h2>
+
+      <h3>gate-enforce.py 规则（P0硬阻断）</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>规则</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>AGENT_BUSY</code></td><td>Agent 状态为 busy 时拒绝新任务</td></tr>
+            <tr><td><code>TASK_BLOCKED</code></td><td>任务被依赖阻塞时不可启动</td></tr>
+            <tr><td><code>NO_TASK_ID</code></td><td>写操作无关联任务卡时阻断</td></tr>
+            <tr><td><code>FUSE_BLOWN</code></td><td>成本熔断已触发时阻断所有操作</td></tr>
+            <tr><td><code>SCOPE_EXCEEDED</code></td><td>写入路径超出声明范围</td></tr>
+            <tr><td><code>PATH_FORBIDDEN</code></td><td>写入禁止路径（如其他Agent专属路径）</td></tr>
+            <tr><td><code>MISSING_DELIVERABLES</code></td><td>标记完成但缺少必需产物</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Hook 层级</h3>
+      <ul>
+        <li><strong>Layer 0</strong>：不可篡改（系统级保护）</li>
+        <li><strong>Layer 1A</strong>：禁止路径（路径白名单/黑名单）</li>
+        <li><strong>Layer 1B</strong>：任务卡授权（基于 task card 的动态授权）</li>
+      </ul>
+    </section>
+
+    <!-- S12 -->
+    <section id="s12">
+      <span class="section-label">S12</span>
+      <h2>Prompt-build 分发架构</h2>
+
+      <p>源文件在 <code>.prompt-src/</code>，构建公式：</p>
+      <pre><code>prompt-base.md + v9-compliance-block.md + preflight-auto-template.md + {agent}.delta.md</code></pre>
+
+      <h3>7 个分发目标</h3>
+      <ul>
+        <li>Claudian（Claude Code CLAUDE.md）</li>
+        <li>青霉素（Claude Desktop project prompt）</li>
+        <li>WorkBuddy（Obsidian plugin config）</li>
+        <li>红霉素（Codex instructions.md）</li>
+        <li>CLAUDE.md（通用入口）</li>
+        <li>SOUL.md（Hermes 人格文件）</li>
+        <li>AGENTS.md（OpenClaw 多Agent配置）</li>
+      </ul>
+
+      <p>内容 Hash 机制确保一致性。</p>
+    </section>
+
+    <!-- S13 -->
+    <section id="s13">
+      <span class="section-label">S13</span>
+      <h2>成本治理</h2>
+
+      <h3>预算分级</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>级别</th><th>Token上限</th><th>费用上限</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>S</td><td>100K</td><td>&yen;0.5</td></tr>
+            <tr><td>M</td><td>500K</td><td>&yen;5</td></tr>
+            <tr><td>L</td><td>2M</td><td>&yen;20</td></tr>
+            <tr><td>XL</td><td>5M</td><td>&yen;50</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>熔断规则</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>消耗比例</th><th>状态</th><th>动作</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>&lt;60%</td><td>green</td><td>正常执行</td></tr>
+            <tr><td>60-99%</td><td>warning</td><td>告警 + 限制新任务</td></tr>
+            <tr><td>100%</td><td>blown</td><td>熔断 + 阻断所有操作</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>模型选择策略</h3>
+      <ul>
+        <li><strong>默认</strong>：DeepSeek（成本最优）</li>
+        <li><strong>复杂任务</strong>：Claude（质量优先）</li>
+        <li><strong>嵌入</strong>：bge-m3 本地免费</li>
+      </ul>
+    </section>
+
+    <!-- S14 -->
+    <section id="s14">
+      <span class="section-label">S14</span>
+      <h2>单人版降级路径</h2>
+
+      <p>6 Agent → 2 角色（主理 + AI 助理）。</p>
+
+      <h3>保留能力</h3>
+      <ul>
+        <li>六步流程</li>
+        <li>需求卡</li>
+        <li>资料摘要</li>
+        <li>设计方案</li>
+        <li>评审</li>
+        <li>二元触发器</li>
+      </ul>
+
+      <h3>删除能力</h3>
+      <ul>
+        <li>多Agent状态表</li>
+        <li>CLI直连</li>
+        <li>事件流</li>
+        <li>Subagent</li>
+        <li>prompt-build</li>
+      </ul>
+
+      <h3>最小闭环铁律</h3>
+      <p><strong>需求卡→资料摘要→设计方案→评审→PRD→决策/复盘</strong></p>
+    </section>
+
+    <!-- S15 -->
+    <section id="s15">
+      <span class="section-label">S15</span>
+      <h2>部署规范</h2>
+
+      <h3>四阶段部署模型</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>阶段</th><th>角色</th><th>预计时间</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>L0</td><td>浏览者</td><td>2min</td><td>了解息壤是什么，决定是否继续</td></tr>
+            <tr><td>L1</td><td>问答者</td><td>10min</td><td>配置基础环境，可以向 Agent 提问</td></tr>
+            <tr><td>L2</td><td>产出者</td><td>20min</td><td>完成首个任务闭环，产出交付物</td></tr>
+            <tr><td>L3</td><td>协作者</td><td>1h</td><td>多Agent协作，完整六步流程</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- S16 -->
+    <section id="s16">
+      <span class="section-label">S16</span>
+      <h2>版本演进与封版规则</h2>
+
+      <h3>版本历史</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>版本</th><th>关键变化</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>V4-V5</td><td>早期探索，单Agent工作流</td></tr>
+            <tr><td>V6</td><td>六步流程确立</td></tr>
+            <tr><td>V7</td><td>单人版抽象</td></tr>
+            <tr><td>V8</td><td>六脉合一，多Agent架构</td></tr>
+            <tr><td>V8.5</td><td>运行时激活机制</td></tr>
+            <tr><td>V9</td><td>二元触发器，极简合规</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>运行时激活契约三层</h3>
+      <ul>
+        <li><strong>Prompt激活</strong>：通过 CLAUDE.md / SOUL.md 注入行为约束</li>
+        <li><strong>Tool激活</strong>：通过 Hook / Gate 脚本强制检查</li>
+        <li><strong>Watchdog激活</strong>：通过 cron 任务定期巡检状态一致性</li>
+      </ul>
+    </section>
+
+    <!-- Appendix A -->
+    <section id="appendix-a">
+      <span class="section-label">附录</span>
+      <h2>附录A 术语表</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>术语</th><th>定义</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>二元触发器</td><td>V9 核心判定机制：写文件/不写文件</td></tr>
+            <tr><td>息壤</td><td>AI Agent 团队的作战手册与方法论</td></tr>
+            <tr><td>六脉</td><td>六个贯穿所有层的子系统</td></tr>
+            <tr><td>原子Agent</td><td>6 个固定持久角色</td></tr>
+            <tr><td>分子Agent</td><td>动态派生的瞬态执行体</td></tr>
+            <tr><td>Gate</td><td>流程门禁，P0 硬阻断规则</td></tr>
+            <tr><td>Hook</td><td>写操作前的自动化检查脚本</td></tr>
+            <tr><td>prompt-build</td><td>多平台 prompt 源码构建分发系统</td></tr>
+            <tr><td>握手协议</td><td>任务启动时的声明确认流程</td></tr>
+            <tr><td>Handoff</td><td>任务完成后的交接文档</td></tr>
+            <tr><td>不死鸟Phoenix</td><td>错误自愈子系统</td></tr>
+            <tr><td>驾驭工程</td><td>Agent 可靠性与可观测性治理</td></tr>
+            <tr><td>GBrain</td><td>语义搜索引擎</td></tr>
+            <tr><td>LLM Wiki</td><td>三层资料结构管理系统</td></tr>
+            <tr><td>收工三件套</td><td>产物清单 + 自查结果 + 验收建议</td></tr>
+            <tr><td>事件流</td><td>智能体事件.jsonl 审计日志</td></tr>
+            <tr><td>成本事件流</td><td>agent-cost-events 费用追踪</td></tr>
+            <tr><td>pre-flight</td><td>写文件前的声明检查流程</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Appendix B -->
+    <section id="appendix-b">
+      <span class="section-label">附录</span>
+      <h2>附录B 路径 Owner 表</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Agent</th><th>可写路径</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Claudian</td><td><code>.standards/</code>, <code>.claude/</code>, <code>02-项目管理/</code>, <code>50-经验/</code>, <code>10-项目/</code>, <code>_temp/</code></td></tr>
+            <tr><td>阿莫西林</td><td><code>00-MOC/</code>, <code>02-项目管理/</code>, <code>30-规范/</code>, <code>40-决策/</code>, <code>50-经验/</code>, <code>_temp/</code></td></tr>
+            <tr><td>头孢</td><td><code>20-资料/</code>, <code>02-项目管理/</code>, <code>_temp/</code></td></tr>
+            <tr><td>WorkBuddy</td><td><code>02-项目管理/智能体状态/</code>, <code>_temp/</code></td></tr>
+            <tr><td>红霉素</td><td><code>~/wiki/</code>, <code>.codex/</code>, <code>_temp/</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<button class="toc-mobile-toggle" id="tocToggle" aria-label="目录">&#9776;</button>
+
+<footer class="footer">
+  <div class="container">
+    <p>息壤方法论 V9.2.1 · 2026-05-31 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+  </div>
+</footer>
+
+<script src="../assets/js/shared.js"></script>
+<script>
+(function() {
+  // TOC mobile toggle
+  const tocSidebar = document.getElementById('tocSidebar');
+  const tocToggle = document.getElementById('tocToggle');
+  const tocOverlay = document.getElementById('tocOverlay');
+
+  if (tocToggle && tocSidebar) {
+    tocToggle.addEventListener('click', function() {
+      tocSidebar.classList.toggle('open');
+      tocOverlay.classList.toggle('open');
+    });
+  }
+
+  if (tocOverlay) {
+    tocOverlay.addEventListener('click', function() {
+      tocSidebar.classList.remove('open');
+      tocOverlay.classList.remove('open');
+    });
+  }
+
+  // Close TOC on link click (mobile)
+  const tocLinks = tocSidebar.querySelectorAll('a');
+  tocLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      if (window.innerWidth <= 900) {
+        tocSidebar.classList.remove('open');
+        tocOverlay.classList.remove('open');
+      }
+    });
+  });
+
+  // Scroll-based TOC highlight using IntersectionObserver
+  const sections = document.querySelectorAll('.prose-content section[id]');
+  const navLinks = tocSidebar.querySelectorAll('a[href^="#"]');
+
+  const observerOptions = {
+    root: null,
+    rootMargin: '-80px 0px -60% 0px',
+    threshold: 0
+  };
+
+  let currentActive = null;
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        if (currentActive) {
+          currentActive.classList.remove('active');
+        }
+        const link = tocSidebar.querySelector('a[href="#' + id + '"]');
+        if (link) {
+          link.classList.add('active');
+          currentActive = link;
+        }
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach(function(section) {
+    observer.observe(section);
+  });
+})();
+</script>
+</body>
+</html>
