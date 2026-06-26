@@ -23,6 +23,7 @@
       <a href="rules/">规则</a>
       <a href="deploy/">部署</a>
       <a href="cost/">成本</a>
+      <a href="releases/">迭代</a>
       <a href="methodology/">全文</a>
     </div>
     <button class="nav-mobile-toggle" aria-label="菜单">&#9776;</button>
@@ -35,7 +36,8 @@
     <a href="rules/">规则</a>
     <a href="deploy/">部署</a>
     <a href="cost/">成本</a>
-    <a href="methodology/">全文</a>
+    <a href="releases/">迭代</a>
+      <a href="methodology/">全文</a>
   </div>
 </nav>
 
@@ -44,7 +46,7 @@
   <div class="container">
     <span class="hero-meta">
       <span class="pulse"></span>
-      V9.2.1 · 2026-05-31 封版
+      V9.3.0 · 2026-06-26 当前版本
     </span>
     <h1>息壤方法论 <span class="accent">V9</span></h1>
     <p class="lead">AI Agent 团队的作战手册。定义谁做什么、怎么流转、出错了谁修、怎么证明活干完了。</p>
@@ -69,9 +71,9 @@
         <div class="hero-stat-sub">自动门禁拦截</div>
       </div>
       <div class="hero-stat clr-orange">
-        <div class="hero-stat-value">7</div>
-        <div class="hero-stat-label">平台分发</div>
-        <div class="hero-stat-sub">prompt-build 单源</div>
+        <div class="hero-stat-value">4</div>
+        <div class="hero-stat-label">巡检源</div>
+        <div class="hero-stat-sub">反射器自省</div>
       </div>
     </div>
   </div>
@@ -169,6 +171,51 @@
   </div>
 </section>
 
+<!-- ====== V9.3.0 Release ====== -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#ea580c"></span> <span style="color:#ea580c">V9.3.0 · 2026-06-26</span></div>
+        <h2 class="section-title">从写入门禁，走到常驻反射器</h2>
+        <p class="section-subtitle">V9.3.0 不改变二元触发器，而是补上反馈链中的评估环节：系统要能证明自己真的看过任务、状态、心跳和规范冲突。</p>
+      </div>
+      <a href="releases/" class="btn btn-outline">查看迭代记录 →</a>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card clr-blue">
+        <div class="card-header">
+          <div class="card-icon">巡</div>
+          <h3 class="card-title">第一反射器</h3>
+        </div>
+        <div class="card-desc"><code>v9-reflex-check.py</code> 聚合四个巡检源，统一写入 <code>health-latest.json</code>。</div>
+      </div>
+      <div class="card clr-teal">
+        <div class="card-header">
+          <div class="card-icon">证</div>
+          <h3 class="card-title">自省字段</h3>
+        </div>
+        <div class="card-desc"><code>sources_run</code> 与 <code>sources_failed</code> 区分“跑了且干净”和“没跑”。</div>
+      </div>
+      <div class="card clr-purple">
+        <div class="card-header">
+          <div class="card-icon">规</div>
+          <h3 class="card-title">规范冲突扫描</h3>
+        </div>
+        <div class="card-desc">用规范管辖权索引约束 primary/supporting/inactive 的边界。</div>
+      </div>
+      <div class="card clr-amber">
+        <div class="card-header">
+          <div class="card-icon">账</div>
+          <h3 class="card-title">计费口径标注</h3>
+        </div>
+        <div class="card-desc">真实计费未接入前，周报必须标注 <code>billing_status=not_connected</code>。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ====== Capabilities Overview ====== -->
 <section>
   <div class="container">
@@ -222,6 +269,13 @@
         </div>
         <div class="card-desc">预算分级 + 熔断机制 + 可观测周报</div>
       </div>
+      <div class="card card-hover clr-orange">
+        <div class="card-header">
+          <div class="card-icon">巡</div>
+          <h3 class="card-title">反射器巡检</h3>
+        </div>
+        <div class="card-desc">health-latest 快照 + sources_run 自省 + 严重度冷却穿透</div>
+      </div>
     </div>
   </div>
 </section>
@@ -261,6 +315,10 @@
         <div class="nav-card-title">成本</div>
         <div class="nav-card-desc">预算分级、熔断机制、成本事件</div>
       </a>
+      <a href="releases/" class="nav-card clr-orange">
+        <div class="nav-card-title">迭代</div>
+        <div class="nav-card-desc">V9.3.0 记录、版本时间线、升级影响</div>
+      </a>
     </div>
   </div>
 </section>
@@ -296,7 +354,7 @@
 
 <footer class="footer">
   <div class="container">
-    <p>息壤方法论 V9.2.1 · 2026-05-31 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+    <p>息壤方法论 V9.3.0 · 2026-06-26 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
   </div>
 </footer>
 

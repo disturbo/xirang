@@ -322,6 +322,7 @@
       <a href="../rules/">规则</a>
       <a href="../deploy/">部署</a>
       <a href="../cost/">成本</a>
+      <a href="../releases/">迭代</a>
       <a href="../methodology/">全文</a>
     </div>
     <button class="nav-mobile-toggle" aria-label="菜单">&#9776;</button>
@@ -334,7 +335,8 @@
     <a href="../rules/">规则</a>
     <a href="../deploy/">部署</a>
     <a href="../cost/">成本</a>
-    <a href="../methodology/">全文</a>
+    <a href="../releases/">迭代</a>
+      <a href="../methodology/">全文</a>
   </div>
 </nav>
 
@@ -345,6 +347,7 @@
   <aside class="toc-sidebar" id="tocSidebar">
     <h2>目录</h2>
     <ul>
+      <li><a href="#s-v930">V9.3.0 更新</a></li>
       <li><a href="#s0">S0 什么是息壤</a>
         <ul class="toc-sub">
           <li><a href="#s0-1">S0.1 命名释义</a></li>
@@ -376,6 +379,16 @@
 
   <!-- Main prose content -->
   <main class="prose-content">
+
+    <section id="s-v930">
+      <span class="section-label">V9.3.0</span>
+      <h2>第一反射器与自省机制</h2>
+      <p><strong>V9.3.0 更新</strong>：V9 不只在写入前用 Gate/Hook 拦截，也在写入后通过第一反射器进行持续评估。反射器聚合任务卡、Agent 状态、heartbeat、规范冲突四类巡检源，只写入 <code>02-项目管理/巡检/health-latest.json</code>，不直接污染看板或运行日志。</p>
+      <div class="callout">
+        健康判定必须同时满足 <code>summary.active=0</code> 与 <code>sources_failed=[]</code>。前者表示没有新增待上报项，后者证明所有巡检源都跑过。
+      </div>
+      <p>详见 <a href="../releases/">迭代记录</a>。</p>
+    </section>
 
     <!-- S0 -->
     <section id="s0">
@@ -991,6 +1004,7 @@ L3 · 基础设施层（Vault + CLI + .standards/ 工具链）</code></pre>
             <tr><td>V8</td><td>六脉合一，多Agent架构</td></tr>
             <tr><td>V8.5</td><td>运行时激活机制</td></tr>
             <tr><td>V9</td><td>二元触发器，极简合规</td></tr>
+            <tr><td>V9.3.0</td><td>第一反射器入编，常驻巡检与 sources_run 自省</td></tr>
           </tbody>
         </table>
       </div>
@@ -1024,6 +1038,7 @@ L3 · 基础设施层（Vault + CLI + .standards/ 工具链）</code></pre>
             <tr><td>prompt-build</td><td>多平台 prompt 源码构建分发系统</td></tr>
             <tr><td>握手协议</td><td>任务启动时的声明确认流程</td></tr>
             <tr><td>Handoff</td><td>任务完成后的交接文档</td></tr>
+            <tr><td>第一反射器</td><td>V9.3.0 巡检机制，聚合任务卡、状态、心跳和规范冲突信号</td></tr>
             <tr><td>不死鸟Phoenix</td><td>错误自愈子系统</td></tr>
             <tr><td>驾驭工程</td><td>Agent 可靠性与可观测性治理</td></tr>
             <tr><td>GBrain</td><td>语义搜索引擎</td></tr>
@@ -1065,7 +1080,7 @@ L3 · 基础设施层（Vault + CLI + .standards/ 工具链）</code></pre>
 
 <footer class="footer">
   <div class="container">
-    <p>息壤方法论 V9.2.1 · 2026-05-31 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+    <p>息壤方法论 V9.3.0 · 2026-06-26 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
   </div>
 </footer>
 

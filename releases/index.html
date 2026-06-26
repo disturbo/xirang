@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>迭代记录 — 息壤 V9</title>
+  <meta name="description" content="息壤 V9 迭代记录：V9.3.0 第一反射器、常驻巡检、自省字段、规范冲突扫描与计费口径标注。">
+  <link rel="stylesheet" href="../assets/css/shared.css">
+</head>
+<body data-page="releases">
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="../" class="nav-brand">
+      <span class="nav-brand-icon">壤</span>
+      <span>息壤 V9</span>
+    </a>
+    <div class="nav-links">
+      <a href="../">首页</a>
+      <a href="../architecture/">架构</a>
+      <a href="../workflow/">流程</a>
+      <a href="../agents/">Agent</a>
+      <a href="../rules/">规则</a>
+      <a href="../deploy/">部署</a>
+      <a href="../cost/">成本</a>
+      <a href="../releases/">迭代</a>
+      <a href="../methodology/">全文</a>
+    </div>
+    <button class="nav-mobile-toggle" aria-label="菜单">&#9776;</button>
+  </div>
+  <div class="nav-mobile-panel">
+    <a href="../">首页</a>
+    <a href="../architecture/">架构</a>
+    <a href="../workflow/">流程</a>
+    <a href="../agents/">Agent</a>
+    <a href="../rules/">规则</a>
+    <a href="../deploy/">部署</a>
+    <a href="../cost/">成本</a>
+    <a href="../releases/">迭代</a>
+    <a href="../methodology/">全文</a>
+  </div>
+</nav>
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#ea580c"></span> <span style="color:#ea580c">Release Notes</span></div>
+        <h1 class="section-title">息壤 V9 迭代记录</h1>
+        <p class="section-subtitle">记录 V9 从合规框架走向可观测运行系统的关键版本。当前版本：V9.3.0 · 2026-06-26。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#1d4ed8"></span> <span style="color:#1d4ed8">V9.3.0</span></div>
+        <h2 class="section-title">第一反射器入编</h2>
+        <p class="section-subtitle">发布时间：2026-06-26。主题：常驻巡检、自省字段、规范冲突扫描、真实计费未接入标注。</p>
+      </div>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card clr-blue">
+        <div class="card-header">
+          <div class="card-icon">巡</div>
+          <h3 class="card-title">常驻巡检</h3>
+        </div>
+        <div class="card-desc"><code>v9-reflex-check.py</code> 聚合任务卡、Agent 状态、心跳、规范冲突四源信号。</div>
+      </div>
+      <div class="card clr-teal">
+        <div class="card-header">
+          <div class="card-icon">证</div>
+          <h3 class="card-title">自省字段</h3>
+        </div>
+        <div class="card-desc"><code>sources_run</code> 证明每个源是否跑过；<code>sources_failed</code> 揭示假静默。</div>
+      </div>
+      <div class="card clr-purple">
+        <div class="card-header">
+          <div class="card-icon">规</div>
+          <h3 class="card-title">规范冲突扫描</h3>
+        </div>
+        <div class="card-desc">新增规范管辖权索引，明确 primary/supporting/inactive 边界。</div>
+      </div>
+      <div class="card clr-amber">
+        <div class="card-header">
+          <div class="card-icon">账</div>
+          <h3 class="card-title">计费口径</h3>
+        </div>
+        <div class="card-desc">成本周报必须标注 <code>billing_status=not_connected</code>，避免把估算值当账单。</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:2rem;">
+      <strong>健康判定：</strong>
+      只有 <code>summary.active=0</code> 且 <code>sources_failed=[]</code> 才是真静默；如果 <code>active=0</code> 但 <code>sources_failed</code> 非空，先修巡检源。
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#0d9488"></span> <span style="color:#0d9488">Timeline</span></div>
+        <h2 class="section-title">版本时间线</h2>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>版本</th><th>日期</th><th>关键变化</th><th>定位</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>V9.3.0</strong></td><td>2026-06-26</td><td>第一反射器、sources_run 自省、规范冲突扫描、计费口径标注</td><td>评估环节入编</td></tr>
+          <tr><td>V9.2.6</td><td>2026-06-09</td><td>OCR vs 多模态识图来源标注铁律</td><td>输入来源治理</td></tr>
+          <tr><td>V9.2.1</td><td>2026-05-31</td><td>Hook 参数化、三阶段成本事件、模型降级链、平台能力矩阵</td><td>治理基建闭环</td></tr>
+          <tr><td>V9.0.0</td><td>2026-05-28</td><td>二元触发器、prompt-build 单源分发、Gate 规则统一</td><td>合规框架发布</td></tr>
+          <tr><td>V8.5</td><td>2026-05-25</td><td>Gate 门禁、子任务、消息队列、成本熔断</td><td>运行时工具层</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#7e22ce"></span> <span style="color:#7e22ce">Artifacts</span></div>
+        <h2 class="section-title">V9.3.0 涉及的文件</h2>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>文件</th><th>作用</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>02-项目管理/脚本/v9-reflex-check.py</code></td><td>第一反射器聚合器</td></tr>
+          <tr><td><code>02-项目管理/脚本/project-ops-check.py</code></td><td>任务卡与运行日志 JSON 巡检</td></tr>
+          <tr><td><code>02-项目管理/脚本/v9-policy-conflict-check.py</code></td><td>规范管辖权冲突扫描</td></tr>
+          <tr><td><code>02-项目管理/巡检/README.md</code></td><td>巡检输出目录与 launchd 模板</td></tr>
+          <tr><td><code>50-经验/Agent协作方法论/V9-规范管辖权索引-2026-06-25.md</code></td><td>规范 primary/supporting/inactive 索引</td></tr>
+          <tr><td><code>.standards/v8-cost-observability.py</code></td><td>成本周报计费状态标注</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>息壤方法论 V9.3.0 · 2026-06-26 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+  </div>
+</footer>
+
+<script src="../assets/js/shared.js"></script>
+</body>
+</html>

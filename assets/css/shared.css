@@ -65,6 +65,15 @@ code {
 
 img { max-width: 100%; display: block; }
 
+.callout {
+  padding: 1rem 1.25rem;
+  border: 1px solid #fed7aa;
+  border-left: 4px solid #ea580c;
+  border-radius: var(--radius);
+  background: #fff7ed;
+  color: #7c2d12;
+}
+
 /* ----------------------------------------------------------
    3. Navigation (multi-page with hamburger)
    ---------------------------------------------------------- */
