@@ -52,8 +52,8 @@
     </div>
 
     <div class="callout" style="margin-bottom:2rem;">
-      <strong>V9.3.0 计费口径：</strong>
-      当前成本周报是治理估算/自报数据，真实平台账单尚未接入。周报必须标注 <code>billing_status=not_connected</code>，CNY 不可当账单使用。
+      <strong>V9.4.3 计费口径：</strong>
+      真实 usage token 可以进入事件流；但真实平台 CNY 账单尚未接入。没有 <code>billing_status=connected</code> 且带平台 <code>cost_source</code> 的事件，<code>cost_cny</code> 只能视为估算或自报，不可当账单使用。
     </div>
 
     <div class="grid grid-4">
@@ -495,7 +495,7 @@
 
 <footer class="footer">
   <div class="container">
-    <p>息壤方法论 V9.3.0 · 2026-06-26 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+    <p>息壤方法论 V9.4.3 · 2026-06-27 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
   </div>
 </footer>
 <script src="../assets/js/shared.js"></script>
