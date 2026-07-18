@@ -422,7 +422,7 @@
     <div class="level-detail" data-level="l3">
       <div class="card">
         <h3>L3 协作者 · 1 小时</h3>
-        <p class="text-muted">目标：完整多 Agent 协作环境，带门禁、状态流和成本追踪</p>
+        <p class="text-muted">目标：完整多 Agent 协作环境，带门禁和状态流；成本追踪已退役</p>
 
         <div class="card mt-1 clr-amber" style="background:var(--c-bg);border:1px solid var(--c-border)">
           <p style="margin:0;color:var(--c-strong)"><strong>提示：</strong>L3 是完全体，通常只有 1-2 人需要（系统管理员/架构师）。大部分团队成员停在 L2 即可。</p>
@@ -534,7 +534,7 @@ pip install jsonschema pyyaml</code></pre>
                 <li>确认事件流 .jsonl 有 task_start 记录</li>
                 <li>完成任务，确认收工三件套输出</li>
                 <li>检查看板是否自动更新</li>
-                <li>确认成本事件已追踪</li>
+                <li>确认未启用已退役的成本事件链</li>
               </ol>
             </div>
           </div>
@@ -557,9 +557,9 @@ pip install jsonschema pyyaml</code></pre>
             <tr><td>构建 prompt</td><td><code>python3 .prompt-src/prompt-build.py</code></td></tr>
             <tr><td>检查门禁</td><td><code>python3 .standards/pre-write-check.py</code></td></tr>
             <tr><td>查看事件流</td><td><code>tail -20 02-项目管理/智能体状态/智能体事件.jsonl</code></td></tr>
-            <tr><td>成本追踪</td><td><code>python3 .standards/agent-cost-events.py report</code></td></tr>
+            <tr><td>成本追踪</td><td>已退役；不得作为部署验收项</td></tr>
             <tr><td>心跳检查</td><td><code>bash .standards/hooks/heartbeat-check.sh</code></td></tr>
-            <tr><td>成本事件</td><td><code>bash .standards/hooks/cost-event.sh checkpoint &lt;task_id&gt; &lt;agent&gt; [tokens] [cost]</code></td></tr>
+            <tr><td>成本事件</td><td>已退役；旧命令显式拒绝写入</td></tr>
           </tbody></table>
         </div>
       </div>

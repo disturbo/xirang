@@ -30,7 +30,7 @@
 | **通信协议** | CLI 直连（同步）+ Vault 文件（持久化审计）双层 |
 | **合规框架** | 二元触发器 + M3/M4/M5 声明 + Gate 门禁自动拦截 |
 | **错误处理** | 五级升级链；Phoenix 当前仅为 design/reference，无自动修复执行器 |
-| **成本治理** | 预算分级 + 熔断机制 + 可观测周报 |
+| **成本治理** | **已退役（2026-07-19）**；历史设计保留，不再采集或参与门禁 |
 | **反射器巡检** | `health-latest.json` + `sources_run` 自省，证明系统真的看过 |
 | **自证回归** | harness eval、starter strict、review 状态机、Handoff 扫描 |
 
@@ -67,7 +67,7 @@
 
 | 版本 | 日期 | 关键变化 |
 |:---:|:---:|------|
-| V9.4.3 runtime recovery | 2026-07-18 | 单一 runtime、Codex 适配、Harness hash 新鲜度、知识/熵/成本消费链、Phoenix 设计态降级；不改变方法论版本 |
+| V9.4.3 runtime recovery | 2026-07-18 | 单一 runtime、Codex 适配、Harness hash 新鲜度、知识/熵消费链、Phoenix 设计态降级；成本能力于 2026-07-19 退役 |
 | V9.4.3 | 2026-06-27 | starter strict 复扫；历史 advisory 降噪；review 状态机补强；usage token 成本最小闭环 |
 | V9.4.2 | 2026-06-27 | Handoff 可接手性扫描；第八反射器源；工具注册表；发布与自演进闸口 |
 | V9.4.1 | 2026-06-27 | self-accept 硬门禁；`v9_accept`；eval 新鲜度；pre-commit 触发 |
@@ -120,7 +120,7 @@ xirang/
 ├── agents/                 ← Agent（6 原子角色 + 通信协议）
 ├── rules/                  ← 规则（8 铁律 + 22 条 Gate 规则）
 ├── deploy/                 ← 部署（L0-L3 四级交互式指南）
-├── cost/                   ← 成本（预算分级 + 熔断 + 事件流）
+├── cost/                   ← 成本历史页（能力已退役）
 ├── releases/               ← 迭代记录（V9.3.0 起，当前 V9.4.3）
 ├── _archive/               ← 历史版本（V8.5 回顾）
 └── assets/                 ← 共享样式和脚本
@@ -138,7 +138,7 @@ xirang/
 | Gate 门禁 | 1 | `gate-enforce.py`（4 子命令） |
 | 合规扫描 | 6 | `xirang-lint.py`、`frontmatter-lint.py`、`brand-lint.py` ... |
 | 子任务与通信 | 3 | `subtask-record.py`、`msg-queue.py`、`spawn-budget-check.py` |
-| 成本治理 | 4 | `cost-fuse.py`、`agent-cost-events.py`、`v8-cost-observability.py` ... |
+| 成本治理（已退役） | 0 active | 历史脚本仅作隔离期审计，不计入运行能力 |
 | Hooks | 6 | `pre-write-hook.sh`、`post-write-hook.sh`、`session-guard.sh` ... |
 | 可观测性 | 3 | `v8-health-metrics.py`、`error-patterns.py`、`event-rotate.py` |
 | 反射器巡检 | 3 | `project-ops-check.py`、`v9-reflex-check.py`、`v9-policy-conflict-check.py` |

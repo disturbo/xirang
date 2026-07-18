@@ -46,14 +46,14 @@
     <div class="section-header">
       <div>
         <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#d97706"></span> <span style="color:#d97706">治理层级</span></div>
-        <h2 class="section-title">成本治理四层优先级</h2>
-        <p class="section-subtitle">结构性治理 > 脚本自动化 > 审计追溯 > 熔断兜底</p>
+        <h2 class="section-title">成本治理（已退役）</h2>
+        <p class="section-subtitle">以下内容仅保留历史设计理由，不代表当前运行能力</p>
       </div>
     </div>
 
     <div class="callout" style="margin-bottom:2rem;">
-      <strong>V9.4.3 计费口径：</strong>
-      真实 usage token 可以进入事件流；但真实平台 CNY 账单尚未接入。没有 <code>billing_status=connected</code> 且带平台 <code>cost_source</code> 的事件，<code>cost_cny</code> 只能视为估算或自报，不可当账单使用。
+      <strong>2026-07-19 退役声明：</strong>
+      Owner 不以成本作为决策约束。自动采集、成本事件、熔断和健康判定均已退出运行链；历史脚本与事件仅作隔离期审计，不得作为任务完成条件。
     </div>
 
     <div class="grid grid-4">

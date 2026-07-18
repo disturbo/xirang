@@ -383,7 +383,7 @@
     <section id="s-v943">
       <span class="section-label">V9.4.3</span>
       <h2>自证回归、九源治理与运行时消费链</h2>
-      <p><strong>V9.4.3 runtime recovery</strong>：第一反射器聚合九类治理源，并在独立 runtime checks 中验证 GBrain、LLM Wiki、成本、熵治理、skill 解析等消费者与新鲜度；统一输出到 <code>~/.xirang/v9-runtime/巡检/health-latest.json</code>。</p>
+      <p><strong>V9.4.3 runtime recovery</strong>：第一反射器聚合九类治理源，并在独立 runtime checks 中验证 GBrain、LLM Wiki、熵治理、skill 解析等消费者与新鲜度；统一输出到 <code>~/.xirang/v9-runtime/巡检/health-latest.json</code>。成本能力已于 2026-07-19 退役。</p>
       <div class="callout">
         健康判定必须同时满足 <code>summary.active=0</code>、<code>sources_failed=[]</code>、runtime checks 无 <code>failed/stale</code>，以及 Harness trust/hash 新鲜度验证通过。任一消费者失败都不得被治理源绿色覆盖。
       </div>
@@ -410,7 +410,7 @@
             <tr><td>通信协议</td><td>CLI 直连（同步）+ Vault 文件（持久化审计）双层架构</td></tr>
             <tr><td>合规框架</td><td>二元触发器 + M3/M4/M5 声明制度 + Gate 门禁自动拦截</td></tr>
             <tr><td>错误处理</td><td>五级升级链 + 回滚补偿；Phoenix 当前仅为设计参考</td></tr>
-            <tr><td>成本治理</td><td>预算分级 + 熔断机制 + 可观测周报</td></tr>
+            <tr><td>成本治理</td><td>已退役；历史设计保留，不参与当前运行</td></tr>
             <tr><td>质量门禁</td><td>pre-write-hook + gate-enforce + 产物自检三件套</td></tr>
           </tbody>
         </table>
@@ -649,7 +649,7 @@
       </ul>
 
       <h3>脉② 驾驭工程</h3>
-      <p>Agent 的可靠性、可观测性、治理。三层可观测性：状态层、事件层、指标层。门禁体系 4 个检查点：pre-start、pre-write、cost-fuse、handoff。</p>
+      <p>Agent 的可靠性、可观测性、治理。三层可观测性：状态层、事件层、指标层。现行门禁保留 3 个检查点：pre-start、pre-write、handoff；cost-fuse 已退役。</p>
 
       <h3>脉③ 不死鸟 Phoenix</h3>
       <p><strong>design/reference，未部署。</strong> 8 个抗体模式与 10 步排查流程是候选设计；当前错误在有限重试后直接升级 Owner，不声称自动修复已发生。</p>
@@ -855,7 +855,7 @@ L3 · 基础设施层（Vault + CLI + .standards/ 工具链）</code></pre>
             <tr><td><code>AGENT_BUSY</code></td><td>Agent 状态为 busy 时拒绝新任务</td></tr>
             <tr><td><code>TASK_BLOCKED</code></td><td>任务被依赖阻塞时不可启动</td></tr>
             <tr><td><code>NO_TASK_ID</code></td><td>写操作无关联任务卡时阻断</td></tr>
-            <tr><td><code>FUSE_BLOWN</code></td><td>成本熔断已触发时阻断所有操作</td></tr>
+            <tr><td><code>FUSE_BLOWN</code></td><td>历史规则；成本治理退役后不再参与现行门禁</td></tr>
             <tr><td><code>SCOPE_EXCEEDED</code></td><td>写入路径超出声明范围</td></tr>
             <tr><td><code>PATH_FORBIDDEN</code></td><td>写入禁止路径（如其他Agent专属路径）</td></tr>
             <tr><td><code>MISSING_DELIVERABLES</code></td><td>标记完成但缺少必需产物</td></tr>
@@ -896,7 +896,7 @@ L3 · 基础设施层（Vault + CLI + .standards/ 工具链）</code></pre>
     <!-- S13 -->
     <section id="s13">
       <span class="section-label">S13</span>
-      <h2>成本治理</h2>
+      <h2>成本治理（已退役，历史参考）</h2>
 
       <h3>预算分级</h3>
       <div class="table-wrap">
@@ -1045,7 +1045,7 @@ L3 · 基础设施层（Vault + CLI + .standards/ 工具链）</code></pre>
             <tr><td>LLM Wiki</td><td>三层资料结构管理系统</td></tr>
             <tr><td>收工三件套</td><td>产物清单 + 自查结果 + 验收建议</td></tr>
             <tr><td>事件流</td><td>智能体事件.jsonl 审计日志</td></tr>
-            <tr><td>成本事件流</td><td>agent-cost-events 费用追踪</td></tr>
+            <tr><td>成本事件流</td><td>已退役；仅保留历史审计说明</td></tr>
             <tr><td>pre-flight</td><td>写文件前的声明检查流程</td></tr>
           </tbody>
         </table>

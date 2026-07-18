@@ -373,7 +373,7 @@
       <div class="accordion-item">
         <div class="accordion-header">4. 监控（Monitor）</div>
         <div class="accordion-body">
-          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">V9.2: <code>heartbeat-update.sh</code> 自动更新心跳（需设置 V8_AGENT_PID），<code>heartbeat-check.sh</code> 三级超时检测(15min 警告/30min 过期/60min 死亡+自动 idle)。M5 长任务每 30min 必须有 heartbeat，超时触发告警。成本通过三阶段事件流(start→checkpoint→finalize)持续追踪。</p>
+          <p style="margin:0;font-size:0.9rem;color:var(--fg-muted);">V9.2: <code>heartbeat-update.sh</code> 自动更新心跳（需设置 V8_AGENT_PID），<code>heartbeat-check.sh</code> 三级超时检测(15min 警告/30min 过期/60min 死亡+自动 idle)。M5 长任务每 30min 必须有 heartbeat，超时触发告警。原三阶段成本事件流已于 2026-07-19 退役。</p>
         </div>
       </div>
       <div class="accordion-item">
