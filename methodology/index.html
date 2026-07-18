@@ -382,10 +382,10 @@
 
     <section id="s-v943">
       <span class="section-label">V9.4.3</span>
-      <h2>自证回归与八源反射器</h2>
-      <p><strong>V9.4.3 更新</strong>：V9 不只在写入前用 Gate/Hook 拦截，也在写入后通过第一反射器和 harness eval 证明系统真的看过、测过、拒绝过坏样本。反射器已扩展到任务卡、Agent 状态、heartbeat、规范冲突、starter 泄漏、任务状态、scope tamper、Handoff 八类巡检源，只写入 <code>02-项目管理/巡检/health-latest.json</code>，不直接污染看板或运行日志。</p>
+      <h2>自证回归、九源治理与运行时消费链</h2>
+      <p><strong>V9.4.3 runtime recovery</strong>：第一反射器聚合九类治理源，并在独立 runtime checks 中验证 GBrain、LLM Wiki、成本、熵治理、skill 解析等消费者与新鲜度；统一输出到 <code>~/.xirang/v9-runtime/巡检/health-latest.json</code>。</p>
       <div class="callout">
-        健康判定必须同时满足 <code>summary.active=0</code>、<code>sources_failed=[]</code> 和 harness eval 全绿。前者表示没有新增待上报项，后者证明所有巡检源都跑过；eval 证明门禁、状态机和分发扫描没有假绿。
+        健康判定必须同时满足 <code>summary.active=0</code>、<code>sources_failed=[]</code>、runtime checks 无 <code>failed/stale</code>，以及 Harness trust/hash 新鲜度验证通过。任一消费者失败都不得被治理源绿色覆盖。
       </div>
       <p>详见 <a href="../releases/">迭代记录</a>。</p>
     </section>
@@ -409,7 +409,7 @@
             <tr><td>流程管道</td><td>六步流程：拆分→计划→执行→监控→检核→验收</td></tr>
             <tr><td>通信协议</td><td>CLI 直连（同步）+ Vault 文件（持久化审计）双层架构</td></tr>
             <tr><td>合规框架</td><td>二元触发器 + M3/M4/M5 声明制度 + Gate 门禁自动拦截</td></tr>
-            <tr><td>错误处理</td><td>五级升级链 + 回滚补偿 + 不死鸟自愈</td></tr>
+            <tr><td>错误处理</td><td>五级升级链 + 回滚补偿；Phoenix 当前仅为设计参考</td></tr>
             <tr><td>成本治理</td><td>预算分级 + 熔断机制 + 可观测周报</td></tr>
             <tr><td>质量门禁</td><td>pre-write-hook + gate-enforce + 产物自检三件套</td></tr>
           </tbody>
@@ -631,7 +631,7 @@
           <tbody>
             <tr><td>①</td><td>Claude Design 工艺</td><td>方案设计和 PRD/原型大块产出的工程方法</td><td>青霉素</td></tr>
             <tr><td>②</td><td>驾驭工程</td><td>Agent 的可靠性、可观测性、治理</td><td>阿莫西林</td></tr>
-            <tr><td>③</td><td>不死鸟 Phoenix</td><td>错误自愈：抗体扫描、崩溃恢复、向量化诊断</td><td>WorkBuddy</td></tr>
+            <tr><td>③</td><td>不死鸟 Phoenix（设计态）</td><td>候选自愈设计；当前无 scheduler / executor</td><td>WorkBuddy</td></tr>
             <tr><td>④</td><td>LLM Wiki</td><td>三层资料结构 + frontmatter + Dataview 可查询</td><td>红霉素</td></tr>
             <tr><td>⑤</td><td>GBrain</td><td>语义搜索 + Brain Score + cron dream 自动维护</td><td>Claudian</td></tr>
             <tr><td>⑥</td><td>Skill 清单</td><td>各平台 skill 目录 + 能力声明 + 发现机制</td><td>红霉素</td></tr>
@@ -652,7 +652,7 @@
       <p>Agent 的可靠性、可观测性、治理。三层可观测性：状态层、事件层、指标层。门禁体系 4 个检查点：pre-start、pre-write、cost-fuse、handoff。</p>
 
       <h3>脉③ 不死鸟 Phoenix</h3>
-      <p>错误自愈子系统。8 个内置抗体模式 + 10 步排查流程 + 进化引擎。</p>
+      <p><strong>design/reference，未部署。</strong> 8 个抗体模式与 10 步排查流程是候选设计；当前错误在有限重试后直接升级 Owner，不声称自动修复已发生。</p>
 
       <h3>脉④ LLM Wiki</h3>
       <p>三层资料结构：Source（原始源）→ Summary（摘要层）→ Published（发布层）。</p>
@@ -782,7 +782,7 @@
           </thead>
           <tbody>
             <tr><td>L0.5</td><td>父Agent</td><td>重试（最多2次）</td></tr>
-            <tr><td>L1</td><td>不死鸟Phoenix</td><td>自愈（抗体模式匹配）</td></tr>
+            <tr><td>L1</td><td>不死鸟 Phoenix</td><td>design/reference；当前跳过，直接进入 Owner 修复</td></tr>
             <tr><td>L2</td><td>Owner Agent</td><td>修复（根据路径Owner表）</td></tr>
             <tr><td>L3</td><td>阿莫西林</td><td>裁决（协调中枢仲裁）</td></tr>
             <tr><td>L4</td><td>人力介入</td><td>人工干预（最终兜底）</td></tr>
@@ -1004,7 +1004,7 @@ L3 · 基础设施层（Vault + CLI + .standards/ 工具链）</code></pre>
             <tr><td>V8</td><td>六脉合一，多Agent架构</td></tr>
             <tr><td>V8.5</td><td>运行时激活机制</td></tr>
             <tr><td>V9</td><td>二元触发器，极简合规</td></tr>
-            <tr><td>V9.4.3</td><td>自证阶段收束，八源反射器、harness eval、状态机与 usage token 成本口径入编</td></tr>
+            <tr><td>V9.4.3</td><td>自证阶段收束；2026-07-18 runtime recovery 补齐九源治理、消费链、可信 hash 与 Codex 适配</td></tr>
           </tbody>
         </table>
       </div>
@@ -1038,8 +1038,8 @@ L3 · 基础设施层（Vault + CLI + .standards/ 工具链）</code></pre>
             <tr><td>prompt-build</td><td>多平台 prompt 源码构建分发系统</td></tr>
             <tr><td>握手协议</td><td>任务启动时的声明确认流程</td></tr>
             <tr><td>Handoff</td><td>任务完成后的交接文档</td></tr>
-            <tr><td>第一反射器</td><td>V9.4.3 八源巡检机制，聚合任务卡、状态、心跳、规范冲突、starter、状态机、scope 和 Handoff 信号</td></tr>
-            <tr><td>不死鸟Phoenix</td><td>错误自愈子系统</td></tr>
+            <tr><td>第一反射器</td><td>V9.4.3 九源治理 + 独立 runtime checks；失败消费者不能被绿色覆盖</td></tr>
+            <tr><td>不死鸟 Phoenix</td><td>错误自愈参考设计；当前无执行器</td></tr>
             <tr><td>驾驭工程</td><td>Agent 可靠性与可观测性治理</td></tr>
             <tr><td>GBrain</td><td>语义搜索引擎</td></tr>
             <tr><td>LLM Wiki</td><td>三层资料结构管理系统</td></tr>
@@ -1080,7 +1080,7 @@ L3 · 基础设施层（Vault + CLI + .standards/ 工具链）</code></pre>
 
 <footer class="footer">
   <div class="container">
-    <p>息壤方法论 V9.4.3 · 2026-06-27 · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+    <p>息壤方法论 V9.4.3 · 2026-07-18 runtime recovery · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
   </div>
 </footer>
 

@@ -15,7 +15,7 @@
 
 - **文件系统即协作黑板** — Agent 通过读写 Markdown 文件协作，一切可审计
 - **一个判断统一所有规则** — "这个任务会写文件吗？" 写→声明；不写→直接做
-- **第一反射器** — 八源巡检任务卡、状态、心跳、规范冲突、分发泄漏、状态机和 Handoff，区分真静默与假静默
+- **第一反射器** — 九源治理巡检 + 独立 runtime checks，验证调度、消费者、效果与新鲜度，区分真静默与假静默
 - **自证回归** — harness eval 用 positive/negative fixture 证明门禁、巡检、状态机不会假绿
 - **渐进收敛，不强制完全体** — L0~L3 四阶段，按需升级
 
@@ -29,7 +29,7 @@
 | **流程管道** | 六步流程：拆分 → 计划 → 执行 → 监控 → 检核 → 验收 |
 | **通信协议** | CLI 直连（同步）+ Vault 文件（持久化审计）双层 |
 | **合规框架** | 二元触发器 + M3/M4/M5 声明 + Gate 门禁自动拦截 |
-| **错误自愈** | 五级升级链 + 错误模式库自动匹配 |
+| **错误处理** | 五级升级链；Phoenix 当前仅为 design/reference，无自动修复执行器 |
 | **成本治理** | 预算分级 + 熔断机制 + 可观测周报 |
 | **反射器巡检** | `health-latest.json` + `sources_run` 自省，证明系统真的看过 |
 | **自证回归** | harness eval、starter strict、review 状态机、Handoff 扫描 |
@@ -60,13 +60,14 @@
               │     ├─ 9.4.2 Handoff 状态机 + 工具注册表
               │     └─ 9.4.3 starter strict + review 状态机 + usage token
               ▼
-         V9.4.3 · 2026-06-27 当前版本
+         V9.4.3 · 2026-07-18 runtime recovery
 ```
 
 ### 迭代记录
 
 | 版本 | 日期 | 关键变化 |
 |:---:|:---:|------|
+| V9.4.3 runtime recovery | 2026-07-18 | 单一 runtime、Codex 适配、Harness hash 新鲜度、知识/熵/成本消费链、Phoenix 设计态降级；不改变方法论版本 |
 | V9.4.3 | 2026-06-27 | starter strict 复扫；历史 advisory 降噪；review 状态机补强；usage token 成本最小闭环 |
 | V9.4.2 | 2026-06-27 | Handoff 可接手性扫描；第八反射器源；工具注册表；发布与自演进闸口 |
 | V9.4.1 | 2026-06-27 | self-accept 硬门禁；`v9_accept`；eval 新鲜度；pre-commit 触发 |
