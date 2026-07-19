@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>迭代记录 — 息壤 V9</title>
-  <meta name="description" content="息壤 V9 迭代记录：V9.4.3 runtime recovery、九源治理、运行时消费链、Harness hash 与 starter strict。">
+  <meta name="description" content="息壤 V9 迭代记录：V9.4.3 runtime recovery、Codex 真门禁、运行时消费链、Harness hash 与 14 天冻结闸口。">
   <link rel="stylesheet" href="../assets/css/shared.css">
 </head>
 <body data-page="releases">
@@ -59,7 +59,7 @@
       <div>
         <div class="section-eyebrow"><span class="section-eyebrow-dot" style="background:#1d4ed8"></span> <span style="color:#1d4ed8">V9.4.3 · 当前版本</span></div>
         <h2 class="section-title">自证阶段收束</h2>
-        <p class="section-subtitle">正式版发布：2026-06-27；runtime recovery：2026-07-18。主题：单一 runtime、Codex 适配、可信 hash、九源治理与消费链真实性。</p>
+        <p class="section-subtitle">正式版发布：2026-06-27；runtime recovery：2026-07-19。主题：单一 runtime、Codex 适配、可信 hash、知识与熵消费链、14 天冻结闸口。</p>
       </div>
     </div>
 
@@ -69,14 +69,14 @@
           <div class="card-icon">测</div>
           <h3 class="card-title">Harness Eval</h3>
         </div>
-        <div class="card-desc">live Vault 84/84；公开 starter 27/27。正样本要通过，坏样本必须被拦住，且 tested hash 必须匹配当前文件。</div>
+        <div class="card-desc">live Vault 85/85（31 个 trusted files）；公开 starter 28/28（25 个 trusted files）。正样本通过、坏样本被拦，tested hash 与当前文件一致。</div>
       </div>
       <div class="card clr-teal">
         <div class="card-header">
           <div class="card-icon">分</div>
           <h3 class="card-title">Starter Strict</h3>
         </div>
-        <div class="card-desc">发布前扫描个人路径、项目词、秘钥形态和运行态产物。</div>
+        <div class="card-desc">发布前扫描个人路径、项目词、秘钥形态和运行态产物；当前 strict 为 0。</div>
       </div>
       <div class="card clr-purple">
         <div class="card-header">
@@ -87,16 +87,16 @@
       </div>
       <div class="card clr-amber">
         <div class="card-header">
-          <div class="card-icon">账</div>
-          <h3 class="card-title">成本能力退役</h3>
+          <div class="card-icon">冻</div>
+          <h3 class="card-title">冻结闸口</h3>
         </div>
-        <div class="card-desc">2026-07-19 起不再采集或熔断；历史事件仅保留审计。</div>
+        <div class="card-desc">连续 14 个自然日身份、Hook、Harness、消费顺序与分发版本均真实，才允许讨论解冻；增强能力继续冻结。</div>
       </div>
     </div>
 
     <div class="callout" style="margin-top:2rem;">
       <strong>V9.4.3 判断：</strong>
-      V9 不是继续堆新 Agent，而是让运行时证明自己可信。当前 LLM Wiki 对原型仍有未消费引用，运行态保持红色；Phoenix 仅为 design/reference。
+      V9 不是继续堆新 Agent，而是让运行时证明自己可信。LLM Wiki 已对准 725 原型：29 个模块、0 error、0 warning；Phoenix 仍仅为 design/reference，不存在自动修复执行器。
     </div>
   </div>
 </section>
@@ -116,7 +116,7 @@
           <tr><th>版本</th><th>日期</th><th>关键变化</th><th>定位</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>V9.4.3 runtime recovery</strong></td><td>2026-07-18</td><td>单一 runtime、Codex 适配、Harness hash、知识/熵/skill 消费链、Phoenix 设计态降级；成本能力 2026-07-19 退役</td><td>稳定化修复，不做语义进化</td></tr>
+          <tr><td><strong>V9.4.3 runtime recovery</strong></td><td>2026-07-19</td><td>单一 runtime、Codex apply_patch/exec_command 真门禁、Harness hash、知识/熵/skill 消费链、Phoenix 设计态降级、14 天冻结闸口</td><td>稳定化修复，不做语义进化</td></tr>
           <tr><td><strong>V9.4.3</strong></td><td>2026-06-27</td><td>starter strict 复扫、历史 advisory 降噪、review 状态机补强、usage token 成本最小闭环</td><td>自证阶段收束</td></tr>
           <tr><td>V9.4.2</td><td>2026-06-27</td><td>Handoff 可接手性扫描、第八反射器源、工具注册表、发布与自演进闸口</td><td>协作验收治理</td></tr>
           <tr><td>V9.4.1</td><td>2026-06-27</td><td>self-accept 硬门禁、v9_accept、eval 新鲜度、pre-commit 触发</td><td>验收正门</td></tr>
@@ -149,6 +149,9 @@
         <tbody>
           <tr><td><code>02-项目管理/脚本/v9-harness-eval-runner.py</code></td><td>harness 机械回归测试，正/反 fixture 分账</td></tr>
           <tr><td><code>02-项目管理/脚本/v9-reflex-check.py</code></td><td>九源治理聚合 + 独立 runtime checks</td></tr>
+          <tr><td><code>02-项目管理/脚本/v9-freeze-observation.py</code></td><td>14 天连续真实性观测与解冻门禁</td></tr>
+          <tr><td><code>02-项目管理/脚本/v9-entropy-governance.py</code></td><td>人工确认队列 + 默认延期/归档收敛，不自动改笔记</td></tr>
+          <tr><td><code>.standards/scripts/llm_wiki_check.py</code></td><td>LLM Wiki 到 725 原型的精确路径校验</td></tr>
           <tr><td><code>.standards/harness-eval-verify.py</code></td><td>trust set、tested hash 与新鲜度校验</td></tr>
           <tr><td><code>.standards/hooks/codex-hook-adapter.py</code></td><td>Codex Desktop 工具与生命周期适配</td></tr>
           <tr><td><code>02-项目管理/脚本/v9-skill-shadow-check.py</code></td><td>同名 skill 版本遮蔽校验</td></tr>
@@ -156,7 +159,6 @@
           <tr><td><code>02-项目管理/脚本/v9-task-state-check.py</code></td><td>任务验收状态机扫描</td></tr>
           <tr><td><code>02-项目管理/脚本/v9-handoff-check.py</code></td><td>Handoff 可接手性扫描</td></tr>
           <tr><td><code>.standards/v9-accept.py</code></td><td>安全验收正门</td></tr>
-          <tr><td><code>.standards/agent-cost-events.py</code></td><td>已退役；隔离期内仅作历史审计</td></tr>
           <tr><td><code>50-经验/Agent协作方法论/V9-工具注册表-2026-06-27.md</code></td><td>工具 owner、输入输出、验证状态</td></tr>
           <tr><td><code>50-经验/Agent协作方法论/V9-发布与自演进闸口-2026-06-27.md</code></td><td>starter 发布、自演进与退役能力边界</td></tr>
         </tbody>
@@ -167,7 +169,7 @@
 
 <footer class="footer">
   <div class="container">
-    <p>息壤方法论 V9.4.3 · 2026-07-18 runtime recovery · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
+    <p>息壤方法论 V9.4.3 · 2026-07-19 runtime recovery · <a href="https://github.com/disturbo/xirang">GitHub</a></p>
   </div>
 </footer>
 

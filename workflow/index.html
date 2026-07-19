@@ -426,7 +426,7 @@
         <!-- Level 1 -->
         <rect x="100" y="124" width="200" height="40" rx="8" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
         <text x="200" y="141" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">Level 1</text>
-        <text x="200" y="156" text-anchor="middle" font-size="9" fill="#1e40af">Phoenix自愈 — 匹配抗体库自动修复</text>
+        <text x="200" y="156" text-anchor="middle" font-size="9" fill="#1e40af">Phoenix设计参考 — 无执行器，不自动修复</text>
 
         <!-- Arrow -->
         <line x1="200" y1="164" x2="200" y2="179" stroke="#64748b" stroke-width="1" stroke-dasharray="3,2"/>
@@ -456,8 +456,8 @@
         <tbody>
           <tr><td>Level 0</td><td>自动重试</td><td>瞬时错误 / 网络超时</td><td>API 429 → 指数退避重试</td></tr>
           <tr><td>Level 0.5</td><td>切换策略</td><td>重试 3 次仍失败</td><td>Sonnet 限流 → 切换 Haiku</td></tr>
-          <tr><td>Level 1</td><td>Phoenix自愈</td><td>已知错误模式匹配</td><td>frontmatter 缺失 → 自动补写</td></tr>
-          <tr><td>Level 2</td><td>Owner修复</td><td>自愈失败 / 未知模式</td><td>路径冲突 → 升级到东风处理</td></tr>
+          <tr><td>Level 1</td><td>Phoenix设计参考（未启用）</td><td>已知错误模式仅供人工判断</td><td>无 scheduler / executor，不自动改文件</td></tr>
+          <tr><td>Level 2</td><td>Owner修复</td><td>人工确认后的真实性故障</td><td>路径冲突 → 升级到持久 Owner 处理</td></tr>
           <tr><td>Level 3</td><td>人工介入</td><td>涉及决策 / 数据安全</td><td>生产环境异常 → 通知人类</td></tr>
         </tbody>
       </table>
